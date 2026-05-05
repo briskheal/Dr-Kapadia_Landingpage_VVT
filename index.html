@@ -71,33 +71,50 @@
         .logo img { height: clamp(45px, 7vw, 65px); display: block; }
         
         /* Stats Bar */
-        .stats-bar { background: var(--secondary); color: white; padding: 30px 0; text-align: center; }
+        .stats-bar { background: var(--secondary); color: white; padding: 40px 0; text-align: center; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
-        .stat-item h2 { color: var(--accent); font-size: 2.5rem; margin-bottom: 5px; }
-        .stat-item p { font-size: 0.9rem; font-weight: 500; opacity: 0.9; }
+        .stat-item h2 { color: var(--accent); font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 5px; }
+        .stat-item p { font-size: 0.95rem; font-weight: 500; opacity: 0.9; }
 
-        /* Featured In */
-        .featured-section { background: white; padding: 40px 0; border-bottom: 1px solid #f1f5f9; }
-        .featured-flex { display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap; opacity: 0.6; filter: grayscale(100%); }
-        .featured-flex img { height: 30px; }
-
-        /* Trust Badge */
-        .trust-badge { display: inline-flex; align-items: center; gap: 10px; background: #fff; padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow-premium); margin-bottom: 30px; border: 1px solid var(--bg-soft); }
+        /* Trust Signals */
+        .trust-badge { display: inline-flex; align-items: center; gap: 10px; background: #fff; padding: 12px 24px; border-radius: 50px; box-shadow: var(--shadow-premium); margin-bottom: 30px; border: 1px solid var(--bg-soft); }
         .stars { color: #F59E0B; }
 
         /* Hero */
-        .hero { padding: 100px 0; }
-        .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; }
-        .hero-content h1 { font-size: clamp(2.5rem, 6vw, 4rem); margin-bottom: 25px; }
-        .hero-content p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 40px; max-width: 600px; }
-        .hero-image img { width: 100%; border-radius: 40px; box-shadow: 0 30px 60px rgba(1, 74, 129, 0.15); }
+        .hero { padding: 100px 0; background: transparent; }
+        .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
+        .hero-content h1 { font-size: clamp(2.8rem, 7vw, 4.2rem); margin-bottom: 25px; }
+        .hero-content p { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 45px; max-width: 650px; }
+        .hero-image img { width: 100%; border-radius: 50px; box-shadow: 0 40px 80px rgba(1, 74, 129, 0.2); }
 
-        /* Symptoms Cards */
-        .symptom-card { background: white; padding: 30px; border-radius: 30px; border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow-premium); transition: 0.3s; }
-        .symptom-card:hover { transform: translateY(-10px); border-color: var(--accent); }
-        .symptom-icon { font-size: 2rem; color: var(--accent); margin-bottom: 20px; }
+        /* Treatment Cards */
+        .treatment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .treatment-card { background: white; padding: 40px; border-radius: 40px; border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow-premium); transition: 0.4s; }
+        .treatment-card:hover { transform: translateY(-12px); border-color: var(--accent); }
+        .treatment-icon { width: 70px; height: 70px; background: var(--bg-soft); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--accent); margin-bottom: 25px; }
+        .treatment-card h3 { font-size: 1.4rem; margin-bottom: 15px; }
 
-        /* Responsive */
+        /* Testimonials */
+        .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; }
+        .testimonial-card { background: white; padding: 40px; border-radius: 35px; box-shadow: var(--shadow-premium); position: relative; }
+        .testimonial-card::before { content: '\f10d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: 30px; right: 30px; font-size: 2rem; color: var(--bg-soft); }
+        .testimonial-text { font-style: italic; color: var(--text-muted); margin-bottom: 25px; }
+        .testimonial-author { display: flex; align-items: center; gap: 15px; }
+        .author-info h4 { font-size: 1.1rem; }
+        .author-info p { font-size: 0.85rem; color: var(--text-light); }
+
+        /* FAQ */
+        .faq-container { max-width: 900px; margin: 0 auto; }
+        .faq-item { margin-bottom: 15px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); background: white; }
+        .faq-question { width: 100%; padding: 25px; display: flex; justify-content: space-between; align-items: center; border: none; background: none; font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--secondary); cursor: pointer; text-align: left; font-size: 1.1rem; }
+        .faq-answer { padding: 0 25px; max-height: 0; opacity: 0; overflow: hidden; transition: 0.4s; color: var(--text-muted); }
+        .faq-item.active .faq-answer { padding-bottom: 25px; max-height: 400px; opacity: 1; }
+        .faq-item.active i { transform: rotate(180deg); color: var(--primary); }
+
+        /* Affiliation Bar */
+        .affil-bar { background: white; padding: 30px 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; text-align: center; }
+        .affil-flex { display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap; opacity: 0.6; filter: grayscale(100%); }
+
         @media (max-width: 992px) {
             .hero-grid { grid-template-columns: 1fr; text-align: center; }
             .hero-image { order: -1; max-width: 450px; margin: 0 auto; }
@@ -109,7 +126,7 @@
 <body>
 
     <div class="floating-contact">
-        <a href="https://wa.me/917201014017" class="float-btn float-wa"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://wa.me/917201014017" class="float-btn float-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
         <a href="tel:+917201014017" class="float-btn float-call"><i class="fas fa-phone-alt"></i></a>
     </div>
 
@@ -119,7 +136,8 @@
                 <div class="logo">
                     <img src="logo.png" alt="Dr. Sumit Kapadia Logo">
                 </div>
-                <div style="display: flex; gap: 20px;">
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <span style="font-weight: 700; color: var(--secondary); font-size: 0.9rem;" class="hide-mobile"><i class="fas fa-hospital"></i> Aadicura Hospital, Vadodara</span>
                     <a href="tel:+917201014017" class="btn btn-secondary" style="padding: 10px 20px;"><i class="fas fa-phone-alt"></i> Call</a>
                 </div>
             </div>
@@ -134,12 +152,12 @@
                     <div class="hero-content">
                         <div class="trust-badge" data-aos="fade-down">
                             <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                            <span style="font-weight: 700;">4.9 Google Rating</span>
+                            <span style="font-weight: 800;">4.9 Google Rating</span>
                             <span style="opacity: 0.5;">|</span>
-                            <span>Trusted by 3 Lakh+ Patients</span>
+                            <span>Gold Medalist Surgeon</span>
                         </div>
-                        <h1>Relieve Leg Pain & <i>Varicose Veins</i> with Expert Care</h1>
-                        <p>Experience precision vascular treatments by one of India's leading specialists. Minimally invasive, painless, and focused on your recovery.</p>
+                        <h1>Leg Pain & <i>Varicose Veins</i> Relief in Gujarat</h1>
+                        <p>Experience advanced, non-surgical vein treatments by <b>Dr. Sumit Kapadia</b>—one of India's most trusted vascular specialists with over two decades of clinical excellence.</p>
                         
                         <div class="hero-btns">
                             <a href="#book" class="btn btn-primary">Book Consultation</a>
@@ -147,7 +165,7 @@
                         </div>
                     </div>
                     <div class="hero-image" data-aos="fade-left">
-                        <img src="https://www.drsumitkapadia.com/wp-content/uploads/2024/01/Dr-Sumit-Kapadia-Varicose-Veins.png" alt="Dr. Sumit Kapadia">
+                        <img src="https://www.drsumitkapadia.com/wp-content/uploads/2024/01/Dr-Sumit-Kapadia-Varicose-Veins.png" alt="Dr. Sumit Kapadia - Vascular Surgeon">
                     </div>
                 </div>
             </div>
@@ -158,59 +176,133 @@
             <div class="container">
                 <div class="stats-grid">
                     <div class="stat-item" data-aos="zoom-in">
-                        <h2>18+</h2>
+                        <h2>20+</h2>
                         <p>Years of Experience</p>
                     </div>
                     <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
-                        <h2>18,000+</h2>
+                        <h2>25,000+</h2>
                         <p>Patients Treated</p>
                     </div>
                     <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
-                        <h2>7,000+</h2>
+                        <h2>10,000+</h2>
                         <p>Surgeries Performed</p>
                     </div>
                     <div class="stat-item" data-aos="zoom-in" data-aos-delay="300">
-                        <h2>3 Lakh+</h2>
-                        <p>YouTube Subscribers</p>
+                        <h2>50M+</h2>
+                        <p>YouTube Views</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Featured In -->
-        <div class="featured-section">
+        <!-- Treatment Section -->
+        <section id="treatments" data-aos="fade-up">
             <div class="container">
-                <p style="text-align: center; font-size: 0.8rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px;">As Featured In</p>
-                <div class="featured-flex">
-                    <img src="https://theprint.in/wp-content/uploads/2017/08/ThePrint_Logo_Main.png" alt="ThePrint">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/ANI_Logo.png" alt="ANI News">
-                    <img src="https://www.dailyhunt.in/dailyhunt_logo.png" alt="Dailyhunt">
+                <div style="text-align: center; margin-bottom: 70px;">
+                    <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem);">Advanced Treatment Options</h2>
+                    <p style="color: var(--text-muted); margin-top: 15px; max-width: 700px; margin-left: auto; margin-right: auto;">We specialize in minimally invasive, painless procedures that require no hospital stay and offer immediate recovery.</p>
+                </div>
+                <div class="treatment-grid">
+                    <div class="treatment-card">
+                        <div class="treatment-icon"><i class="fas fa-tint"></i></div>
+                        <h3>VenaSeal (Medical Glue)</h3>
+                        <p>The latest non-thermal, non-surgical treatment using a specialized medical adhesive to seal diseased veins. 100% painless with no anesthesia required.</p>
+                    </div>
+                    <div class="treatment-card">
+                        <div class="treatment-icon"><i class="fas fa-bolt"></i></div>
+                        <h3>Laser Therapy (EVLA)</h3>
+                        <p>Highly effective laser treatment that closes varicose veins with precision. Quick 45-minute procedure with same-day discharge.</p>
+                    </div>
+                    <div class="treatment-card">
+                        <div class="treatment-icon"><i class="fas fa-syringe"></i></div>
+                        <h3>Sclerotherapy</h3>
+                        <p>Ideal for spider veins and medium-sized varicose veins. A simple injection process that collapses diseased veins for a clear skin appearance.</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Symptoms Section -->
-        <section class="symptoms" data-aos="fade-up">
+        <!-- Why Choose Section -->
+        <section style="background: var(--white); border-radius: 60px 60px 0 0;" data-aos="fade-up">
+            <div class="container">
+                <div class="hero-grid" style="grid-template-columns: 0.8fr 1.2fr;">
+                    <div class="hero-image">
+                        <img src="clinic.png" alt="Dr. Sumit Kapadia's Clinic">
+                    </div>
+                    <div class="hero-content" style="text-align: left;">
+                        <h2>Why Choose Dr. Sumit Kapadia?</h2>
+                        <p style="margin-top: 20px;">As a Gold Medalist in medical training and a Fellow of the Royal College of Surgeons (FRCS), Dr. Kapadia brings world-class surgical expertise to Vadodara.</p>
+                        <ul style="list-style: none; margin-top: 30px;">
+                            <li style="margin-bottom: 15px; font-weight: 600;"><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Accurate diagnosis with advanced duplex ultrasound</li>
+                            <li style="margin-bottom: 15px; font-weight: 600;"><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> No surgery, no stitches, no scars</li>
+                            <li style="margin-bottom: 15px; font-weight: 600;"><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Comprehensive diabetic foot & DVT care</li>
+                            <li style="margin-bottom: 15px; font-weight: 600;"><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Personalized post-procedure guidance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section style="background: var(--bg-soft);">
             <div class="container">
                 <div style="text-align: center; margin-bottom: 60px;">
-                    <h2 style="font-size: clamp(2rem, 5vw, 3rem);">Are You Ignoring These Symptoms?</h2>
-                    <p style="color: var(--text-muted); margin-top: 15px;">Early diagnosis is key to preventing serious vascular damage.</p>
+                    <h2>Patient Success Stories</h2>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Thousands of lives transformed through advanced vascular care.</p>
                 </div>
-                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-                    <div class="symptom-card">
-                        <div class="symptom-icon"><i class="fas fa-hand-holding-medical"></i></div>
-                        <h3>Aching or heavy legs</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">Persistent discomfort that worsens after standing for long periods.</p>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card" data-aos="fade-right">
+                        <p class="testimonial-text">"I was suffering from severe leg pain for 5 years. Dr. Sumit recommended the VenaSeal procedure. It was completely painless and I was back to work the next day!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Bharat Patel</h4>
+                                <p>Treated for Varicose Veins</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="symptom-card">
-                        <div class="symptom-icon"><i class="fas fa-arrows-alt-v"></i></div>
-                        <h3>Leg Swelling</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">Swelling in ankles or feet, often indicating poor blood circulation.</p>
+                    <div class="testimonial-card" data-aos="fade-left">
+                        <p class="testimonial-text">"The best vascular surgeon in Gujarat. Dr. Kapadia's explanation was very clear and the laser surgery at Aadicura Hospital was seamless. Highly recommend."</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Rakesh Mehta</h4>
+                                <p>Painless Laser Recovery</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="symptom-card">
-                        <div class="symptom-icon"><i class="fas fa-wave-square"></i></div>
-                        <h3>Visible Blue Veins</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">Twisted, bulging veins that are blue or dark purple on the skin surface.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" data-aos="fade-up">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 60px;">
+                    <h2>Frequently Asked Questions</h2>
+                </div>
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <button class="faq-question">What is Varicose Laser Treatment? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer">
+                            <p>Laser treatment (EVLA) is a minimally invasive procedure where a small laser fiber is inserted into the diseased vein. The laser energy seals the vein shut, and the body naturally redirects blood flow to healthy veins.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Is the procedure covered by insurance? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer">
+                            <p>Most major insurance providers cover varicose vein procedures as they are considered medically necessary for symptom relief. Our team at Aadicura Hospital assists with all TPA and insurance paperwork.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">How long is the recovery time? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer">
+                            <p>Because there are no large incisions, recovery is nearly immediate. Most patients walk out of the hospital on the same day and can resume light daily activities within 24 hours.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Why should I consult a vascular specialist early? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer">
+                            <p>Early consultation prevents complications like skin ulcers, blood clots (DVT), and permanent skin discoloration. Timely intervention ensures the best aesthetic and medical outcomes.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -219,22 +311,38 @@
         <!-- Final CTA -->
         <section class="final-cta">
             <div class="container">
-                <div style="background: var(--secondary); padding: 80px 40px; border-radius: 50px; text-align: center; color: white;">
-                    <h2 style="color: white; margin-bottom: 20px;">Start Your Journey to Recovery Today</h2>
-                    <p style="opacity: 0.8; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">Book a personal consultation with Dr. Sumit Kapadia to discuss your symptoms and treatment options.</p>
+                <div style="background: var(--secondary); padding: 100px 40px; border-radius: 60px; text-align: center; color: white; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(0, 173, 239, 0.1); border-radius: 50%;"></div>
+                    <h2 style="color: white; margin-bottom: 25px; font-size: clamp(2rem, 5vw, 3.5rem);">Restore Your Leg Health Today</h2>
+                    <p style="opacity: 0.9; margin-bottom: 45px; max-width: 650px; margin-left: auto; margin-right: auto; font-size: 1.2rem;">Join 25,000+ satisfied patients who chose Dr. Sumit Kapadia for world-class vascular care.</p>
                     <div class="hero-btns" style="justify-content: center;">
-                        <a href="#book" class="btn btn-primary" style="background: var(--primary);">Book Consultation</a>
-                        <a href="tel:+917201014017" class="btn" style="border: 1px solid rgba(255,255,255,0.3); color: white;">Call: 7201014017</a>
+                        <a href="#book" class="btn btn-primary" style="padding: 20px 45px; font-size: 1.2rem;">Book Your Appointment</a>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer style="background: white; padding: 60px 0; border-top: 1px solid #f1f5f9;">
-        <div class="container" style="text-align: center;">
-            <p style="font-weight: 700; color: var(--secondary);">Dr. Sumit Kapadia | Vascular & Endovascular Surgeon</p>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">&copy; 2026 All Rights Reserved. Vadodara, Gujarat.</p>
+    <footer style="background: white; padding: 80px 0; border-top: 1px solid #f1f5f9;">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+                <div>
+                    <h3 style="margin-bottom: 20px;">Dr. Sumit Kapadia</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Vascular & Endovascular Surgeon with 20+ years of expertise in minimally invasive vein treatments.</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px;">Clinic Locations</h4>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Aadicura Hospital, Near Akota Garden, Vadodara, Gujarat</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 20px;">Contact Us</h4>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-phone" style="color: var(--primary);"></i> +91 72010 14017</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-envelope" style="color: var(--primary);"></i> info@drsumitkapadia.com</p>
+                </div>
+            </div>
+            <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #f1f5f9; text-align: center;">
+                <p style="font-size: 0.85rem; color: var(--text-light);">&copy; 2026 Dr. Sumit Kapadia. Medical consultation is required before any procedure.</p>
+            </div>
         </div>
     </footer>
 
@@ -242,6 +350,17 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 1000, once: true, easing: 'ease-out-cubic' });
+
+        // FAQ Toggle Logic
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const item = button.parentElement;
+                item.classList.toggle('active');
+                document.querySelectorAll('.faq-item').forEach(other => {
+                    if (other !== item) other.classList.remove('active');
+                });
+            });
+        });
     </script>
 
 </body>
