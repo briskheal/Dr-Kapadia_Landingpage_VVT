@@ -72,8 +72,27 @@ async function initDB() {
                 urgency TEXT,
                 patient_type TEXT DEFAULT 'chronic',
                 anxiety_score INTEGER DEFAULT 0,
+                attachment_url TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+
+            -- Table: Medical Directory (Dr. Kapadia's expert protocols)
+            CREATE TABLE IF NOT EXISTS medical_directory (
+                id SERIAL PRIMARY KEY,
+                condition_name TEXT UNIQUE,
+                diagnosis_logic TEXT,
+                recommended_treatment TEXT,
+                patient_advice TEXT
+            );
+
+            -- Seed Medical Directory
+            INSERT INTO medical_directory (condition_name, diagnosis_logic, recommended_treatment, patient_advice)
+            VALUES 
+            ('Varicose Veins', 'Visible enlarged, twisted veins in legs; heaviness; skin changes.', 'EVLA (Endovenous Laser Ablation) or Sclerotherapy.', 'Avoid long standing, use compression stockings, and rest with legs elevated.'),
+            ('DVT', 'Sudden swelling in one leg, pain, redness, warmth.', 'Immediate anticoagulation (blood thinners) and compression.', 'Seek urgent duplex ultrasound. Do not massage the leg.'),
+            ('Diabetic Foot', 'Non-healing ulcers, cold feet, gangrene, neuropathy.', 'Specialized wound care and angioplasty to restore blood flow.', 'Keep blood sugar controlled. Inspect feet daily for any minor injuries.'),
+            ('PAD', 'Pain while walking (claudication), leg cramps, cold skin.', 'Peripheral Angioplasty and Stenting.', 'Walk as much as tolerated. Control blood pressure and cholesterol.')
+            ON CONFLICT (condition_name) DO NOTHING;
             INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
         `);
         console.log('PostgreSQL Tables Initialized');
@@ -165,6 +184,34 @@ app.get('/api/dashboard/enquiries', async (req, res) => {
         const result = await pool.query('SELECT * FROM enquiries ORDER BY created_at DESC LIMIT 10');
         res.json({ enquiries: result.rows });
     } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// API: Search Medical Directory
+app.get('/api/directory/search', async (req, res) => {
+    const { q } = req.query;
+    try {
+        const result = await pool.query(
+            'SELECT * FROM medical_directory WHERE condition_name ILIKE $1 OR diagnosis_logic ILIKE $1',
+            [`%${q}%`]
+        );
+        res.json({ matches: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// API: Generate AI Voice Message
+app.post('/api/voice/generate', async (req, res) => {
+    const { text, patient_name } = req.body;
+    console.log(`Generating AI Voice for ${patient_name}: "${text}"`);
+    
+    // In production, this calls ElevenLabs API
+    // For now, we simulate success and return a sample audio path
+    setTimeout(() => {
+        res.json({ 
+            success: true, 
+            audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Placeholder
+            message: `Voice message for ${patient_name} generated successfully in Dr. Kapadia's tone.`
+        });
+    }, 2000);
 });
 
 // API: Save Settings (UPSERT Logic)
@@ -266,12 +313,30 @@ app.post('/api/webhooks/aisensy', express.json(), (req, res) => {
     res.status(200).send('Webhook Received');
 });
 
-// API: Submit Enquiry
-app.post('/api/enquiry', async (req, res) => {
+// API: Submit Enquiry (with Attachment Support)
+app.post('/api/enquiry', upload.single('attachment'), async (req, res) => {
     const { patient_name, message, platform, urgency, patient_type } = req.body;
+    const attachment_url = req.file ? (req.file.path || `/uploads/${req.file.filename}`) : null;
     
+    // NLP: Detect Patient Type (Emergency, Chronic, Masterclass)
+    const proKeywords = ['student', 'doctor', 'surgeon', 'dr', 'fellow', 'resident', 'medical school', 'learn', 'teach', 'training', 'masterclass', 'cme', 'colleague'];
+    const emergencyKeywords = ['pain', 'emergency', 'bleeding', 'sudden', 'swelling', 'clot', 'urgent', 'dvt'];
+    
+    let detectedType = patient_type || 'chronic';
+    const msgLower = message.toLowerCase();
+    
+    // Check for Masterclass (Professional/Student)
+    proKeywords.forEach(word => {
+        if (msgLower.includes(word)) detectedType = 'masterclass';
+    });
+    
+    // Check for Emergency (Override)
+    emergencyKeywords.forEach(word => {
+        if (msgLower.includes(word)) detectedType = 'emergency';
+    });
+
     // NLP: Detect Medical Anxiety
-    const anxietyKeywords = ['scared', 'worried', 'panic', 'fear', 'anxious', 'help', 'serious', 'pain', 'frightened', 'nervous'];
+    const anxietyKeywords = ['scared', 'worried', 'panic', 'fear', 'anxious', 'help', 'serious', 'frightened', 'nervous'];
     let anxietyScore = 0;
     const msgLower = message.toLowerCase();
     anxietyKeywords.forEach(word => {
@@ -280,8 +345,8 @@ app.post('/api/enquiry', async (req, res) => {
 
     try {
         await pool.query(
-            'INSERT INTO enquiries (patient_name, message, platform, status, urgency, patient_type, anxiety_score) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-            [patient_name, message, platform || 'Website', 'new', urgency || 'routine', patient_type || 'chronic', anxietyScore]
+            'INSERT INTO enquiries (patient_name, message, platform, status, urgency, patient_type, anxiety_score, attachment_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+            [patient_name, message, platform || 'Website', 'new', (detectedType === 'emergency' ? 'urgent' : 'routine'), detectedType, anxietyScore, attachment_url]
         );
         res.json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }

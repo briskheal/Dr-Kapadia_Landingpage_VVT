@@ -92,11 +92,11 @@
             <p style="font-size: 0.7rem; color: var(--accent); letter-spacing: 1px;">DIGITAL BRAIN v1.0</p>
         </div>
         <div class="nav-links">
-            <div class="nav-item active"><i class="fas fa-th-large"></i> Dashboard</div>
-            <div class="nav-item"><i class="fas fa-comments"></i> AI Conversations</div>
-            <div class="nav-item"><i class="fas fa-user-md"></i> Consultations</div>
-            <div class="nav-item"><i class="fas fa-video"></i> Content Strategy</div>
-            <div class="nav-item" id="navSocialSync" style="background: rgba(0, 173, 239, 0.1); color: var(--accent);"><i class="fas fa-sync"></i> Global Social Sync</div>
+            <div class="nav-item active" onclick="switchTab('overview')"><i class="fas fa-th-large"></i> Overview</div>
+            <div class="nav-item" onclick="switchTab('agents')"><i class="fas fa-robot"></i> AI Healer Agent</div>
+            <div class="nav-item" onclick="switchTab('calendar')"><i class="fas fa-calendar-alt"></i> Content Scheduler</div>
+            <div class="nav-item" onclick="switchTab('voice')"><i class="fas fa-microphone-alt"></i> Voice Studio</div>
+            <div class="nav-item" onclick="switchTab('social')"><i class="fas fa-sync"></i> Global Social Sync</div>
             <a href="/admin" class="nav-item" style="text-decoration: none;"><i class="fas fa-tools"></i> Portal Settings</a>
             <div class="nav-item" onclick="handleLogout()" style="color: #EF4444; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05);"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </div>
@@ -112,7 +112,9 @@
     </div>
 
     <div class="main-content">
-        <div class="header">
+        <!-- Tab: Overview -->
+        <div id="tab-overview" class="tab-content">
+            <div class="header">
             <div>
                 <h1>Global Operations Hub</h1>
                 <p style="color: var(--text-light);">Centralized monitoring of all patient touchpoints.</p>
@@ -191,10 +193,89 @@
                     <button onclick="submitManualEnquiry()" style="width: 100%; margin-top: 15px; padding: 12px; background: var(--success); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer;">ANALYZE & SYNC</button>
                 </div>
             </div>
+            </div>
+        </div>
+
+        <!-- Tab: AI Agent Hub -->
+        <div id="tab-agents" class="tab-content" style="display: none;">
+            <div class="header">
+                <h1>AI Healer Agent Hub</h1>
+                <p>Review and approve AI-drafted responses in Dr. Kapadia's voice.</p>
+            </div>
+            <div class="card" style="min-height: 500px; display: flex; align-items: center; justify-content: center; background: #F1F5F9; border: 2px dashed #CBD5E1;">
+                <div style="text-align: center; color: var(--text-light);">
+                    <i class="fas fa-robot" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                    <h3>AI Agent is Analyzing Patient Flow...</h3>
+                    <p>New drafts will appear here once patient enquiries are received.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Content Scheduler -->
+        <div id="tab-calendar" class="tab-content" style="display: none;">
+            <div class="header">
+                <h1>Global Content Scheduler</h1>
+                <p>Manage your YouTube, Instagram, and LinkedIn presence.</p>
+            </div>
+            <div class="card" style="min-height: 500px; padding: 0; overflow: hidden;">
+                <div style="background: var(--bg-sidebar); padding: 20px; color: white; display: flex; justify-content: space-between;">
+                    <h3 style="font-size: 1rem;">MAY 2026</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="tag" style="background: var(--primary); border: none; color: white;">+ NEW POST</button>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(7, 1fr); background: #F8FAFC;">
+                    <!-- Calendar Days Placeholder -->
+                    ${Array(31).fill(0).map((_, i) => `
+                        <div style="height: 100px; border: 1px solid #E2E8F0; padding: 10px; font-size: 0.8rem; color: #94A3B8;">
+                            ${i + 1}
+                            ${i === 15 ? '<div style="margin-top:5px; background:#FF0000; color:white; padding:3px; border-radius:4px; font-size:0.6rem;"><i class="fab fa-youtube"></i> Video Live</div>' : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Voice Studio -->
+        <div id="tab-voice" class="tab-content" style="display: none;">
+            <div class="header">
+                <h1>Voice Studio (Dr. Kapadia Twin)</h1>
+                <p>Manage voice cloning and personalized audio responses.</p>
+            </div>
+            <div class="card" style="text-align: center; padding: 80px;">
+                <div style="width: 120px; height: 120px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; box-shadow: 0 0 30px rgba(0, 173, 239, 0.4);">
+                    <i class="fas fa-microphone" style="font-size: 3rem; color: white;"></i>
+                </div>
+                <h2>Voice Cloning: <span style="color: var(--success);">ACTIVE</span></h2>
+                <p style="color: var(--text-light); max-width: 500px; margin: 15px auto;">Your "Voice Twin" is ready. You can now generate personalized audio messages for anxious patients.</p>
+                <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px;">
+                    <button class="btn btn-primary" style="padding: 15px 40px;"><i class="fas fa-play"></i> Test Voice Sample</button>
+                    <button class="btn" style="padding: 15px 40px; background: white; border: 1px solid #E2E8F0;"><i class="fas fa-history"></i> Update Master Recording</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Social Sync -->
+        <div id="tab-social" class="tab-content" style="display: none;">
+            <div class="header">
+                <h1>Global Social Sync</h1>
+                <p>Connect your YouTube, Instagram, and LinkedIn accounts.</p>
+            </div>
+            <!-- Move existing Social Sync UI here -->
         </div>
     </div>
 
     <script>
+        function switchTab(tabId) {
+            // Update Nav
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Update Content
+            document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+        }
+
         async function loadDashboard() {
             try {
                 // Load Stats
@@ -218,9 +299,8 @@
 
                 data.enquiries.forEach(enq => {
                     const timeAgo = Math.floor((new Date() - new Date(enq.created_at)) / (1000 * 60));
-                    const div = document.createElement('div');
-                    div.className = 'enquiry-item';
-                    const typeClass = enq.patient_type === 'emergency' ? 'tag-urgent' : (enq.patient_type === 'masterclass' ? 'tag-success' : 'tag-lead');
+                    const isMasterclass = enq.patient_type === 'masterclass';
+                    const typeClass = enq.patient_type === 'emergency' ? 'tag-urgent' : (isMasterclass ? 'tag-success' : 'tag-lead');
                     const isAnxious = enq.anxiety_score > 3;
                     
                     div.innerHTML = `
@@ -228,17 +308,44 @@
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <h4>${enq.patient_name}</h4>
                                 ${isAnxious ? '<span class="tag" style="background:#FFE4E6; color:#E11D48; border:1px solid #FDA4AF;"><i class="fas fa-heartbeat"></i> HIGH ANXIETY</span>' : ''}
+                                ${isMasterclass ? '<span class="tag" style="background:#ECFDF5; color:#059669; border:1px solid #10B981;"><i class="fas fa-graduation-cap"></i> WARM LEAD: MASTERCLASS</span>' : ''}
+                                ${enq.attachment_url ? '<span class="tag" style="background:#E0F2FE; color:#0369A1;"><i class="fas fa-image"></i> PHOTO/Rx ATTACHED</span>' : ''}
                             </div>
                             <p style="margin-top: 5px;">"${enq.message}"</p>
                             <div style="margin-top: 10px;">
                                 <span class="tag tag-wa">${enq.platform || 'Website'}</span>
                                 <span class="tag ${typeClass}">${enq.patient_type.toUpperCase()}</span>
                             </div>
-                            ${isAnxious ? `
-                                <div style="margin-top: 15px; padding: 12px; background: #F8FAFC; border-radius: 10px; border-left: 4px solid var(--accent);">
-                                    <p style="font-size: 0.75rem; font-weight: 700; color: var(--secondary); margin-bottom: 5px;"><i class="fas fa-magic"></i> HEALING VOICE SUGGESTION:</p>
-                                    <p style="font-size: 0.8rem; font-style: italic; color: #475569;">"I understand you are feeling worried, ${enq.patient_name.split(' ')[0]}. Please rest assured that these symptoms are common and highly treatable. Let's schedule a brief call so I can personally put your mind at ease."</p>
-                                    <button class="tag" style="margin-top: 8px; cursor: pointer; border: none; background: var(--secondary); color: white;">SEND VIA WHATSAPP</button>
+
+                            ${isMasterclass ? `
+                                <div style="margin-top: 15px; padding: 15px; background: #F0FDFA; border-radius: 12px; border: 1px solid #5EEAD4;">
+                                    <p style="font-size: 0.85rem; font-weight: 700; color: #0F766E;"><i class="fas fa-bullseye"></i> PROFESSIONAL OUTREACH OPPORTUNITY:</p>
+                                    <p style="font-size: 0.8rem; color: #134E4A; margin-top: 5px;">This user is a fellow professional or student. Recommending a personal voice invite from the Portal.</p>
+                                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                        <button class="tag" onclick="sendVoiceMessage('${enq.patient_name}', 'Hi, I see you are interested in our masterclass. I would love to have you in our next session.')" style="background: var(--secondary); color: white; border: none; cursor: pointer;"><i class="fas fa-microphone"></i> Send Personal Voice Invite</button>
+                                        <button class="tag" style="background: white; color: var(--secondary); border: 1px solid var(--secondary); cursor: pointer;">Send Masterclass Syllabus</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${enq.attachment_url ? `
+                                <div style="margin-top: 15px; display: grid; grid-template-columns: 150px 1fr; gap: 20px; background: #F8FAFC; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0;">
+                                    <img src="${enq.attachment_url}" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('${enq.attachment_url}')">
+                                    <div>
+                                        <p style="font-size: 0.75rem; font-weight: 700; color: var(--secondary);"><i class="fas fa-brain"></i> AI VISION ANALYSIS:</p>
+                                        <p style="font-size: 0.8rem; color: #475569; margin-top: 5px;">Detecting clinical markers... (Searching Medical Directory for matches...)</p>
+                                        <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                            <button class="tag" style="background: var(--accent); color: white; border: none; cursor: pointer;">View Matching Protocols</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${isAnxious && !isMasterclass ? `
+                                <div style="margin-top: 15px; padding: 12px; background: #F0FDF4; border-radius: 10px; border-left: 4px solid var(--success);">
+                                    <p style="font-size: 0.75rem; font-weight: 700; color: var(--success); margin-bottom: 5px;"><i class="fas fa-magic"></i> HEALING VOICE SUGGESTION:</p>
+                                    <p style="font-size: 0.8rem; font-style: italic; color: #166534;">"I understand you are feeling worried, ${enq.patient_name.split(' ')[0]}. Please rest assured that these symptoms are common and highly treatable. Let's schedule a brief call so I can personally put your mind at ease."</p>
+                                    <button class="tag" onclick="sendVoiceMessage('${enq.patient_name}', 'I understand you are feeling worried. Please rest assured.')" style="margin-top: 8px; cursor: pointer; border: none; background: var(--success); color: white;">SEND VIA WHATSAPP</button>
                                 </div>
                             ` : ''}
                         </div>
@@ -255,6 +362,29 @@
         function handleLogout() {
             localStorage.removeItem('adminToken');
             window.location.href = '/login';
+        }
+
+        async function sendVoiceMessage(name, text) {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Voice...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/voice/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, patient_name: name })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(`Dr. Kapadia Voice Message Ready!\n\nPreview at: ${data.audio_url}\n\nSending to ${name} via WhatsApp...`);
+                    // In real app, this triggers WhatsApp API
+                }
+            } catch (e) { alert('Voice generation failed.'); }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
 
         async function submitManualEnquiry() {

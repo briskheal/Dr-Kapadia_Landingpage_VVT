@@ -467,6 +467,11 @@
                             <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">DESCRIBE YOUR SYMPTOMS OR QUERY</label>
                             <textarea id="patientMessage" required placeholder="Describe your symptoms or professional query here..." style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; min-height: 120px;"></textarea>
                         </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">UPLOAD PHOTO OR PREVIOUS Rx (Optional)</label>
+                            <input type="file" id="patientAttachment" accept="image/*" style="width: 100%; padding: 12px; background: white; border: 1px solid #E2E8F0; border-radius: 12px;">
+                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">*AI will analyze your photo/Rx for Dr. Kapadia's review.</p>
+                        </div>
                         <div style="grid-column: span 2;">
                             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 20px; font-size: 1.1rem; border-radius: 15px;">Confirm Consultation Request</button>
                         </div>
@@ -671,19 +676,22 @@
                     submitBtn.innerText = 'Sending Request...';
                     submitBtn.disabled = true;
 
-                    const data = {
-                        patient_name: document.getElementById('patientName').value,
-                        message: `Phone: ${document.getElementById('patientPhone').value} | Message: ${document.getElementById('patientMessage').value}`,
-                        platform: 'Website',
-                        patient_type: document.getElementById('patientType').value,
-                        urgency: document.getElementById('patientType').value === 'emergency' ? 'urgent' : 'routine'
-                    };
+                    const formData = new FormData();
+                    formData.append('patient_name', document.getElementById('patientName').value);
+                    formData.append('message', `Phone: ${document.getElementById('patientPhone').value} | Message: ${document.getElementById('patientMessage').value}`);
+                    formData.append('platform', 'Website');
+                    formData.append('patient_type', document.getElementById('patientType').value);
+                    formData.append('urgency', document.getElementById('patientType').value === 'emergency' ? 'urgent' : 'routine');
+                    
+                    const fileInput = document.getElementById('patientAttachment');
+                    if (fileInput.files[0]) {
+                        formData.append('attachment', fileInput.files[0]);
+                    }
 
                     try {
                         const res = await fetch('/api/enquiry', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
+                            body: formData
                         });
                         if (res.ok) {
                             alert('Consultation Request Sent Successfully! We will call you soon.');
