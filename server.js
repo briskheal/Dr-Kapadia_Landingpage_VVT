@@ -79,17 +79,38 @@ async function initDB() {
 }
 initDB();
 
-// Configure File Storage
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const dir = './uploads';
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-        cb(null, dir);
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
+// Cloudinary Configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+// Storage Strategy
+let storage;
+if (process.env.CLOUDINARY_CLOUD_NAME) {
+    console.log('Using Cloudinary Storage');
+    storage = new CloudinaryStorage({
+        cloudinary: cloudinary,
+        params: {
+            folder: 'dr-kapadia-portal',
+            allowed_formats: ['jpg', 'png', 'jpeg', 'webp']
+        }
+    });
+} else {
+    console.log('Using Local Disk Storage');
+    storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            const dir = './uploads';
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+            cb(null, dir);
+        },
+        filename: (req, file, cb) => {
+            cb(null, Date.now() + '-' + file.originalname);
+        }
+    });
+}
+
 const upload = multer({ storage: storage });
 
 app.use(express.static(path.join(__dirname)));
@@ -143,7 +164,9 @@ app.post('/api/settings', async (req, res) => {
 // API: Upload Media
 app.post('/api/upload', upload.single('file'), async (req, res) => {
     const { type } = req.body;
-    const filePath = `/uploads/${req.file.filename}`;
+    // In Cloudinary, the path is in req.file.path (the full URL)
+    // In Local, the path is /uploads/filename
+    const filePath = req.file.path || `/uploads/${req.file.filename}`;
     console.log(`Uploading file type: ${type} to path: ${filePath}`);
     
     try {
