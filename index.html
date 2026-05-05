@@ -45,7 +45,7 @@
 
         h1, h2, h3, h4 { font-family: 'Fraunces', serif; font-weight: 600; color: var(--secondary); line-height: 1.1; }
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        section { padding: clamp(80px, 12vw, 120px) 0; position: relative; }
+        section { padding: clamp(40px, 6vw, 60px) 0; position: relative; }
 
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 12px;
@@ -58,6 +58,13 @@
         .btn-secondary { background: rgba(1, 74, 129, 0.05); color: var(--secondary); border: 1px solid rgba(1, 74, 129, 0.1); backdrop-filter: blur(10px); }
         .btn-secondary:hover { background: var(--secondary); color: var(--white); transform: translateY(-3px); }
 
+        /* Floating Contact (Small & Discreet) */
+        .floating-contact { position: fixed; right: 20px; bottom: 80px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
+        .float-btn { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: var(--transition); text-decoration: none; }
+        .float-btn:hover { transform: scale(1.1); }
+        .float-wa { background: #25D366; }
+        .float-call { background: var(--secondary); }
+
         /* Footer CTA Buttons */
         .footer-cta { display: flex; gap: 15px; margin-top: 25px; }
         .footer-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; text-decoration: none; transition: var(--transition); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
@@ -66,7 +73,7 @@
         .footer-call { background: var(--secondary); }
 
         /* Header */
-        header { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px) saturate(180%); padding: 15px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+        header { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px) saturate(180%); padding: 10px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
         .logo img { height: clamp(45px, 7vw, 65px); display: block; }
         
@@ -81,7 +88,7 @@
         .stars { color: #F59E0B; }
 
         /* Hero */
-        .hero { padding: 60px 0 100px 0; background: transparent; }
+        .hero { padding: 10px 0 60px 0; background: transparent; }
         .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
         .hero-content h1 { font-size: clamp(2.8rem, 7vw, 4.2rem); margin-bottom: 25px; }
         .hero-content p { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 45px; max-width: 650px; }
@@ -134,11 +141,18 @@
             .hero-image { order: -1; max-width: 450px; margin: 0 auto; }
             .hero-btns { justify-content: center; }
         }
+
+        @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr !important; gap: 30px !important; }
+        }
     </style>
 </head>
 <body>
 
-
+    <div class="floating-contact">
+        <a href="https://wa.me/917201014017" class="float-btn float-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="tel:+917201014017" class="float-btn float-call"><i class="fas fa-phone-alt"></i></a>
+    </div>
 
     <header>
         <div class="container">
@@ -182,7 +196,7 @@
         </section>
 
         <!-- Stats Bar -->
-        <div class="stats-bar">
+        <div class="stats-bar" style="padding: 30px 0;">
             <div class="container">
                 <div class="stats-grid">
                     <div class="stat-item" data-aos="zoom-in">
@@ -205,10 +219,43 @@
             </div>
         </div>
 
+        <!-- Symptoms Alert Section -->
+        <section style="padding: 40px 0; background: var(--white);">
+            <div class="container">
+                <div style="background: var(--bg-soft); border-radius: 40px; padding: 50px; border: 2px solid var(--accent); box-shadow: var(--shadow-premium);">
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <h2 style="font-size: 2.2rem; color: var(--primary);">Are You Ignoring These Leg Symptoms?</h2>
+                        <p style="color: var(--text-muted); margin-top: 10px;">Check if you are experiencing any of these common vein-related issues.</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center;">
+                        <div class="symptom-item">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i>
+                            <h4 style="font-family: 'Outfit'; font-weight: 700;">Swelling & Heaviness</h4>
+                        </div>
+                        <div class="symptom-item">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i>
+                            <h4 style="font-family: 'Outfit'; font-weight: 700;">Night Leg Cramps</h4>
+                        </div>
+                        <div class="symptom-item">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i>
+                            <h4 style="font-family: 'Outfit'; font-weight: 700;">Itching or Burning</h4>
+                        </div>
+                        <div class="symptom-item">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i>
+                            <h4 style="font-family: 'Outfit'; font-weight: 700;">Visible Blue Veins</h4>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(0,0,0,0.05);">
+                        <p style="font-weight: 600; color: var(--secondary); font-size: 1.1rem; line-height: 1.4;">“If you are experiencing even 1–2 of these symptoms, a consultation can help identify the cause early.”</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Treatment Section -->
         <section id="treatments" data-aos="fade-up">
             <div class="container">
-                <div style="text-align: center; margin-bottom: 70px;">
+                <div style="text-align: center; margin-bottom: 45px;">
                     <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem);">Advanced Treatment Options</h2>
                     <p style="color: var(--text-muted); margin-top: 15px; max-width: 700px; margin-left: auto; margin-right: auto;">We specialize in minimally invasive, painless procedures that require no hospital stay and offer immediate recovery.</p>
                 </div>
@@ -256,7 +303,7 @@
         <!-- Testimonials -->
         <section style="background: var(--bg-soft);">
             <div class="container">
-                <div style="text-align: center; margin-bottom: 60px;">
+                <div style="text-align: center; margin-bottom: 40px;">
                     <h2>Patient Success Stories</h2>
                     <p style="color: var(--text-muted); margin-top: 10px;">Thousands of lives transformed through advanced vascular care.</p>
                 </div>
@@ -286,7 +333,7 @@
         <!-- FAQ Section -->
         <section id="faq" data-aos="fade-up">
             <div class="container">
-                <div style="text-align: center; margin-bottom: 60px;">
+                <div style="text-align: center; margin-bottom: 40px;">
                     <h2>Frequently Asked Questions</h2>
                 </div>
                 <div class="faq-container">
@@ -319,9 +366,9 @@
         </section>
 
         <!-- Auto Scroll Gallery -->
-        <section class="gallery-section" data-aos="fade-up">
+        <section class="gallery-section" style="padding: 50px 0;" data-aos="fade-up">
             <div class="container">
-                <div style="text-align: center; margin-bottom: 50px;">
+                <div style="text-align: center; margin-bottom: 40px;">
                     <h2>Clinic & Patient Care Gallery</h2>
                     <p style="color: var(--text-muted); margin-top: 10px;">A glimpse into our world-class medical environment.</p>
                 </div>
@@ -357,9 +404,9 @@
         </section>
     </main>
 
-    <footer style="background: white; padding: 80px 0; border-top: 1px solid #f1f5f9;">
+    <footer style="background: white; padding: 50px 0; border-top: 1px solid #f1f5f9;">
         <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left;">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; text-align: left;" class="footer-grid">
                 <div>
                     <h3 style="margin-bottom: 20px;">Dr. Sumit Kapadia</h3>
                     <p style="color: var(--text-muted); font-size: 0.9rem;">Vascular & Endovascular Surgeon with 20+ years of expertise in minimally invasive vein treatments.</p>
@@ -372,13 +419,15 @@
                     <h4 style="margin-bottom: 20px;">Contact Us</h4>
                     <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-phone" style="color: var(--primary);"></i> +91 72010 14017</p>
                     <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-envelope" style="color: var(--primary);"></i> info@drsumitkapadia.com</p>
-                    <div class="footer-cta">
-                        <a href="https://wa.me/917201014017" class="footer-btn footer-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                        <a href="tel:+917201014017" class="footer-btn footer-call"><i class="fas fa-phone-alt"></i></a>
-                    </div>
                 </div>
             </div>
             <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #f1f5f9; text-align: center;">
+                <div style="display: flex; justify-content: center; gap: 25px; margin-bottom: 25px;">
+                    <a href="#" style="color: var(--text-light); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#CE176B'" onmouseout="this.style.color='var(--text-light)'"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color: var(--text-light); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#CE176B'" onmouseout="this.style.color='var(--text-light)'"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" style="color: var(--text-light); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#CE176B'" onmouseout="this.style.color='var(--text-light)'"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" style="color: var(--text-light); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#CE176B'" onmouseout="this.style.color='var(--text-light)'"><i class="fab fa-youtube"></i></a>
+                </div>
                 <p style="font-size: 0.85rem; color: var(--text-light);">&copy; 2026 Dr. Sumit Kapadia. Medical consultation is required before any procedure.</p>
             </div>
         </div>
