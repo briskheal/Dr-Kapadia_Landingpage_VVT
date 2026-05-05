@@ -224,14 +224,8 @@
                         <button class="tag" style="background: var(--primary); border: none; color: white;">+ NEW POST</button>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(7, 1fr); background: #F8FAFC;">
-                    <!-- Calendar Days Placeholder -->
-                    ${Array(31).fill(0).map((_, i) => `
-                        <div style="height: 100px; border: 1px solid #E2E8F0; padding: 10px; font-size: 0.8rem; color: #94A3B8;">
-                            ${i + 1}
-                            ${i === 15 ? '<div style="margin-top:5px; background:#FF0000; color:white; padding:3px; border-radius:4px; font-size:0.6rem;"><i class="fab fa-youtube"></i> Video Live</div>' : ''}
-                        </div>
-                    `).join('')}
+                <div id="calendarGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); background: #F8FAFC;">
+                    <!-- Calendar Days will be populated by JS -->
                 </div>
             </div>
         </div>
@@ -411,7 +405,22 @@
             } catch (err) { console.error('Manual sync failed', err); }
         }
 
-        document.addEventListener('DOMContentLoaded', loadDashboard);
+        function initCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            for (let i = 1; i <= 31; i++) {
+                const day = document.createElement('div');
+                day.style.cssText = 'height: 100px; border: 1px solid #E2E8F0; padding: 10px; font-size: 0.8rem; color: #94A3B8;';
+                day.innerHTML = `${i} ${i === 15 ? '<div style="margin-top:5px; background:#FF0000; color:white; padding:3px; border-radius:4px; font-size:0.6rem;"><i class="fab fa-youtube"></i> Video Live</div>' : ''}`;
+                grid.appendChild(day);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+            initCalendar();
+        });
     </script>
 </body>
 </html>

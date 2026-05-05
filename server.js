@@ -338,7 +338,6 @@ app.post('/api/enquiry', upload.single('attachment'), async (req, res) => {
     // NLP: Detect Medical Anxiety
     const anxietyKeywords = ['scared', 'worried', 'panic', 'fear', 'anxious', 'help', 'serious', 'frightened', 'nervous'];
     let anxietyScore = 0;
-    const msgLower = message.toLowerCase();
     anxietyKeywords.forEach(word => {
         if (msgLower.includes(word)) anxietyScore += 2;
     });
