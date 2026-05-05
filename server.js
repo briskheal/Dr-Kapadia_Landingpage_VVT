@@ -15,13 +15,13 @@ delete process.env.PGPASSWORD;
 delete process.env.PGDATABASE;
 delete process.env.PGPORT;
 
-// PostgreSQL Connection (HARDCODED PROOF)
-// PostgreSQL Connection (HARDCODED PROOF)
+// PostgreSQL Connection (EXACT NEON STRING)
 const dbUrl = "postgresql://neondb_owner:npg_3rn1fipAUaOG@ep-plain-silence-aorbqtii-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
 
 const pool = new Pool({
     connectionString: dbUrl,
-    ssl: { rejectUnauthorized: false }
+    ssl: { rejectUnauthorized: false },
+    connectionTimeoutMillis: 10000 // 10s timeout for cold starts
 });
 
 // API: Test Connection
@@ -126,6 +126,19 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+app.post('/api/login', (req, res) => {
+    const { loginId, password } = req.body;
+    if (loginId === 'DRKAPADIA' && password === 'TRICOLOR') {
+        res.json({ success: true, token: 'dr-kapadia-secure-token', redirect: '/dashboard' });
+    } else {
+        res.status(401).json({ success: false, message: 'Invalid Credentials' });
+    }
 });
 
 app.get('/dashboard', (req, res) => {
