@@ -14,6 +14,16 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
+// API: Test Connection
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT NOW()');
+        res.json({ success: true, message: '✅ Database Connected!', time: result.rows[0].now });
+    } catch (err) {
+        res.status(500).json({ success: false, message: '❌ Connection Failed', error: err.message });
+    }
+});
+
 // Initialize Database Tables
 async function initDB() {
     try {
