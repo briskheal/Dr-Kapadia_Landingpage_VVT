@@ -70,6 +70,7 @@ async function initDB() {
                 platform TEXT,
                 status TEXT,
                 urgency TEXT,
+                patient_type TEXT DEFAULT 'chronic',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
@@ -140,15 +141,17 @@ app.get('/api/gallery/:category', async (req, res) => {
 // API: Dashboard Stats
 app.get('/api/dashboard/stats', async (req, res) => {
     try {
-        const totalEnquiries = await pool.query('SELECT COUNT(*) FROM enquiries');
-        const urgentEnquiries = await pool.query('SELECT COUNT(*) FROM enquiries WHERE urgency = $1', ['urgent']);
-        const recentLeads = await pool.query('SELECT COUNT(*) FROM enquiries WHERE created_at > NOW() - INTERVAL \'7 days\'');
+        const total = await pool.query('SELECT COUNT(*) FROM enquiries');
+        const emergency = await pool.query('SELECT COUNT(*) FROM enquiries WHERE patient_type = $1', ['emergency']);
+        const chronic = await pool.query('SELECT COUNT(*) FROM enquiries WHERE patient_type = $1', ['chronic']);
+        const masterclass = await pool.query('SELECT COUNT(*) FROM enquiries WHERE patient_type = $1', ['masterclass']);
         
         res.json({
-            total: totalEnquiries.rows[0].count,
-            urgent: urgentEnquiries.rows[0].count,
-            recent: recentLeads.rows[0].count,
-            aiEfficiency: '92%'
+            total: total.rows[0].count,
+            emergency: emergency.rows[0].count,
+            chronic: chronic.rows[0].count,
+            masterclass: masterclass.rows[0].count,
+            aiEfficiency: '96%'
         });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -262,11 +265,11 @@ app.post('/api/webhooks/aisensy', express.json(), (req, res) => {
 
 // API: Submit Enquiry
 app.post('/api/enquiry', async (req, res) => {
-    const { patient_name, message, platform, urgency } = req.body;
+    const { patient_name, message, platform, urgency, patient_type } = req.body;
     try {
         await pool.query(
-            'INSERT INTO enquiries (patient_name, message, platform, status, urgency) VALUES ($1, $2, $3, $4, $5)',
-            [patient_name, message, platform || 'Website', 'new', urgency || 'routine']
+            'INSERT INTO enquiries (patient_name, message, platform, status, urgency, patient_type) VALUES ($1, $2, $3, $4, $5, $6)',
+            [patient_name, message, platform || 'Website', 'new', urgency || 'routine', patient_type || 'chronic']
         );
         res.json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }

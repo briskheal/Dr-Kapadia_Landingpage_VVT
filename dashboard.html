@@ -124,24 +124,24 @@
 
         <div class="stats-grid">
             <div class="stat-card">
-                <h3>Total Enquiries</h3>
+                <h3>Total Leads</h3>
                 <div class="value" id="statTotal">0</div>
-                <div class="trend up"><i class="fas fa-arrow-up"></i> Lifetime</div>
+                <div class="trend up"><i class="fas fa-users"></i> Lifetime</div>
             </div>
-            <div class="stat-card">
-                <h3>Patient Sentiment</h3>
-                <div class="value" style="color: var(--primary);">4.9/5</div>
-                <p style="font-size: 0.8rem; color: var(--text-light);">Based on 500+ Reviews</p>
+            <div class="stat-card" style="border-left: 5px solid var(--urgent);">
+                <h3>Emergency</h3>
+                <div class="value" id="statEmergency" style="color: var(--urgent);">0</div>
+                <p style="font-size: 0.8rem; color: var(--text-light);">Critical Care Needs</p>
             </div>
-            <div class="stat-card">
-                <h3>YouTube Reach</h3>
-                <div class="value">322K+</div>
-                <div class="trend up" style="color: #FF0000;"><i class="fab fa-youtube"></i> Subscribers</div>
+            <div class="stat-card" style="border-left: 5px solid var(--accent);">
+                <h3>Chronic Care</h3>
+                <div class="value" id="statChronic" style="color: var(--secondary);">0</div>
+                <p style="font-size: 0.8rem; color: var(--text-light);">Long-term Mgmt</p>
             </div>
-            <div class="stat-card">
-                <h3>Urgent Alerts</h3>
-                <div class="value" id="statUrgent" style="color: var(--urgent);">0</div>
-                <p style="font-size: 0.8rem; color: var(--urgent); font-weight: 600;">Action Required</p>
+            <div class="stat-card" style="border-left: 5px solid var(--success);">
+                <h3>Master Class</h3>
+                <div class="value" id="statMasterclass" style="color: var(--success);">0</div>
+                <p style="font-size: 0.8rem; color: var(--text-light);">Education/Pro</p>
             </div>
         </div>
 
@@ -183,8 +183,9 @@
                 const statsRes = await fetch('/api/dashboard/stats');
                 const stats = await statsRes.json();
                 document.getElementById('statTotal').innerText = stats.total;
-                document.getElementById('statUrgent').innerText = stats.urgent;
-                document.getElementById('statRecent').innerText = stats.recent;
+                document.getElementById('statEmergency').innerText = stats.emergency;
+                document.getElementById('statChronic').innerText = stats.chronic;
+                document.getElementById('statMasterclass').innerText = stats.masterclass;
 
                 // Load Enquiries
                 const enqRes = await fetch('/api/dashboard/enquiries');
@@ -201,13 +202,14 @@
                     const timeAgo = Math.floor((new Date() - new Date(enq.created_at)) / (1000 * 60));
                     const div = document.createElement('div');
                     div.className = 'enquiry-item';
+                    const typeClass = enq.patient_type === 'emergency' ? 'tag-urgent' : (enq.patient_type === 'masterclass' ? 'tag-success' : 'tag-lead');
                     div.innerHTML = `
                         <div class="enquiry-info">
                             <h4>${enq.patient_name}</h4>
                             <p>"${enq.message}"</p>
                             <div style="margin-top: 10px;">
                                 <span class="tag tag-wa">${enq.platform || 'Website'}</span>
-                                ${enq.urgency === 'urgent' ? '<span class="tag tag-urgent">Urgent</span>' : ''}
+                                <span class="tag ${typeClass}">${enq.patient_type.toUpperCase()}</span>
                             </div>
                         </div>
                         <div style="text-align: right;">

@@ -456,8 +456,16 @@
                             <input type="tel" id="patientPhone" required placeholder="Enter your mobile number" style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0;">
                         </div>
                         <div class="form-group" style="grid-column: span 2;">
-                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">DESCRIBE YOUR SYMPTOMS (OPTIONAL)</label>
-                            <textarea id="patientMessage" placeholder="e.g. Leg pain, swelling, visible veins..." style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; min-height: 120px;"></textarea>
+                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">REASON FOR ENQUIRY / CATEGORY</label>
+                            <select id="patientType" required style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; background: white;">
+                                <option value="chronic">Chronic Care (Varicose Veins, Ulcers, Swelling)</option>
+                                <option value="emergency">Emergency (Sudden Pain, DVT, Bleeding)</option>
+                                <option value="masterclass">Professional / Student (Education, Masterclass)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">DESCRIBE YOUR SYMPTOMS OR QUERY</label>
+                            <textarea id="patientMessage" required placeholder="Describe your symptoms or professional query here..." style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; min-height: 120px;"></textarea>
                         </div>
                         <div style="grid-column: span 2;">
                             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 20px; font-size: 1.1rem; border-radius: 15px;">Confirm Consultation Request</button>
@@ -667,7 +675,8 @@
                         patient_name: document.getElementById('patientName').value,
                         message: `Phone: ${document.getElementById('patientPhone').value} | Message: ${document.getElementById('patientMessage').value}`,
                         platform: 'Website',
-                        urgency: document.getElementById('patientMessage').value.toLowerCase().includes('pain') ? 'urgent' : 'routine'
+                        patient_type: document.getElementById('patientType').value,
+                        urgency: document.getElementById('patientType').value === 'emergency' ? 'urgent' : 'routine'
                     };
 
                     try {
