@@ -15,6 +15,20 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
+// AiSensy WhatsApp Webhook Endpoint
+app.post('/api/webhooks/aisensy', express.json(), (req, res) => {
+    const incomingMessage = req.body;
+    console.log('Incoming WhatsApp Message from AiSensy:', incomingMessage);
+    
+    // LOGIC: 
+    // 1. Send to OpenAI (Digital Brain)
+    // 2. Classify (Urgent/Lead/Query)
+    // 3. Send response back via AiSensy API
+    // 4. Update Dashboard
+    
+    res.status(200).send('Webhook Received');
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
