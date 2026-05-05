@@ -124,115 +124,108 @@
 
         <div class="stats-grid">
             <div class="stat-card">
-                <h3>Total Engagements</h3>
-                <div class="value">12,482</div>
-                <div class="trend up"><i class="fas fa-arrow-up"></i> 14% this week</div>
+                <h3>Total Enquiries</h3>
+                <div class="value" id="statTotal">0</div>
+                <div class="trend up"><i class="fas fa-arrow-up"></i> Lifetime</div>
             </div>
             <div class="stat-card">
-                <h3>AI Auto-Responses</h3>
-                <div class="value">9,840</div>
-                <p style="font-size: 0.8rem; color: var(--text-light);">78.8% Auto-reply rate</p>
+                <h3>Patient Sentiment</h3>
+                <div class="value" style="color: var(--primary);">4.9/5</div>
+                <p style="font-size: 0.8rem; color: var(--text-light);">Based on 500+ Reviews</p>
             </div>
             <div class="stat-card">
-                <h3>Consultation Leads</h3>
-                <div class="value">342</div>
-                <div class="trend up"><i class="fas fa-arrow-up"></i> 8% Conv. rate</div>
+                <h3>YouTube Reach</h3>
+                <div class="value">322K+</div>
+                <div class="trend up" style="color: #FF0000;"><i class="fab fa-youtube"></i> Subscribers</div>
             </div>
             <div class="stat-card">
                 <h3>Urgent Alerts</h3>
-                <div class="value" style="color: var(--urgent);">18</div>
-                <p style="font-size: 0.8rem; color: var(--urgent); font-weight: 600;">Require attention</p>
+                <div class="value" id="statUrgent" style="color: var(--urgent);">0</div>
+                <p style="font-size: 0.8rem; color: var(--urgent); font-weight: 600;">Action Required</p>
             </div>
         </div>
 
         <div class="dashboard-grid">
             <div class="card">
-                <h2>Recent Patient Enquiries <a href="#" class="btn-view-all">View All Conversations</a></h2>
-                <div class="enquiry-list">
-                    <!-- Enquiry Item -->
-                    <div class="enquiry-item">
-                        <div class="enquiry-info">
-                            <h4>Rahul Sharma</h4>
-                            <p>"Severe swelling in left leg since 3 days, pain while walking..."</p>
-                            <div style="margin-top: 10px;">
-                                <span class="tag tag-wa">WhatsApp</span>
-                                <span class="tag tag-urgent">Urgent Symptoms</span>
-                            </div>
-                        </div>
-                        <div style="text-align: right;">
-                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--urgent);"><i class="fas fa-bolt"></i> AI Alerted Doctor</p>
-                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">2 mins ago</p>
-                        </div>
-                    </div>
-
-                    <div class="enquiry-item">
-                        <div class="enquiry-info">
-                            <h4>Amit Patel</h4>
-                            <p>"Best hospital in Vadodara for varicose veins laser surgery?"</p>
-                            <div style="margin-top: 10px;">
-                                <span class="tag tag-yt">YouTube</span>
-                                <span class="tag tag-lead">Cost Query</span>
-                            </div>
-                        </div>
-                        <div style="text-align: right;">
-                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--success);"><i class="fas fa-check-circle"></i> AI Responded</p>
-                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">15 mins ago</p>
-                        </div>
-                    </div>
-
-                    <div class="enquiry-item">
-                        <div class="enquiry-info">
-                            <h4>Sunita Shah</h4>
-                            <p>"Doctor, can DVT be reversed with only diet changes?"</p>
-                            <div style="margin-top: 10px;">
-                                <span class="tag tag-wa">WhatsApp</span>
-                                <span class="tag tag-lead">Medical Query</span>
-                            </div>
-                        </div>
-                        <div style="text-align: right;">
-                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--warning);"><i class="fas fa-user-clock"></i> Manual Review Needed</p>
-                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">45 mins ago</p>
-                        </div>
-                    </div>
+                <h2>Recent Patient Enquiries <a href="#" class="btn-view-all">View All</a></h2>
+                <div class="enquiry-list" id="enquiryList">
+                    <!-- Dynamic Enquiries -->
                 </div>
             </div>
 
             <div class="ai-brain-status">
-                <h2><span class="pulse"></span>AI Digital Brain</h2>
-                <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 10px;">The brain is actively learning from 581 YouTube videos and 42 informative blogs.</p>
+                <h2><span class="pulse"></span>Clinical Intelligence</h2>
+                <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 10px;">Synced with YouTube, Instagram, and Patient Feedback channels.</p>
                 
-                <div class="ai-metrics">
-                    <div class="ai-metric-item">
-                        <span class="ai-metric-label">Tone Accuracy (Dr. Kapadia Persona)</span>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 96%;"></div></div>
-                        <p style="text-align: right; font-size: 0.7rem; margin-top: 5px;">96% Confidence</p>
-                    </div>
-                    <div class="ai-metric-item">
-                        <span class="ai-metric-label">Classification Precision</span>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 92%; background: var(--success);"></div></div>
-                        <p style="text-align: right; font-size: 0.7rem; margin-top: 5px;">92% Correct</p>
-                    </div>
-                    <div class="ai-metric-item">
-                        <span class="ai-metric-label">Knowledge Base Coverage</span>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 85%; background: var(--warning);"></div></div>
-                        <p style="text-align: right; font-size: 0.7rem; margin-top: 5px;">85% Synced</p>
+                <div style="margin-top: 30px;">
+                    <h4 style="font-size: 0.9rem; margin-bottom: 15px;"><i class="fas fa-fire" style="color: #FF8C00;"></i> CONTENT HOTSPOTS</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <span class="tag" style="background: rgba(255,255,255,0.1); color: white;">VenaSeal Cost</span>
+                        <span class="tag" style="background: rgba(255,255,255,0.1); color: white;">DVT Home Care</span>
+                        <span class="tag" style="background: rgba(255,255,255,0.1); color: white;">Laser Safety</span>
+                        <span class="tag" style="background: rgba(255,255,255,0.1); color: white;">Exercise Post-OP</span>
                     </div>
                 </div>
 
-                <div style="margin-top: 40px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px;">
-                    <h4 style="font-size: 0.9rem; margin-bottom: 10px;"><i class="fas fa-lightbulb" style="color: var(--accent);"></i> Content Insight</h4>
-                    <p style="font-size: 0.8rem; opacity: 0.8;">Patients are frequently asking about "DVT recovery at home." Suggest creating a short video or FAQ on this topic.</p>
-                    <button style="width: 100%; margin-top: 15px; padding: 10px; background: var(--accent); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer;">Generate Script</button>
+                <div style="margin-top: 40px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                    <h4 style="font-size: 0.9rem; margin-bottom: 10px;"><i class="fas fa-brain" style="color: var(--accent);"></i> PATIENT REQUIREMENT INSIGHT</h4>
+                    <p style="font-size: 0.8rem; opacity: 0.8; line-height: 1.5;">YouTube comments indicate a high volume of queries regarding <b>Insurance TPA</b> for Varicose Veins. <br><br><b>Suggestion:</b> Add a dedicated "Insurance & TPA" FAQ to the landing page.</p>
+                    <button style="width: 100%; margin-top: 15px; padding: 12px; background: var(--accent); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer;">Action: Update FAQ</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        async function loadDashboard() {
+            try {
+                // Load Stats
+                const statsRes = await fetch('/api/dashboard/stats');
+                const stats = await statsRes.json();
+                document.getElementById('statTotal').innerText = stats.total;
+                document.getElementById('statUrgent').innerText = stats.urgent;
+                document.getElementById('statRecent').innerText = stats.recent;
+
+                // Load Enquiries
+                const enqRes = await fetch('/api/dashboard/enquiries');
+                const data = await enqRes.json();
+                const container = document.getElementById('enquiryList');
+                container.innerHTML = '';
+
+                if (data.enquiries.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-light);">No enquiries found yet.</p>';
+                    return;
+                }
+
+                data.enquiries.forEach(enq => {
+                    const timeAgo = Math.floor((new Date() - new Date(enq.created_at)) / (1000 * 60));
+                    const div = document.createElement('div');
+                    div.className = 'enquiry-item';
+                    div.innerHTML = `
+                        <div class="enquiry-info">
+                            <h4>${enq.patient_name}</h4>
+                            <p>"${enq.message}"</p>
+                            <div style="margin-top: 10px;">
+                                <span class="tag tag-wa">${enq.platform || 'Website'}</span>
+                                ${enq.urgency === 'urgent' ? '<span class="tag tag-urgent">Urgent</span>' : ''}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--success);"><i class="fas fa-check-circle"></i> Received</p>
+                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">${timeAgo} mins ago</p>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (e) { console.error('Dashboard load failed', e); }
+        }
+
         function handleLogout() {
             localStorage.removeItem('adminToken');
             window.location.href = '/login';
         }
+
+        document.addEventListener('DOMContentLoaded', loadDashboard);
     </script>
 </body>
 </html>

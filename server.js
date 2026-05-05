@@ -137,6 +137,30 @@ app.get('/api/gallery/:category', async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+// API: Dashboard Stats
+app.get('/api/dashboard/stats', async (req, res) => {
+    try {
+        const totalEnquiries = await pool.query('SELECT COUNT(*) FROM enquiries');
+        const urgentEnquiries = await pool.query('SELECT COUNT(*) FROM enquiries WHERE urgency = $1', ['urgent']);
+        const recentLeads = await pool.query('SELECT COUNT(*) FROM enquiries WHERE created_at > NOW() - INTERVAL \'7 days\'');
+        
+        res.json({
+            total: totalEnquiries.rows[0].count,
+            urgent: urgentEnquiries.rows[0].count,
+            recent: recentLeads.rows[0].count,
+            aiEfficiency: '92%'
+        });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// API: Dashboard Enquiries
+app.get('/api/dashboard/enquiries', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM enquiries ORDER BY created_at DESC LIMIT 10');
+        res.json({ enquiries: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // API: Save Settings (UPSERT Logic)
 app.post('/api/settings', async (req, res) => {
     const { clinicName, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId } = req.body;
@@ -234,6 +258,18 @@ app.post('/api/webhooks/aisensy', express.json(), (req, res) => {
     // 4. Update Dashboard
     
     res.status(200).send('Webhook Received');
+});
+
+// API: Submit Enquiry
+app.post('/api/enquiry', async (req, res) => {
+    const { patient_name, message, platform, urgency } = req.body;
+    try {
+        await pool.query(
+            'INSERT INTO enquiries (patient_name, message, platform, status, urgency) VALUES ($1, $2, $3, $4, $5)',
+            [patient_name, message, platform || 'Website', 'new', urgency || 'routine']
+        );
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.listen(PORT, () => {

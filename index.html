@@ -438,6 +438,35 @@
             <div class="gallery-footer-space"></div>
         </section>
 
+        <!-- Book Appointment Section -->
+        <section id="book" style="padding: 100px 0; background: white;" data-aos="fade-up">
+            <div class="container">
+                <div style="max-width: 900px; margin: 0 auto; background: var(--bg-soft); padding: 60px; border-radius: 40px; box-shadow: var(--shadow-premium);">
+                    <div style="text-align: center; margin-bottom: 50px;">
+                        <h2 style="font-size: 2.5rem; color: var(--secondary);">Request a <i>Private</i> Consultation</h2>
+                        <p style="color: var(--text-muted); margin-top: 15px;">Fill out the form below and our medical team will reach out to schedule your visit.</p>
+                    </div>
+                    <form id="appointmentForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div class="form-group">
+                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">YOUR FULL NAME</label>
+                            <input type="text" id="patientName" required placeholder="Enter your name" style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0;">
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">PHONE NUMBER</label>
+                            <input type="tel" id="patientPhone" required placeholder="Enter your mobile number" style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0;">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">DESCRIBE YOUR SYMPTOMS (OPTIONAL)</label>
+                            <textarea id="patientMessage" placeholder="e.g. Leg pain, swelling, visible veins..." style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; min-height: 120px;"></textarea>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 20px; font-size: 1.1rem; border-radius: 15px;">Confirm Consultation Request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
         <!-- Final CTA -->
         <section class="final-cta">
             <div class="container">
@@ -624,6 +653,38 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await loadLiveSettings();
             applyRotation();
+
+            // Appointment Form Submission
+            const form = document.getElementById('appointmentForm');
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const submitBtn = form.querySelector('button');
+                    submitBtn.innerText = 'Sending Request...';
+                    submitBtn.disabled = true;
+
+                    const data = {
+                        patient_name: document.getElementById('patientName').value,
+                        message: `Phone: ${document.getElementById('patientPhone').value} | Message: ${document.getElementById('patientMessage').value}`,
+                        platform: 'Website',
+                        urgency: document.getElementById('patientMessage').value.toLowerCase().includes('pain') ? 'urgent' : 'routine'
+                    };
+
+                    try {
+                        const res = await fetch('/api/enquiry', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        if (res.ok) {
+                            alert('Consultation Request Sent Successfully! We will call you soon.');
+                            form.reset();
+                        }
+                    } catch (err) { alert('Error sending request. Please try again.'); }
+                    submitBtn.innerText = 'Confirm Consultation Request';
+                    submitBtn.disabled = false;
+                });
+            }
         });
     </script>
 </body>
