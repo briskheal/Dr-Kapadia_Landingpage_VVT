@@ -7,22 +7,25 @@
     <meta name="description" content="Advanced, patient-centered care for varicose veins in Gujarat. Led by Dr. Sumit Kapadia, experienced vascular & endovascular specialist.">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #CE176B; /* Brand Magenta */
-            --secondary: #014A81; /* Brand Navy Blue */
-            --accent: #00ADEF; /* Brand Cyan */
-            --bg-soft: #E3F2FD; /* Soft Light Blue */
-            --text-dark: #1A1A1A;
-            --text-muted: #555555;
+            --primary: #CE176B; 
+            --secondary: #014A81;
+            --accent: #00ADEF;
+            --bg-soft: #F0F7FF;
+            --text-dark: #0F172A;
+            --text-muted: #475569;
             --white: #FFFFFF;
-            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
-            --transition: all 0.3s ease;
+            --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -31,19 +34,23 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Outfit', sans-serif;
             color: var(--text-dark);
-            line-height: 1.6;
+            line-height: 1.7;
             overflow-x: hidden;
             background-color: var(--white);
         }
 
         h1, h2, h3, h4 {
-            font-family: 'DM Serif Display', serif;
-            font-weight: 400; /* Serif Display is naturally bold */
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
             color: var(--secondary);
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         .container {
@@ -593,7 +600,7 @@
         </section>
 
         <!-- Symptoms Section -->
-        <section class="symptoms">
+        <section class="symptoms" data-aos="fade-up">
             <div class="container">
                 <div class="section-header">
                     <h2>Are You Experiencing These Symptoms?</h2>
@@ -629,7 +636,7 @@
         </section>
 
         <!-- Reassurance Section -->
-        <section class="container">
+        <section class="container" data-aos="fade-up">
             <div class="reassurance-box">
                 <h2>You Don’t Have to Ignore the Discomfort</h2>
                 <p>Varicose veins are a common vascular condition. With appropriate evaluation and modern treatment approaches, symptoms can be managed effectively. Early consultation helps in preventing progression.</p>
@@ -637,7 +644,7 @@
         </section>
 
         <!-- About Doctor -->
-        <section class="doctor-section">
+        <section class="doctor-section" data-aos="fade-up">
             <div class="container">
                 <div class="doctor-grid">
                     <div class="doctor-info">
@@ -658,7 +665,7 @@
         </section>
 
         <!-- Treatment Options -->
-        <section class="treatments">
+        <section class="treatments" data-aos="fade-up">
             <div class="container">
                 <div class="section-header">
                     <h2>Modern Treatment Options</h2>
@@ -685,7 +692,7 @@
         </section>
 
         <!-- Journey Section -->
-        <section class="journey">
+        <section class="journey" data-aos="fade-up">
             <div class="container">
                 <div class="section-header">
                     <h2>Your Treatment Journey</h2>
@@ -716,7 +723,7 @@
         </section>
 
         <!-- Why This Approach -->
-        <section class="container">
+        <section class="container" data-aos="fade-up">
             <div class="reassurance-box" style="background: #F8FAFC; border: 1px solid var(--bg-soft);">
                 <h2>Focused on Patient Comfort & Clarity</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: left; margin-top: 30px;">
@@ -741,7 +748,7 @@
         </section>
 
         <!-- FAQ Section -->
-        <section class="faq">
+        <section class="faq" data-aos="fade-up">
             <div class="container">
                 <div class="section-header">
                     <h2>Frequently Asked Questions</h2>
@@ -776,7 +783,7 @@
         </section>
 
         <!-- Final CTA -->
-        <section class="final-cta">
+        <section class="final-cta" data-aos="fade-up">
             <div class="container">
                 <div class="cta-content">
                     <h2>Take the First Step Toward Relief</h2>
@@ -802,7 +809,15 @@
         <a href="#book" class="btn btn-primary" style="flex: 1;"><i class="fas fa-calendar-check"></i> Book Now</a>
     </div>
 
+    <!-- AOS Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+            easing: 'ease-out-cubic'
+        });
+
         // FAQ Accordion Logic
         document.querySelectorAll('.faq-question').forEach(button => {
             button.addEventListener('click', () => {
