@@ -297,6 +297,8 @@
                     const typeClass = enq.patient_type === 'emergency' ? 'tag-urgent' : (isMasterclass ? 'tag-success' : 'tag-lead');
                     const isAnxious = enq.anxiety_score > 3;
                     
+                    const div = document.createElement('div');
+                    div.className = 'enquiry-item';
                     div.innerHTML = `
                         <div class="enquiry-info" style="width: 100%;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
