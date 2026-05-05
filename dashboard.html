@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Kapadia Digital Brain | Master Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #CE176B;
+            --secondary: #014A81;
+            --accent: #00ADEF;
+            --bg-sidebar: #0F172A;
+            --bg-main: #F8FAFC;
+            --urgent: #EF4444;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --text-dark: #1E293B;
+            --text-light: #94A3B8;
+            --white: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg-main); color: var(--text-dark); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar { width: 280px; background: var(--bg-sidebar); color: var(--white); display: flex; flex-direction: column; padding: 30px 0; }
+        .logo-area { padding: 0 30px 40px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .logo-area h2 { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+        
+        .nav-links { flex: 1; padding: 30px 0; }
+        .nav-item { padding: 15px 30px; display: flex; align-items: center; gap: 15px; color: #CBD5E1; text-decoration: none; transition: 0.3s; cursor: pointer; }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.05); color: var(--white); border-left: 4px solid var(--primary); }
+        .nav-item i { width: 20px; font-size: 1.1rem; }
+
+        /* Main Content */
+        .main-content { flex: 1; overflow-y: auto; padding: 40px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .header h1 { font-size: 1.8rem; font-weight: 800; }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 40px; }
+        .stat-card { background: var(--white); padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.02); }
+        .stat-card h3 { font-size: 0.9rem; color: var(--text-light); margin-bottom: 10px; }
+        .stat-card .value { font-size: 2rem; font-weight: 800; color: var(--secondary); }
+        .stat-card .trend { font-size: 0.85rem; margin-top: 5px; }
+        .trend.up { color: var(--success); }
+
+        /* Tables & Enquiries */
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .card { background: var(--white); padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.03); }
+        .card h2 { font-size: 1.2rem; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+
+        .enquiry-list { display: flex; flex-direction: column; gap: 15px; }
+        .enquiry-item { padding: 20px; border-radius: 15px; border: 1px solid #F1F5F9; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .enquiry-item:hover { border-color: var(--accent); background: var(--bg-main); }
+        .enquiry-info h4 { font-size: 1rem; margin-bottom: 5px; }
+        .enquiry-info p { font-size: 0.85rem; color: var(--text-muted); }
+        
+        .tag { padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .tag-urgent { background: #FEE2E2; color: var(--urgent); }
+        .tag-lead { background: #E0F2FE; color: var(--accent); }
+        .tag-yt { background: #FEF2F2; color: #DC2626; }
+        .tag-wa { background: #F0FDF4; color: #16A34A; }
+
+        /* AI Status Sidebar */
+        .ai-brain-status { background: linear-gradient(135deg, var(--secondary) 0%, #0F172A 100%); color: white; border-radius: 24px; padding: 30px; }
+        .pulse { width: 12px; height: 12px; background: var(--success); border-radius: 50%; display: inline-block; box-shadow: 0 0 10px var(--success); margin-right: 10px; }
+
+        .ai-metrics { margin-top: 25px; }
+        .ai-metric-item { margin-bottom: 20px; }
+        .ai-metric-label { font-size: 0.85rem; opacity: 0.7; margin-bottom: 8px; display: block; }
+        .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent); }
+
+        .btn-view-all { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo-area">
+            <h2>DR. KAPADIA</h2>
+            <p style="font-size: 0.7rem; color: var(--accent); letter-spacing: 1px;">DIGITAL BRAIN v1.0</p>
+        </div>
+        <div class="nav-links">
+            <div class="nav-item active"><i class="fas fa-th-large"></i> Dashboard</div>
+            <div class="nav-item"><i class="fas fa-comments"></i> AI Conversations</div>
+            <div class="nav-item"><i class="fas fa-user-md"></i> Consultations</div>
+            <div class="nav-item"><i class="fas fa-video"></i> Content Strategy</div>
+            <div class="nav-item"><i class="fas fa-database"></i> Knowledge Base</div>
+            <div class="nav-item"><i class="fas fa-cog"></i> AI Settings</div>
+        </div>
+        <div style="padding: 30px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="logo.png" style="width: 35px; height: 35px; border-radius: 50%; background: white;">
+                <div>
+                    <p style="font-size: 0.85rem; font-weight: 600;">Dr. Sumit Kapadia</p>
+                    <p style="font-size: 0.7rem; opacity: 0.6;">Admin Access</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1>Global Operations Hub</h1>
+                <p style="color: var(--text-light);">Centralized monitoring of all patient touchpoints.</p>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn" style="padding: 10px 20px; background: white; border: 1px solid #E2E8F0; border-radius: 10px; font-weight: 600;"><i class="fas fa-sync"></i> Refresh Sync</button>
+                <button class="btn btn-primary" style="padding: 10px 25px; border-radius: 10px;"><i class="fas fa-plus"></i> New Campaign</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Engagements</h3>
+                <div class="value">12,482</div>
+                <div class="trend up"><i class="fas fa-arrow-up"></i> 14% this week</div>
+            </div>
+            <div class="stat-card">
+                <h3>AI Auto-Responses</h3>
+                <div class="value">9,840</div>
+                <p style="font-size: 0.8rem; color: var(--text-light);">78.8% Auto-reply rate</p>
+            </div>
+            <div class="stat-card">
+                <h3>Consultation Leads</h3>
+                <div class="value">342</div>
+                <div class="trend up"><i class="fas fa-arrow-up"></i> 8% Conv. rate</div>
+            </div>
+            <div class="stat-card">
+                <h3>Urgent Alerts</h3>
+                <div class="value" style="color: var(--urgent);">18</div>
+                <p style="font-size: 0.8rem; color: var(--urgent); font-weight: 600;">Require attention</p>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>Recent Patient Enquiries <a href="#" class="btn-view-all">View All Conversations</a></h2>
+                <div class="enquiry-list">
+                    <!-- Enquiry Item -->
+                    <div class="enquiry-item">
+                        <div class="enquiry-info">
+                            <h4>Rahul Sharma</h4>
+                            <p>"Severe swelling in left leg since 3 days, pain while walking..."</p>
+                            <div style="margin-top: 10px;">
+                                <span class="tag tag-wa">WhatsApp</span>
+                                <span class="tag tag-urgent">Urgent Symptoms</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--urgent);"><i class="fas fa-bolt"></i> AI Alerted Doctor</p>
+                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">2 mins ago</p>
+                        </div>
+                    </div>
+
+                    <div class="enquiry-item">
+                        <div class="enquiry-info">
+                            <h4>Amit Patel</h4>
+                            <p>"Best hospital in Vadodara for varicose veins laser surgery?"</p>
+                            <div style="margin-top: 10px;">
+                                <span class="tag tag-yt">YouTube</span>
+                                <span class="tag tag-lead">Cost Query</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--success);"><i class="fas fa-check-circle"></i> AI Responded</p>
+                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">15 mins ago</p>
+                        </div>
+                    </div>
+
+                    <div class="enquiry-item">
+                        <div class="enquiry-info">
+                            <h4>Sunita Shah</h4>
+                            <p>"Doctor, can DVT be reversed with only diet changes?"</p>
+                            <div style="margin-top: 10px;">
+                                <span class="tag tag-wa">WhatsApp</span>
+                                <span class="tag tag-lead">Medical Query</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--warning);"><i class="fas fa-user-clock"></i> Manual Review Needed</p>
+                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">45 mins ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-brain-status">
+                <h2><span class="pulse"></span>AI Digital Brain</h2>
+                <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 10px;">The brain is actively learning from 581 YouTube videos and 42 informative blogs.</p>
+                
+                <div class="ai-metrics">
+                    <div class="ai-metric-item">
+                        <span class="ai-metric-label">Tone Accuracy (Dr. Kapadia Persona)</span>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 96%;"></div></div>
+                        <p style="text-align: right; font-size: 0.7rem; margin-top: 5px;">96% Confidence</p>
+                    </div>
+                    <div class="ai-metric-item">
+                        <span class="ai-metric-label">Classification Precision</span>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 92%; background: var(--success);"></div></div>
+                        <p style="text-align: right; font-size: 0.7rem; margin-top: 5px;">92% Correct</p>
+                    </div>
+                    <div class="ai-metric-item">
+                        <span class="ai-metric-label">Knowledge Base Coverage</span>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 85%; background: var(--warning);"></div></div>
+                        <p style="text-align: right; font-size: 0.7rem; margin-top: 5px;">85% Synced</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px;">
+                    <h4 style="font-size: 0.9rem; margin-bottom: 10px;"><i class="fas fa-lightbulb" style="color: var(--accent);"></i> Content Insight</h4>
+                    <p style="font-size: 0.8rem; opacity: 0.8;">Patients are frequently asking about "DVT recovery at home." Suggest creating a short video or FAQ on this topic.</p>
+                    <button style="width: 100%; margin-top: 15px; padding: 10px; background: var(--accent); border: none; border-radius: 8px; color: white; font-weight: 700; cursor: pointer;">Generate Script</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
