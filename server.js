@@ -8,9 +8,11 @@ const { Pool } = require('pg');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// PostgreSQL Connection
+// PostgreSQL Connection (HARDCODED PROOF)
+const dbUrl = "postgres://npg_6xEnXaGFM5CN:npg_6xEnXaGFM5CN@ep-plain-silence-aorbqtii-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require";
+
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: dbUrl,
     ssl: { rejectUnauthorized: false }
 });
 
