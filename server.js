@@ -16,7 +16,8 @@ delete process.env.PGDATABASE;
 delete process.env.PGPORT;
 
 // PostgreSQL Connection (HARDCODED PROOF)
-const dbUrl = "postgres://npg_6xEnXaGFM5CN:npg_6xEnXaGFM5CN@ep-plain-silence-aorbqtii-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require";
+// PostgreSQL Connection (HARDCODED PROOF)
+const dbUrl = "postgresql://neondb_owner:npg_3rn1fipAUaOG@ep-plain-silence-aorbqtii-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
 
 const pool = new Pool({
     connectionString: dbUrl,
