@@ -128,10 +128,10 @@
                 <div class="value" id="statTotal">0</div>
                 <div class="trend up"><i class="fas fa-users"></i> Lifetime</div>
             </div>
-            <div class="stat-card" style="border-left: 5px solid var(--urgent);">
-                <h3>Emergency</h3>
-                <div class="value" id="statEmergency" style="color: var(--urgent);">0</div>
-                <p style="font-size: 0.8rem; color: var(--text-light);">Critical Care Needs</p>
+            <div class="stat-card" style="background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%); border: 1px solid #FDA4AF;">
+                <h3>Sentiment Shield</h3>
+                <div class="value" id="statAnxious" style="color: #E11D48;">0</div>
+                <p style="font-size: 0.8rem; color: #E11D48; font-weight: 700;"><i class="fas fa-shield-heart"></i> HIGH ANXIETY DETECTED</p>
             </div>
             <div class="stat-card" style="border-left: 5px solid var(--accent);">
                 <h3>Chronic Care</h3>
@@ -183,7 +183,7 @@
                 const statsRes = await fetch('/api/dashboard/stats');
                 const stats = await statsRes.json();
                 document.getElementById('statTotal').innerText = stats.total;
-                document.getElementById('statEmergency').innerText = stats.emergency;
+                document.getElementById('statAnxious').innerText = stats.anxious;
                 document.getElementById('statChronic').innerText = stats.chronic;
                 document.getElementById('statMasterclass').innerText = stats.masterclass;
 
@@ -203,14 +203,26 @@
                     const div = document.createElement('div');
                     div.className = 'enquiry-item';
                     const typeClass = enq.patient_type === 'emergency' ? 'tag-urgent' : (enq.patient_type === 'masterclass' ? 'tag-success' : 'tag-lead');
+                    const isAnxious = enq.anxiety_score > 3;
+                    
                     div.innerHTML = `
                         <div class="enquiry-info">
-                            <h4>${enq.patient_name}</h4>
-                            <p>"${enq.message}"</p>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <h4>${enq.patient_name}</h4>
+                                ${isAnxious ? '<span class="tag" style="background:#FFE4E6; color:#E11D48; border:1px solid #FDA4AF;"><i class="fas fa-heartbeat"></i> HIGH ANXIETY</span>' : ''}
+                            </div>
+                            <p style="margin-top: 5px;">"${enq.message}"</p>
                             <div style="margin-top: 10px;">
                                 <span class="tag tag-wa">${enq.platform || 'Website'}</span>
                                 <span class="tag ${typeClass}">${enq.patient_type.toUpperCase()}</span>
                             </div>
+                            ${isAnxious ? `
+                                <div style="margin-top: 15px; padding: 12px; background: #F8FAFC; border-radius: 10px; border-left: 4px solid var(--accent);">
+                                    <p style="font-size: 0.75rem; font-weight: 700; color: var(--secondary); margin-bottom: 5px;"><i class="fas fa-magic"></i> HEALING VOICE SUGGESTION:</p>
+                                    <p style="font-size: 0.8rem; font-style: italic; color: #475569;">"I understand you are feeling worried, ${enq.patient_name.split(' ')[0]}. Please rest assured that these symptoms are common and highly treatable. Let's schedule a brief call so I can personally put your mind at ease."</p>
+                                    <button class="tag" style="margin-top: 8px; cursor: pointer; border: none; background: var(--secondary); color: white;">SEND VIA WHATSAPP</button>
+                                </div>
+                            ` : ''}
                         </div>
                         <div style="text-align: right;">
                             <p style="font-size: 0.75rem; font-weight: 700; color: var(--success);"><i class="fas fa-check-circle"></i> Received</p>
