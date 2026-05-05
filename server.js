@@ -96,8 +96,22 @@ app.post('/api/settings', async (req, res) => {
 });
 
 // API: Upload Media
-app.post('/api/upload', upload.single('file'), (req, res) => {
-    res.json({ success: true, filePath: `/uploads/${req.file.filename}` });
+app.post('/api/upload', upload.single('file'), async (req, res) => {
+    const { type } = req.body;
+    const filePath = `/uploads/${req.file.filename}`;
+    
+    try {
+        if (type === 'logo') {
+            await pool.query('UPDATE settings SET logo_url = $1 WHERE id = (SELECT id FROM settings ORDER BY id DESC LIMIT 1)', [filePath]);
+        } else if (type === 'photo') {
+            await pool.query('UPDATE settings SET photo_url = $1 WHERE id = (SELECT id FROM settings ORDER BY id DESC LIMIT 1)', [filePath]);
+        } else if (type === 'gallery') {
+            await pool.query('INSERT INTO gallery (image_url) VALUES ($1)', [filePath]);
+        }
+        res.json({ success: true, filePath: filePath });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 app.get('/', (req, res) => {
