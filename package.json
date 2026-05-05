@@ -2,12 +2,12 @@
   "name": "dr-sumit-kapadia-landing",
   "version": "1.0.0",
   "description": "Medical landing page for Dr. Sumit Kapadia",
-  "main": "index.html",
+  "main": "server.js",
   "scripts": {
-    "start": "npx serve -s . -l $PORT",
+    "start": "node server.js",
     "build": "echo 'Build successful'"
   },
   "dependencies": {
-    "serve": "^14.2.1"
+    "express": "^4.18.2"
   }
 }
