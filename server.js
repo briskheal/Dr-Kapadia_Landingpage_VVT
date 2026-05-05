@@ -1,7 +1,52 @@
+require('dotenv').config();
 const fs = require('fs');
+const path = require('path');
+const express = require('express');
 const multer = require('multer');
+const { Pool } = require('pg');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// PostgreSQL Connection
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
+
+// Initialize Database Tables
+async function initDB() {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS settings (
+                id SERIAL PRIMARY KEY,
+                clinic_name TEXT,
+                affiliation TEXT,
+                phone TEXT,
+                logo_url TEXT,
+                photo_url TEXT
+            );
+            CREATE TABLE IF NOT EXISTS gallery (
+                id SERIAL PRIMARY KEY,
+                image_url TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE TABLE IF NOT EXISTS enquiries (
+                id SERIAL PRIMARY KEY,
+                patient_name TEXT,
+                message TEXT,
+                platform TEXT,
+                status TEXT,
+                urgency TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        console.log('PostgreSQL Tables Initialized');
+    } catch (err) {
+        console.error('Database Init Error:', err);
+    }
+}
+initDB();
 
 // Configure File Storage
 const storage = multer.diskStorage({
@@ -16,28 +61,28 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Database Mock (File-based for Render stability)
-const DB_FILE = './db.json';
-const getDB = () => JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-const saveDB = (data) => fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
-
-if (!fs.existsSync(DB_FILE)) {
-    saveDB({ settings: {}, gallery: [], videos: [] });
-}
-
 app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 
 // API: Get Settings
-app.get('/api/settings', (req, res) => res.json(getDB()));
+app.get('/api/settings', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM settings ORDER BY id DESC LIMIT 1');
+        res.json({ settings: result.rows[0] || {} });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
 
 // API: Save Settings
-app.post('/api/settings', (req, res) => {
-    const db = getDB();
-    db.settings = req.body;
-    saveDB(db);
-    res.json({ success: true });
+app.post('/api/settings', async (req, res) => {
+    const { clinicName, affiliation, phone } = req.body;
+    try {
+        await pool.query(
+            'INSERT INTO settings (clinic_name, affiliation, phone) VALUES ($1, $2, $3)',
+            [clinicName, affiliation, phone]
+        );
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 // API: Upload Media
