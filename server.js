@@ -1,12 +1,50 @@
-const express = require('express');
-const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the current directory
-app.use(express.static(path.join(__dirname)));
+// Configure File Storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const dir = './uploads';
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+        cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+const upload = multer({ storage: storage });
 
-// Serve index.html for the root route
+// Database Mock (File-based for Render stability)
+const DB_FILE = './db.json';
+const getDB = () => JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+const saveDB = (data) => fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+
+if (!fs.existsSync(DB_FILE)) {
+    saveDB({ settings: {}, gallery: [], videos: [] });
+}
+
+app.use(express.static(path.join(__dirname)));
+app.use('/uploads', express.static('uploads'));
+app.use(express.json());
+
+// API: Get Settings
+app.get('/api/settings', (req, res) => res.json(getDB()));
+
+// API: Save Settings
+app.post('/api/settings', (req, res) => {
+    const db = getDB();
+    db.settings = req.body;
+    saveDB(db);
+    res.json({ success: true });
+});
+
+// API: Upload Media
+app.post('/api/upload', upload.single('file'), (req, res) => {
+    res.json({ success: true, filePath: `/uploads/${req.file.filename}` });
+});
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });

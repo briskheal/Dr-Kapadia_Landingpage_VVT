@@ -75,15 +75,15 @@
             <h2><i class="fas fa-building"></i> Organization Details</h2>
             <div class="form-group">
                 <label>CLINIC NAME</label>
-                <input type="text" class="form-control" value="Dr. Sumit Kapadia - Vascular Specialist">
+                <input type="text" id="clinicName" class="form-control" value="Dr. Sumit Kapadia - Vascular Specialist">
             </div>
             <div class="form-group">
                 <label>HOSPITAL AFFILIATION</label>
-                <input type="text" class="form-control" value="Aadicura Hospital, Vadodara">
+                <input type="text" id="affiliation" class="form-control" value="Aadicura Hospital, Vadodara">
             </div>
             <div class="form-group">
                 <label>CONTACT PHONE</label>
-                <input type="text" class="form-control" value="+91 72010 14017">
+                <input type="text" id="phone" class="form-control" value="+91 72010 14017">
             </div>
         </div>
 
@@ -93,14 +93,14 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="form-group">
                     <label>CLINIC LOGO</label>
-                    <div class="upload-zone">
+                    <div class="upload-zone" onclick="triggerUpload('logoInput')">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <p>Logo</p>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>DR. KAPADIA PHOTO</label>
-                    <div class="upload-zone">
+                    <div class="upload-zone" onclick="triggerUpload('photoInput')">
                         <i class="fas fa-user-md"></i>
                         <p>Photo</p>
                     </div>
@@ -112,7 +112,7 @@
         <div class="admin-card">
             <h2><i class="fas fa-images"></i> Photograph Gallery</h2>
             <p style="font-size: 0.8rem; color: var(--text); opacity: 0.6; margin-bottom: 15px;">Photos here will auto-scroll on the landing page.</p>
-            <div class="upload-zone">
+            <div class="upload-zone" onclick="triggerUpload('galleryInput')">
                 <i class="fas fa-plus-circle"></i>
                 <p>Add New Photographs</p>
             </div>
@@ -148,9 +148,77 @@
     </div>
 
     <div class="save-bar">
-        <button class="btn btn-preview">Preview Site</button>
-        <button class="btn btn-save">Save Changes</button>
+        <button class="btn btn-preview" onclick="window.open('/', '_blank')">Preview Site</button>
+        <button class="btn btn-save" onclick="saveSettings()" id="saveBtn">Save Changes</button>
     </div>
+
+    <input type="file" id="logoInput" style="display:none" onchange="uploadFile(this, 'logo')">
+    <input type="file" id="photoInput" style="display:none" onchange="uploadFile(this, 'photo')">
+    <input type="file" id="galleryInput" style="display:none" onchange="uploadFile(this, 'gallery')">
+
+    <script>
+        // Load settings on startup
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings');
+                const data = await res.json();
+                if (data.settings) {
+                    document.getElementById('clinicName').value = data.settings.clinicName || '';
+                    document.getElementById('affiliation').value = data.settings.affiliation || '';
+                    document.getElementById('phone').value = data.settings.phone || '';
+                }
+            } catch (e) { console.error('Failed to load settings', e); }
+        }
+
+        async function saveSettings() {
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.innerText = 'Saving...';
+            
+            const settings = {
+                clinicName: document.getElementById('clinicName').value,
+                affiliation: document.getElementById('affiliation').value,
+                phone: document.getElementById('phone').value
+            };
+
+            try {
+                await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+                alert('Changes saved successfully!');
+            } catch (e) { alert('Error saving changes'); }
+            saveBtn.innerText = 'Save Changes';
+        }
+
+        async function uploadFile(input, type) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('type', type);
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(`${type.toUpperCase()} uploaded successfully!`);
+                    // Logic to update UI with new image path
+                }
+            } catch (e) { alert('Upload failed'); }
+        }
+
+        // Trigger hidden inputs
+        function triggerUpload(id) {
+            document.getElementById(id).click();
+        }
+
+        window.onload = loadSettings;
+    </script>
 
 </body>
 </html>
