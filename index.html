@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Sumit Kapadia | Varicose Vein Specialist in Gujarat</title>
+    <meta name="description" content="Advanced, patient-centered care for varicose veins in Gujarat. Led by Dr. Sumit Kapadia, experienced vascular & endovascular specialist.">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #CE176B; /* Brand Magenta */
+            --secondary: #014A81; /* Brand Navy Blue */
+            --accent: #00ADEF; /* Brand Cyan */
+            --bg-soft: #E3F2FD; /* Soft Light Blue */
+            --text-dark: #1A1A1A;
+            --text-muted: #555555;
+            --white: #FFFFFF;
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-color: var(--white);
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--secondary);
+            line-height: 1.2;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 6px 20px rgba(206, 23, 107, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(206, 23, 107, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--white);
+            box-shadow: 0 6px 20px rgba(1, 74, 129, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(1, 74, 129, 0.4);
+        }
+
+        /* Header */
+        header {
+            background: var(--white);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .contact-info a {
+            text-decoration: none;
+            color: var(--secondary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--bg-soft) 0%, #fff 100%);
+            padding: 100px 0;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 173, 239, 0.05) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+
+        .credibility {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 35px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .credibility i {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .reassurance-line {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 30px;
+            /* Remove background from image if possible or use styling */
+            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.1));
+        }
+
+        /* Symptoms Section */
+        .symptoms {
+            background-color: var(--white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        .symptom-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .symptom-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .symptom-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--bg-soft);
+        }
+
+        .symptom-card i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .symptom-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .support-line {
+            text-align: center;
+            margin-top: 40px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Reassurance Section */
+        .reassurance-box {
+            background-color: var(--bg-soft);
+            text-align: center;
+            padding: 80px 0;
+            border-radius: 40px;
+        }
+
+        .reassurance-box h2 {
+            margin-bottom: 25px;
+        }
+
+        .reassurance-box p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        /* About Doctor Section */
+        .doctor-section {
+            background-color: var(--white);
+        }
+
+        .doctor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .doctor-info h2 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+        }
+
+        .doctor-info ul {
+            list-style: none;
+        }
+
+        .doctor-info li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .doctor-info li::before {
+            content: '\f058';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        /* Treatment Options */
+        .treatments {
+            background-color: #F8FAFC;
+        }
+
+        .treatment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .treatment-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+        }
+
+        .treatment-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .treatment-note {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Journey Section */
+        .journey-grid {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 50px;
+        }
+
+        .journey-grid::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: dashed var(--bg-soft);
+            z-index: 0;
+        }
+
+        .journey-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            padding: 0 10px;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--white);
+            border: 4px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .journey-step h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        /* FAQ Section */
+        .faq {
+            background-color: var(--white);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--bg-soft);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 20px;
+            background: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: none;
+            text-align: left;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .faq-question:hover {
+            background: var(--bg-soft);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+            background: var(--white);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 10px 20px 20px;
+            max-height: 200px;
+        }
+
+        .faq-item.active i {
+            transform: rotate(180deg);
+        }
+
+        /* Final CTA */
+        .final-cta {
+            background-color: var(--bg-soft);
+            text-align: center;
+            padding: 100px 0;
+        }
+
+        .cta-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-content p {
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        /* Sticky Footer Mobile */
+        .sticky-cta {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            padding: 15px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            z-index: 2000;
+            gap: 10px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary);
+            color: var(--white);
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-grid, .doctor-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-content p, .hero-content h1 {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-btns, .credibility {
+                justify-content: center;
+            }
+            .symptom-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .journey-grid {
+                flex-direction: column;
+                gap: 40px;
+            }
+            .journey-grid::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .symptom-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            .hero-btns {
+                flex-direction: column;
+            }
+            .sticky-cta {
+                display: flex;
+            }
+            section {
+                padding: 60px 0;
+            }
+            .btn {
+                width: 100%;
+            }
+            body {
+                padding-bottom: 80px; /* Space for sticky CTA */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <img src="https://www.drsumitkapadia.com/wp-content/uploads/2023/12/Dr-sumit-kapadia-Logo.png" alt="Dr. Sumit Kapadia Logo">
+                </div>
+                <div class="contact-info">
+                    <a href="tel:+917201014017"><i class="fas fa-phone"></i> +91 72010 14017</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <h1>Relief from Varicose Veins with Advanced, Patient-Centered Care</h1>
+                        <p>If you are experiencing leg pain, swelling, or visible veins, timely medical guidance can help you manage the condition effectively and comfortably.</p>
+                        
+                        <div class="credibility">
+                            <i class="fas fa-user-md"></i>
+                            <span>Led by an experienced vascular & endovascular specialist with decades of focused clinical practice.</span>
+                        </div>
+
+                        <div class="hero-btns">
+                            <a href="#book" class="btn btn-primary">Book Consultation</a>
+                            <a href="tel:+917201014017" class="btn btn-secondary">Call Now</a>
+                        </div>
+                        <p class="reassurance-line">“Confidential and guided consultation”</p>
+                    </div>
+                    <div class="hero-image">
+                        <img src="https://www.drsumitkapadia.com/wp-content/uploads/2024/01/Dr-Sumit-Kapadia-Varicose-Veins.png" alt="Dr. Sumit Kapadia - Varicose Vein Specialist">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Symptoms Section -->
+        <section class="symptoms">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Are You Experiencing These Symptoms?</h2>
+                </div>
+                <div class="symptom-grid">
+                    <div class="symptom-card">
+                        <i class="fas fa-hand-holding-medical"></i>
+                        <h3>Aching or heavy legs</h3>
+                    </div>
+                    <div class="symptom-card">
+                        <i class="fas fa-arrows-alt-v"></i>
+                        <h3>Swelling in ankles or feet</h3>
+                    </div>
+                    <div class="symptom-card">
+                        <i class="fas fa-wave-square"></i>
+                        <h3>Visible twisted veins</h3>
+                    </div>
+                    <div class="symptom-card">
+                        <i class="fas fa-fire-alt"></i>
+                        <h3>Burning or throbbing sensation</h3>
+                    </div>
+                    <div class="symptom-card">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Muscle cramps</h3>
+                    </div>
+                    <div class="symptom-card">
+                        <i class="fas fa-tint"></i>
+                        <h3>Skin discoloration</h3>
+                    </div>
+                </div>
+                <p class="support-line">These may indicate varicose veins and should be evaluated early.</p>
+            </div>
+        </section>
+
+        <!-- Reassurance Section -->
+        <section class="container">
+            <div class="reassurance-box">
+                <h2>You Don’t Have to Ignore the Discomfort</h2>
+                <p>Varicose veins are a common vascular condition. With appropriate evaluation and modern treatment approaches, symptoms can be managed effectively. Early consultation helps in preventing progression.</p>
+            </div>
+        </section>
+
+        <!-- About Doctor -->
+        <section class="doctor-section">
+            <div class="container">
+                <div class="doctor-grid">
+                    <div class="doctor-info">
+                        <h2>Experienced Care You Can Rely On</h2>
+                        <ul>
+                            <li>Gold medalist in medical training</li>
+                            <li>Specialized in vascular & endovascular surgery</li>
+                            <li>Extensive experience in treating vascular conditions</li>
+                            <li>Focus on minimally invasive treatment approaches</li>
+                        </ul>
+                    </div>
+                    <div class="hero-image">
+                        <!-- Custom generated medical visual -->
+                        <img src="clinic.png" alt="Advanced Medical Care" style="box-shadow: var(--shadow-soft);">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Treatment Options -->
+        <section class="treatments">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Modern Treatment Options</h2>
+                </div>
+                <div class="treatment-grid">
+                    <div class="treatment-card">
+                        <h3>Laser-based procedures</h3>
+                    </div>
+                    <div class="treatment-card">
+                        <h3>Radiofrequency ablation</h3>
+                    </div>
+                    <div class="treatment-card">
+                        <h3>Non-surgical therapies</h3>
+                    </div>
+                    <div class="treatment-card">
+                        <h3>Sclerotherapy</h3>
+                    </div>
+                    <div class="treatment-card">
+                        <h3>Minimally invasive procedures</h3>
+                    </div>
+                </div>
+                <p class="treatment-note">Note: Treatment is decided after clinical evaluation.</p>
+            </div>
+        </section>
+
+        <!-- Journey Section -->
+        <section class="journey">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Your Treatment Journey</h2>
+                </div>
+                <div class="journey-grid">
+                    <div class="journey-step">
+                        <div class="step-number">1</div>
+                        <h3>Consultation & symptom discussion</h3>
+                    </div>
+                    <div class="journey-step">
+                        <div class="step-number">2</div>
+                        <h3>Clinical evaluation & diagnosis</h3>
+                    </div>
+                    <div class="journey-step">
+                        <div class="step-number">3</div>
+                        <h3>Personalized treatment plan</h3>
+                    </div>
+                    <div class="journey-step">
+                        <div class="step-number">4</div>
+                        <h3>Procedure (if required)</h3>
+                    </div>
+                    <div class="journey-step">
+                        <div class="step-number">5</div>
+                        <h3>Follow-up & recovery guidance</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why This Approach -->
+        <section class="container">
+            <div class="reassurance-box" style="background: #F8FAFC; border: 1px solid var(--bg-soft);">
+                <h2>Focused on Patient Comfort & Clarity</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: left; margin-top: 30px;">
+                    <div style="padding: 20px; background: white; border-radius: 15px;">
+                        <i class="fas fa-comment-medical" style="color: var(--accent); margin-bottom: 10px;"></i>
+                        <p style="font-size: 0.9rem; font-weight: 600;">Clear explanation of condition and options</p>
+                    </div>
+                    <div style="padding: 20px; background: white; border-radius: 15px;">
+                        <i class="fas fa-microscope" style="color: var(--accent); margin-bottom: 10px;"></i>
+                        <p style="font-size: 0.9rem; font-weight: 600;">Minimally invasive techniques when suitable</p>
+                    </div>
+                    <div style="padding: 20px; background: white; border-radius: 15px;">
+                        <i class="fas fa-clipboard-list" style="color: var(--accent); margin-bottom: 10px;"></i>
+                        <p style="font-size: 0.9rem; font-weight: 600;">Structured treatment process</p>
+                    </div>
+                    <div style="padding: 20px; background: white; border-radius: 15px;">
+                        <i class="fas fa-hospital" style="color: var(--accent); margin-bottom: 10px;"></i>
+                        <p style="font-size: 0.9rem; font-weight: 600;">Supportive clinical environment</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Frequently Asked Questions</h2>
+                </div>
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <button class="faq-question">Is treatment painful? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer">
+                            <p>Most modern varicose vein treatments are minimally invasive and performed under local anesthesia, ensuring minimal discomfort during and after the procedure.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">How long does recovery take? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer">
+                            <p>Recovery time is usually very short. Most patients can return to their daily activities within a day or two, though heavy exercise may need to be avoided for a short period.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">When should I consult a doctor? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer">
+                            <p>You should consult a vascular specialist if you experience persistent leg pain, swelling, visible twisted veins, or any skin changes like darkening or ulcers near the ankles.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Are all cases surgical? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer">
+                            <p>No, not all cases require surgery. Many conditions can be managed through non-surgical therapies or minimally invasive procedures depending on the clinical evaluation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="final-cta">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Take the First Step Toward Relief</h2>
+                    <p>If you are experiencing symptoms, a consultation can help you understand your condition and available options clearly.</p>
+                    <div class="hero-btns" style="justify-content: center;">
+                        <a href="#book" class="btn btn-primary">Book Consultation</a>
+                        <a href="tel:+917201014017" class="btn btn-secondary">Call Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Dr. Sumit Kapadia. All Rights Reserved. | Confidential & Guided Consultation</p>
+        </div>
+    </footer>
+
+    <!-- Sticky CTA Mobile -->
+    <div class="sticky-cta">
+        <a href="tel:+917201014017" class="btn btn-secondary" style="flex: 1;"><i class="fas fa-phone"></i> Call</a>
+        <a href="#book" class="btn btn-primary" style="flex: 1;"><i class="fas fa-calendar-check"></i> Book Now</a>
+    </div>
+
+    <script>
+        // FAQ Accordion Logic
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.parentElement;
+                faqItem.classList.toggle('active');
+                
+                // Close other items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    if (item !== faqItem) {
+                        item.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

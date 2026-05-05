@@ -1,0 +1,14 @@
+{
+  "name": "dr-sumit-kapadia-landing",
+  "version": "1.0.0",
+  "description": "Medical landing page for Dr. Sumit Kapadia",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}
