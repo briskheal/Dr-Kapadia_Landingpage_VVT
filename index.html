@@ -202,7 +202,7 @@
                         </div>
                     </div>
                     <div class="hero-image" data-aos="fade-left">
-                        <img src="dr-kapadia-hero-v2.jpg" alt="Dr. Sumit Kapadia - Vascular Surgeon">
+                        <img src="" id="heroDynamicImg" alt="Dr. Sumit Kapadia - Vascular Surgeon" onerror="console.error('Failed to load hero image:', this.src)">
                     </div>
                 </div>
             </div>
@@ -411,26 +411,29 @@
             </div>
         </section>
 
-        <!-- Auto Scroll Gallery -->
+        <!-- Medical Case Studies Section -->
         <section class="gallery-section" style="padding: 50px 0;" data-aos="fade-up">
             <div class="container">
                 <div style="text-align: center; margin-bottom: 40px;">
-                    <h2>Clinic & Patient Care Gallery</h2>
-                    <p style="color: var(--text-muted); margin-top: 10px;">A glimpse into our world-class medical environment.</p>
+                    <h2 style="font-size: 2.2rem; color: var(--secondary);">Vascular Case Studies & <i>Medical Care</i></h2>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Real results and clinical excellence in patient recovery.</p>
                 </div>
             </div>
-            <div class="gallery-wrapper">
-                <div class="gallery-item"><img src="clinic.png" alt="Clinic"></div>
-                <div class="gallery-item"><img src="https://www.drsumitkapadia.com/wp-content/uploads/2024/01/Dr-Sumit-Kapadia-Varicose-Veins.png" alt="Care"></div>
-                <div class="gallery-item"><img src="clinic.png" alt="Clinic"></div>
-                <div class="gallery-item"><img src="https://www.drsumitkapadia.com/wp-content/uploads/2024/01/Dr-Sumit-Kapadia-Varicose-Veins.png" alt="Care"></div>
-                <div class="gallery-item"><img src="clinic.png" alt="Clinic"></div>
-                <!-- Duplicate for loop -->
-                <div class="gallery-item"><img src="clinic.png" alt="Clinic"></div>
-                <div class="gallery-item"><img src="https://www.drsumitkapadia.com/wp-content/uploads/2024/01/Dr-Sumit-Kapadia-Varicose-Veins.png" alt="Care"></div>
-                <div class="gallery-item"><img src="clinic.png" alt="Clinic"></div>
-                <div class="gallery-item"><img src="https://www.drsumitkapadia.com/wp-content/uploads/2024/01/Dr-Sumit-Kapadia-Varicose-Veins.png" alt="Care"></div>
-                <div class="gallery-item"><img src="clinic.png" alt="Clinic"></div>
+            <div class="gallery-wrapper" id="medicalGallery">
+                <!-- Dynamic Medical Gallery Items -->
+            </div>
+        </section>
+
+        <!-- Hospital Infrastructure Section -->
+        <section class="gallery-section" style="padding: 50px 0; background: var(--bg-soft);" data-aos="fade-up">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <h2 style="font-size: 2.2rem; color: var(--secondary);">World-Class <i>Infrastructure</i></h2>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Take a tour of our advanced surgical and patient care facilities.</p>
+                </div>
+            </div>
+            <div class="gallery-wrapper" id="hospitalGallery">
+                <!-- Dynamic Hospital Gallery Items -->
             </div>
             <div class="gallery-footer-space"></div>
         </section>
@@ -496,5 +499,132 @@
         });
     </script>
 
+    <!-- Content Rotation Script (5-Day Interval) -->
+    <script>
+        const rotationConfig = {
+            heroImages: [],
+            youtubeVideos: [
+                'zH0rB1N4Uto',
+                'l6XW332-9vM',
+                '90M346_4R94'
+            ],
+            intervalDays: 5
+        };
+
+        function applyRotation() {
+            const cycle = Math.floor(Date.now() / (1000 * 60 * 60 * 24 * rotationConfig.intervalDays));
+            
+            const heroImg = document.querySelector('.hero-image img');
+            if (heroImg && rotationConfig.heroImages.length > 0) {
+                heroImg.src = rotationConfig.heroImages[cycle % rotationConfig.heroImages.length];
+            }
+            
+            const youtubeIframe = document.querySelector('.youtube-grid iframe');
+            if (youtubeIframe && rotationConfig.youtubeVideos.length > 0) {
+                const videoId = rotationConfig.youtubeVideos[cycle % rotationConfig.youtubeVideos.length];
+                youtubeIframe.src = `https://www.youtube.com/embed/${videoId}`;
+            }
+        }
+
+        function getYouTubeID(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        async function loadLiveSettings() {
+            try {
+                const res = await fetch('/api/settings');
+                const data = await res.json();
+                if (data.settings) {
+                    // Update Texts
+                    if (data.settings.clinic_name) document.querySelectorAll('h1')[0].innerText = data.settings.clinic_name;
+                    if (data.settings.phone) document.querySelectorAll('.footer-grid p')[2].innerHTML = `<i class="fas fa-phone" style="color: var(--primary);"></i> ${data.settings.phone}`;
+                    
+                    // Update Logo
+                    if (data.settings.logo_url) {
+                        const logo = document.querySelector('.logo img');
+                        if (logo) logo.src = data.settings.logo_url;
+                    }
+                    
+                    // Update Hero Photo
+                    if (data.settings.photo_url) {
+                        const hero = document.getElementById('heroDynamicImg');
+                        if (hero) hero.src = data.settings.photo_url;
+                        // Also add to rotation if needed
+                        if (!rotationConfig.heroImages.includes(data.settings.photo_url)) {
+                            rotationConfig.heroImages.unshift(data.settings.photo_url);
+                        }
+                    }
+
+                    // Update Social Links
+                    const socialIcons = document.querySelectorAll('.footer-grid + div div a');
+                    if (data.settings.insta_url) socialIcons[0].href = data.settings.insta_url;
+                    if (data.settings.fb_url) socialIcons[1].href = data.settings.fb_url;
+                    if (data.settings.linkedin_url) socialIcons[2].href = data.settings.linkedin_url;
+                    if (data.settings.youtube_url) socialIcons[3].href = data.settings.youtube_url;
+
+                    // Update Featured Videos
+                    const v1 = getYouTubeID(data.settings.video_1);
+                    const v2 = getYouTubeID(data.settings.video_2);
+                    if (v1 || v2) {
+                        rotationConfig.youtubeVideos = [];
+                        if (v1) rotationConfig.youtubeVideos.push(v1);
+                        if (v2) rotationConfig.youtubeVideos.push(v2);
+                        applyRotation(); // Re-apply with new videos
+                    }
+                }
+
+                // Load Medical Gallery
+                const medRes = await fetch('/api/gallery/medical');
+                const medData = await medRes.json();
+                const medContainer = document.getElementById('medicalGallery');
+                if (medContainer && medData.images.length > 0) {
+                    medContainer.innerHTML = '';
+                    const allImages = [...medData.images, ...medData.images, ...medData.images];
+                    allImages.forEach(img => {
+                        const div = document.createElement('div');
+                        div.className = 'gallery-item';
+                        div.innerHTML = `<img src="${img.image_url}" alt="Medical">`;
+                        medContainer.appendChild(div);
+                    });
+                }
+
+                // Load Hospital Gallery
+                const hospRes = await fetch('/api/gallery/hospital');
+                const hospData = await hospRes.json();
+                const hospContainer = document.getElementById('hospitalGallery');
+                const mode = data.settings.gallery_mode || 'scrolling';
+                const fixedId = data.settings.fixed_image_id;
+
+                if (hospContainer && hospData.images.length > 0) {
+                    hospContainer.innerHTML = '';
+                    
+                    if (mode === 'fixed' && fixedId) {
+                        const fixedImg = hospData.images.find(i => i.id === fixedId) || hospData.images[0];
+                        hospContainer.style.animation = 'none';
+                        hospContainer.style.justifyContent = 'center';
+                        hospContainer.innerHTML = `<div class="gallery-item" style="width: 80%; height: 400px;"><img src="${fixedImg.image_url}" alt="Fixed Infrastructure"></div>`;
+                    } else {
+                        // Continuous Scroll
+                        hospContainer.style.animation = 'scroll 40s linear infinite';
+                        const allImages = [...hospData.images, ...hospData.images, ...hospData.images];
+                        allImages.forEach(img => {
+                            const div = document.createElement('div');
+                            div.className = 'gallery-item';
+                            div.innerHTML = `<img src="${img.image_url}" alt="Hospital">`;
+                            hospContainer.appendChild(div);
+                        });
+                    }
+                }
+            } catch (e) { console.error('Failed to load live settings', e); }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadLiveSettings();
+            applyRotation();
+        });
+    </script>
 </body>
 </html>

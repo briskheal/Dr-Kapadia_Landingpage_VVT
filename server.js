@@ -44,11 +44,21 @@ async function initDB() {
                 affiliation TEXT,
                 phone TEXT,
                 logo_url TEXT,
-                photo_url TEXT
+                photo_url TEXT,
+                fb_url TEXT,
+                insta_url TEXT,
+                linkedin_url TEXT,
+                youtube_url TEXT,
+                twitter_url TEXT,
+                video_1 TEXT,
+                video_2 TEXT,
+                gallery_mode TEXT DEFAULT 'scrolling',
+                fixed_image_id INTEGER
             );
             CREATE TABLE IF NOT EXISTS gallery (
                 id SERIAL PRIMARY KEY,
                 image_url TEXT,
+                category TEXT DEFAULT 'medical',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             CREATE TABLE IF NOT EXISTS enquiries (
@@ -60,6 +70,7 @@ async function initDB() {
                 urgency TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+            INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
         `);
         console.log('PostgreSQL Tables Initialized');
     } catch (err) {
@@ -88,18 +99,42 @@ app.use(express.json());
 // API: Get Settings
 app.get('/api/settings', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM settings ORDER BY id DESC LIMIT 1');
+        const result = await pool.query('SELECT * FROM settings WHERE id = 1');
+        console.log('Sending Settings to Client:', result.rows[0]);
         res.json({ settings: result.rows[0] || {} });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// API: Save Settings
+// API: Get Gallery by Category
+app.get('/api/gallery/:category', async (req, res) => {
+    const { category } = req.params;
+    try {
+        const result = await pool.query('SELECT * FROM gallery WHERE category = $1 ORDER BY created_at DESC', [category]);
+        res.json({ images: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// API: Save Settings (UPSERT Logic)
 app.post('/api/settings', async (req, res) => {
-    const { clinicName, affiliation, phone } = req.body;
+    const { clinicName, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId } = req.body;
     try {
         await pool.query(
-            'INSERT INTO settings (clinic_name, affiliation, phone) VALUES ($1, $2, $3)',
-            [clinicName, affiliation, phone]
+            `INSERT INTO settings (id, clinic_name, affiliation, phone, fb_url, insta_url, linkedin_url, youtube_url, twitter_url, video_1, video_2, gallery_mode, fixed_image_id) 
+             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+             ON CONFLICT (id) DO UPDATE SET 
+                clinic_name = EXCLUDED.clinic_name, 
+                affiliation = EXCLUDED.affiliation, 
+                phone = EXCLUDED.phone,
+                fb_url = EXCLUDED.fb_url,
+                insta_url = EXCLUDED.insta_url,
+                linkedin_url = EXCLUDED.linkedin_url,
+                youtube_url = EXCLUDED.youtube_url,
+                twitter_url = EXCLUDED.twitter_url,
+                video_1 = EXCLUDED.video_1,
+                video_2 = EXCLUDED.video_2,
+                gallery_mode = EXCLUDED.gallery_mode,
+                fixed_image_id = EXCLUDED.fixed_image_id`,
+            [clinicName, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId]
         );
         res.json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -109,19 +144,32 @@ app.post('/api/settings', async (req, res) => {
 app.post('/api/upload', upload.single('file'), async (req, res) => {
     const { type } = req.body;
     const filePath = `/uploads/${req.file.filename}`;
+    console.log(`Uploading file type: ${type} to path: ${filePath}`);
     
     try {
+        // Ensure at least one record exists to update
+        await pool.query('INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING');
+
         if (type === 'logo') {
-            await pool.query('UPDATE settings SET logo_url = $1 WHERE id = (SELECT id FROM settings ORDER BY id DESC LIMIT 1)', [filePath]);
+            await pool.query('UPDATE settings SET logo_url = $1 WHERE id = 1', [filePath]);
         } else if (type === 'photo') {
-            await pool.query('UPDATE settings SET photo_url = $1 WHERE id = (SELECT id FROM settings ORDER BY id DESC LIMIT 1)', [filePath]);
-        } else if (type === 'gallery') {
-            await pool.query('INSERT INTO gallery (image_url) VALUES ($1)', [filePath]);
+            await pool.query('UPDATE settings SET photo_url = $1 WHERE id = 1', [filePath]);
+        } else if (type.startsWith('gallery_')) {
+            const category = type.split('_')[1];
+            await pool.query('INSERT INTO gallery (image_url, category) VALUES ($1, $2)', [filePath, category]);
         }
         res.json({ success: true, filePath: filePath });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+// API: Delete Gallery Item
+app.delete('/api/gallery/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM gallery WHERE id = $1', [req.params.id]);
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/', (req, res) => {
@@ -134,8 +182,8 @@ app.get('/login', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     const { loginId, password } = req.body;
-    if (loginId === 'DRKAPADIA' && password === 'TRICOLOR') {
-        res.json({ success: true, token: 'dr-kapadia-secure-token', redirect: '/dashboard' });
+    if (loginId === 'DRKAPADIA' && password === 'AADICURA') {
+        res.json({ success: true, token: 'dr-kapadia-secure-token', redirect: '/admin' });
     } else {
         res.status(401).json({ success: false, message: 'Invalid Credentials' });
     }
