@@ -15,6 +15,10 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
 // AiSensy WhatsApp Webhook Endpoint
 app.post('/api/webhooks/aisensy', express.json(), (req, res) => {
     const incomingMessage = req.body;
