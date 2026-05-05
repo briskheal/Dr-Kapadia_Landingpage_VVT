@@ -4,6 +4,8 @@ const path = require('path');
 const express = require('express');
 const multer = require('multer');
 const { Pool } = require('pg');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
