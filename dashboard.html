@@ -298,54 +298,48 @@
                     const isAnxious = enq.anxiety_score > 3;
                     
                     div.innerHTML = `
-                        <div class="enquiry-info">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <h4>${enq.patient_name}</h4>
-                                ${isAnxious ? '<span class="tag" style="background:#FFE4E6; color:#E11D48; border:1px solid #FDA4AF;"><i class="fas fa-heartbeat"></i> HIGH ANXIETY</span>' : ''}
-                                ${isMasterclass ? '<span class="tag" style="background:#ECFDF5; color:#059669; border:1px solid #10B981;"><i class="fas fa-graduation-cap"></i> WARM LEAD: MASTERCLASS</span>' : ''}
-                                ${enq.attachment_url ? '<span class="tag" style="background:#E0F2FE; color:#0369A1;"><i class="fas fa-image"></i> PHOTO/Rx ATTACHED</span>' : ''}
-                            </div>
-                            <p style="margin-top: 5px;">"${enq.message}"</p>
-                            <div style="margin-top: 10px;">
-                                <span class="tag tag-wa">${enq.platform || 'Website'}</span>
-                                <span class="tag ${typeClass}">${enq.patient_type.toUpperCase()}</span>
-                            </div>
-
-                            ${isMasterclass ? `
-                                <div style="margin-top: 15px; padding: 15px; background: #F0FDFA; border-radius: 12px; border: 1px solid #5EEAD4;">
-                                    <p style="font-size: 0.85rem; font-weight: 700; color: #0F766E;"><i class="fas fa-bullseye"></i> PROFESSIONAL OUTREACH OPPORTUNITY:</p>
-                                    <p style="font-size: 0.8rem; color: #134E4A; margin-top: 5px;">This user is a fellow professional or student. Recommending a personal voice invite from the Portal.</p>
-                                    <div style="margin-top: 10px; display: flex; gap: 10px;">
-                                        <button class="tag" onclick="sendVoiceMessage('${enq.patient_name}', 'Hi, I see you are interested in our masterclass. I would love to have you in our next session.')" style="background: var(--secondary); color: white; border: none; cursor: pointer;"><i class="fas fa-microphone"></i> Send Personal Voice Invite</button>
-                                        <button class="tag" style="background: white; color: var(--secondary); border: 1px solid var(--secondary); cursor: pointer;">Send Masterclass Syllabus</button>
-                                    </div>
+                        <div class="enquiry-info" style="width: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                    <h4 style="font-size: 1.1rem; color: var(--secondary);">${enq.patient_name}</h4>
+                                    ${isAnxious ? '<span class="tag" style="background:#FFE4E6; color:#E11D48; border:1px solid #FDA4AF; animation: pulse 2s infinite;"><i class="fas fa-heartbeat"></i> HIGH ANXIETY</span>' : ''}
+                                    ${isMasterclass ? '<span class="tag" style="background:#ECFDF5; color:#059669; border:1px solid #10B981;"><i class="fas fa-graduation-cap"></i> MASTERCLASS LEAD</span>' : ''}
                                 </div>
-                            ` : ''}
+                                <div style="text-align: right;">
+                                    <span style="font-size: 0.7rem; color: var(--text-light); text-transform: uppercase; font-weight: 800;">${enq.platform || 'Website'} • ${timeAgo} mins ago</span>
+                                </div>
+                            </div>
+                            
+                            <div style="background: #F1F5F9; padding: 20px; border-radius: 15px; border-left: 5px solid var(--accent); margin-bottom: 20px;">
+                                <p style="font-size: 0.7rem; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px;">Patient Medical Query:</p>
+                                <p style="font-size: 1rem; line-height: 1.6; color: var(--text-dark); font-weight: 500;">${enq.message}</p>
+                            </div>
 
                             ${enq.attachment_url ? `
-                                <div style="margin-top: 15px; display: grid; grid-template-columns: 150px 1fr; gap: 20px; background: #F8FAFC; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0;">
-                                    <img src="${enq.attachment_url}" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open('${enq.attachment_url}')">
+                                <div style="margin-bottom: 20px; display: grid; grid-template-columns: 200px 1fr; gap: 25px; background: white; padding: 15px; border-radius: 15px; border: 1px solid #E2E8F0;">
+                                    <img src="${enq.attachment_url}" style="width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer;" onclick="window.open('${enq.attachment_url}')">
                                     <div>
-                                        <p style="font-size: 0.75rem; font-weight: 700; color: var(--secondary);"><i class="fas fa-brain"></i> AI VISION ANALYSIS:</p>
-                                        <p style="font-size: 0.8rem; color: #475569; margin-top: 5px;">Detecting clinical markers... (Searching Medical Directory for matches...)</p>
-                                        <div style="margin-top: 10px; display: flex; gap: 10px;">
-                                            <button class="tag" style="background: var(--accent); color: white; border: none; cursor: pointer;">View Matching Protocols</button>
+                                        <p style="font-size: 0.75rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px;"><i class="fas fa-brain"></i> AI VISION DIAGNOSTIC ASSISTANT:</p>
+                                        <p style="font-size: 0.85rem; color: #475569; line-height: 1.5;">Clinical evidence detected. Searching <b>Dr. Kapadia's Medical Directory</b> for matching protocols...</p>
+                                        <div style="margin-top: 15px;">
+                                            <button class="tag" style="background: var(--secondary); color: white; border: none; padding: 8px 15px; cursor: pointer;">Review Matching Directory Protocols</button>
                                         </div>
                                     </div>
                                 </div>
                             ` : ''}
 
-                            ${isAnxious && !isMasterclass ? `
-                                <div style="margin-top: 15px; padding: 12px; background: #F0FDF4; border-radius: 10px; border-left: 4px solid var(--success);">
-                                    <p style="font-size: 0.75rem; font-weight: 700; color: var(--success); margin-bottom: 5px;"><i class="fas fa-magic"></i> HEALING VOICE SUGGESTION:</p>
-                                    <p style="font-size: 0.8rem; font-style: italic; color: #166534;">"I understand you are feeling worried, ${enq.patient_name.split(' ')[0]}. Please rest assured that these symptoms are common and highly treatable. Let's schedule a brief call so I can personally put your mind at ease."</p>
-                                    <button class="tag" onclick="sendVoiceMessage('${enq.patient_name}', 'I understand you are feeling worried. Please rest assured.')" style="margin-top: 8px; cursor: pointer; border: none; background: var(--success); color: white;">SEND VIA WHATSAPP</button>
+                            <div style="display: flex; gap: 15px; align-items: center;">
+                                <span class="tag ${typeClass}">${enq.patient_type.toUpperCase()}</span>
+                                <div style="flex: 1; height: 1px; background: #E2E8F0;"></div>
+                                <div style="display: flex; gap: 10px;">
+                                    ${isMasterclass ? `
+                                        <button class="tag" onclick="sendVoiceMessage('${enq.patient_name}', 'Hi, I see you are interested in our masterclass.')" style="background: var(--accent); color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: 700;"><i class="fas fa-microphone"></i> Generate Personal Voice Invite</button>
+                                    ` : `
+                                        <button class="tag" onclick="sendVoiceMessage('${enq.patient_name}', 'I understand you are feeling worried.')" style="background: var(--primary); color: white; border: none; padding: 10px 20px; cursor: pointer; font-weight: 700;"><i class="fas fa-magic"></i> Generate Healing Voice Message</button>
+                                    `}
+                                    <button class="tag" style="background: white; border: 1px solid #E2E8F0; color: var(--text-dark); padding: 10px 20px; cursor: pointer;">Manual Reply</button>
                                 </div>
-                            ` : ''}
-                        </div>
-                        <div style="text-align: right;">
-                            <p style="font-size: 0.75rem; font-weight: 700; color: var(--success);"><i class="fas fa-check-circle"></i> Received</p>
-                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">${timeAgo} mins ago</p>
+                            </div>
                         </div>
                     `;
                     container.appendChild(div);
