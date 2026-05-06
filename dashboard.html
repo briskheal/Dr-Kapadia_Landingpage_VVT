@@ -47,10 +47,9 @@
         .stat-card { background: var(--white); padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.02); }
         .stat-card h3 { font-size: 0.9rem; color: var(--text-light); margin-bottom: 10px; }
         .stat-card .value { font-size: 2rem; font-weight: 800; color: var(--secondary); }
-        .stat-card .trend { font-size: 0.85rem; margin-top: 5px; }
 
         .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; align-items: start; }
-        .card { background: var(--white); padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.03); }
+        .card { background: var(--white); padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.03); margin-bottom: 30px; }
         .card h2 { font-size: 1.2rem; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
 
         .enquiry-list { display: flex; flex-direction: column; gap: 15px; }
@@ -62,11 +61,18 @@
         .tag-acute     { background: #FFF7ED; color: #EA580C; }
         .tag-chronic   { background: #E0F2FE; color: var(--accent); }
         .tag-general   { background: #F0FDF4; color: #16A34A; }
-        .tag-lead      { background: #E0F2FE; color: var(--accent); }
 
-        .ai-brain-status { background: linear-gradient(135deg, var(--secondary) 0%, #0F172A 100%); color: white; border-radius: 24px; padding: 30px; position: sticky; top: 20px; }
+        .ai-brain-status { background: linear-gradient(135deg, var(--secondary) 0%, #0F172A 100%); color: white; border-radius: 24px; padding: 30px; }
         .pulse { width: 12px; height: 12px; background: var(--success); border-radius: 50%; display: inline-block; box-shadow: 0 0 10px var(--success); margin-right: 10px; }
-        .btn-view-all { color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 700; }
+        
+        /* New Sections Styles */
+        .tab-content { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .tool-card { background: white; padding: 25px; border-radius: 20px; border: 1px solid #eef2f6; transition: 0.3s; }
+        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .tool-card i { font-size: 1.5rem; color: var(--primary); margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -88,61 +94,130 @@
     </div>
 
     <div class="main-content">
+        <!-- Tab: Overview -->
         <div id="tab-overview" class="tab-content">
             <div class="header">
                 <div style="display: flex; align-items: center; gap: 20px;">
                     <h1>Global Operations Hub</h1>
                     <select id="projectSwitcher" onchange="handleProjectChange()" style="padding: 10px; border-radius: 10px; border: 1px solid #ddd;">
-                        <option value="hospital">🏥 Dr. Kapadia Hospital</option>
-                        <option value="personal_brand">👤 Personal Brand Hub</option>
-                        <option value="patient_courses">🎓 Healing Patient Courses</option>
-                        <option value="doctor_courses">🩺 Vascular Masterclass</option>
+                        <option value="hospital">🏥 Hospital</option>
+                        <option value="personal_brand">👤 Personal Brand</option>
+                        <option value="patient_courses">🎓 Patient Courses</option>
+                        <option value="doctor_courses">🩺 Masterclass</option>
                     </select>
                 </div>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card"><h3>Total Leads</h3><div class="value" id="statTotal">0</div></div>
-                <div class="stat-card" style="border: 1px solid #FDA4AF;"><h3>High Anxiety</h3><div class="value" id="statAnxious" style="color: #E11D48;">0</div></div>
+                <div class="stat-card"><h3>Anxious</h3><div class="value" id="statAnxious" style="color: var(--urgent);">0</div></div>
                 <div class="stat-card"><h3>General</h3><div class="value" id="statGeneral">0</div></div>
                 <div class="stat-card"><h3>Acute</h3><div class="value" id="statAcute">0</div></div>
                 <div class="stat-card"><h3>Chronic</h3><div class="value" id="statChronic">0</div></div>
-                <div class="stat-card"><h3>Masterclass</h3><div class="value" id="statMasterclass">0</div></div>
+                <div class="stat-card"><h3>Academic</h3><div class="value" id="statMasterclass">0</div></div>
             </div>
 
             <div class="dashboard-grid">
                 <div class="card">
-                    <h2>Recent Enquiries <a href="#" class="btn-view-all">View All</a></h2>
+                    <h2>Recent Enquiries</h2>
                     <div class="enquiry-list" id="enquiryList"></div>
                 </div>
                 <div class="ai-brain-status">
-                    <h2><span class="pulse"></span>LIVE OPERATIONS</h2>
+                    <h2><span class="pulse"></span>AI OPERATIONS</h2>
                     <div style="margin-top:20px; background:rgba(255,255,255,0.06); padding:15px; border-radius:12px;">
-                        <p style="font-size:0.7rem; opacity:0.6;">TODAY'S ENQUIRIES</p>
+                        <p style="font-size:0.7rem; opacity:0.6;">TODAY'S SYNC</p>
                         <h2 id="lsTodayCount">0</h2>
                     </div>
-                    <div style="margin-top:20px; background:rgba(255,255,255,0.06); padding:15px; border-radius:12px;">
-                        <p style="font-size:0.7rem; opacity:0.6;">AUTO-REPLY RATE</p>
-                        <h2 id="lsAutoRate">0%</h2>
-                    </div>
                     <div style="margin-top:20px; padding:15px; background:rgba(0,0,0,0.2); border-radius:12px;">
-                        <h4>QUICK LOG</h4>
-                        <textarea id="manualEnquiryMsg" placeholder="Paste comment here..." style="width:100%; margin-top:10px; background:transparent; color:white; border:1px solid #444; padding:10px;"></textarea>
-                        <select id="manualPlatform" style="width:100%; margin-top:10px; background:#222; color:white; border:none; padding:10px;">
-                            <option value="YouTube">YouTube</option>
-                            <option value="Instagram">Instagram</option>
-                        </select>
-                        <button onclick="submitManualEnquiry()" style="width:100%; margin-top:10px; padding:12px; background:var(--success); color:white; border:none; border-radius:10px; cursor:pointer;">SYNC & ANALYZE</button>
+                        <h4>QUICK ANALYZE</h4>
+                        <textarea id="manualEnquiryMsg" placeholder="Paste social comment..." style="width:100%; margin-top:10px; background:transparent; color:white; border:1px solid #444; padding:10px; border-radius:8px;"></textarea>
+                        <button onclick="submitManualEnquiry()" style="width:100%; margin-top:10px; padding:12px; background:var(--success); color:white; border:none; border-radius:10px; cursor:pointer;">PROCESS INTO BRAIN</button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Tab: AI Agents -->
         <div id="tab-agents" class="tab-content" style="display:none;">
-            <div class="header"><h1>AI Healer Agent Hub</h1></div>
-            <div id="aiDraftsContainer" class="enquiry-list"></div>
+            <div class="header"><h1>AI Healer Agent Drafts</h1></div>
+            <div class="card">
+                <h2>Pending AI Responses</h2>
+                <div id="aiDraftsContainer" class="enquiry-list"></div>
+            </div>
         </div>
-        <!-- Other tabs omitted for brevity, but you can add them back if needed -->
+
+        <!-- Tab: Content Scheduler -->
+        <div id="tab-calendar" class="tab-content" style="display:none;">
+            <div class="header"><h1>Social Content Scheduler</h1></div>
+            <div class="grid-3">
+                <div class="tool-card">
+                    <i class="fab fa-youtube"></i>
+                    <h3>YouTube Video Idea</h3>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-top: 10px;">Generate a script based on recent patient FAQs.</p>
+                    <button class="tag" style="background: var(--primary); color: white; border: none; margin-top: 15px; cursor: pointer;">Generate Script</button>
+                </div>
+                <div class="tool-card">
+                    <i class="fab fa-instagram"></i>
+                    <h3>Insta Reel Hook</h3>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-top: 10px;">Create a viral hook for Varicose Vein awareness.</p>
+                    <button class="tag" style="background: var(--accent); color: white; border: none; margin-top: 15px; cursor: pointer;">Generate Hook</button>
+                </div>
+                <div class="tool-card">
+                    <i class="fas fa-pen-nib"></i>
+                    <h3>LinkedIn Article</h3>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-top: 10px;">Professional thought leadership on Vascular health.</p>
+                    <button class="tag" style="background: var(--secondary); color: white; border: none; margin-top: 15px; cursor: pointer;">Draft Article</button>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 30px;">
+                <h2>Scheduled Posts</h2>
+                <p style="color: #64748b;">No posts scheduled for this week.</p>
+            </div>
+        </div>
+
+        <!-- Tab: Voice Studio -->
+        <div id="tab-voice" class="tab-content" style="display:none;">
+            <div class="header"><h1>AI Voice Studio</h1></div>
+            <div class="card">
+                <h2>Voice Cloning (Dr. Kapadia)</h2>
+                <p style="margin-bottom: 20px; color: #64748b;">Send personal voice messages to patients using AI voice synthesis.</p>
+                <textarea id="voiceText" class="form-control" placeholder="Enter text to speak..." style="width: 100%; height: 100px; padding: 15px; border-radius: 12px; border: 1px solid #ddd;"></textarea>
+                <button onclick="generateVoice()" style="margin-top: 15px; padding: 15px 30px; background: var(--secondary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700;">Synthesize & Preview</button>
+            </div>
+            <div class="card">
+                <h2>Recent Voice Generations</h2>
+                <div id="voiceHistory" class="enquiry-list"></div>
+            </div>
+        </div>
+
+        <!-- Tab: Social Sync -->
+        <div id="tab-social" class="tab-content" style="display:none;">
+            <div class="header"><h1>Global Social Sync</h1></div>
+            <div class="grid-3">
+                <div class="tool-card" style="border-left: 5px solid #ff0000;">
+                    <i class="fab fa-youtube" style="color:#ff0000"></i>
+                    <h3>YouTube Sync</h3>
+                    <p style="font-size: 0.8rem; opacity: 0.7;">Fetch comments & transcripts</p>
+                    <div style="margin-top: 10px; font-weight: 800; color: var(--success);">CONNECTED</div>
+                </div>
+                <div class="tool-card" style="border-left: 5px solid #e1306c;">
+                    <i class="fab fa-instagram" style="color:#e1306c"></i>
+                    <h3>Instagram Sync</h3>
+                    <p style="font-size: 0.8rem; opacity: 0.7;">Monitor DMs & Mentions</p>
+                    <div style="margin-top: 10px; font-weight: 800; color: var(--success);">CONNECTED</div>
+                </div>
+                <div class="tool-card" style="border-left: 5px solid #25D366;">
+                    <i class="fab fa-whatsapp" style="color:#25D366"></i>
+                    <h3>WhatsApp Automation</h3>
+                    <p style="font-size: 0.8rem; opacity: 0.7;">AI-powered reply drafts</p>
+                    <div style="margin-top: 10px; font-weight: 800; color: var(--warning);">PENDING API</div>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 30px;">
+                <h2>Unified Inbox</h2>
+                <div id="unifiedInbox" class="enquiry-list"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -152,7 +227,8 @@
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             event.currentTarget.classList.add('active');
             document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-            document.getElementById(`tab-${tabId}`).style.display = 'block';
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.style.display = 'block';
         }
 
         async function handleProjectChange() {
@@ -184,66 +260,54 @@
                     div.innerHTML = `
                         <div style="width:100%;">
                             <div style="display:flex; justify-content:space-between;">
-                                <h4>${enq.patient_name}</h4>
+                                <h4 style="font-weight:800;">${enq.patient_name}</h4>
                                 <span class="tag tag-${enq.patient_type}">${enq.patient_type}</span>
                             </div>
-                            <p style="margin:10px 0; color:#475569;">${enq.message}</p>
+                            <p style="margin:10px 0; color:#475569; font-size:0.9rem;">${enq.message}</p>
                             <div style="display:flex; gap:10px;">
-                                <button class="tag" style="background:var(--primary); color:white; border:none; cursor:pointer;" onclick="generateVoiceForEnquiry(${enq.id})">Generate Voice</button>
-                                <button class="tag" style="background:#eee; border:none; cursor:pointer;" onclick="deleteEnquiry(${enq.id})">Delete</button>
+                                <button class="tag" style="background:var(--secondary); color:white; border:none; cursor:pointer;" onclick="switchTab('voice')">Voice Reply</button>
+                                <button class="tag" style="background:#eee; border:none; cursor:pointer;" onclick="deleteEnquiry(${enq.id})">Archive</button>
                             </div>
                         </div>
                     `;
                     container.appendChild(div);
                 });
                 loadAIDrafts(data.enquiries);
-            } catch (e) { console.error('Dashboard load failed', e); }
+            } catch (e) { console.error(e); }
         }
 
         async function loadAIDrafts(enquiries) {
             const container = document.getElementById('aiDraftsContainer');
             container.innerHTML = '';
-            for (const enq of enquiries) {
-                const res = await fetch(`/api/ai/generate-draft/${enq.id}`);
-                const d = await res.json();
-                const div = document.createElement('div');
-                div.className = 'enquiry-item';
-                div.innerHTML = `
-                    <div style="width:100%;">
-                        <h4>Draft for ${enq.patient_name}</h4>
-                        <div style="background:#F8FAFC; padding:15px; border-radius:10px; margin:10px 0;">${d.draft}</div>
-                        <button class="tag" style="background:var(--success); color:white; border:none; cursor:pointer;">Approve & Send</button>
-                    </div>
-                `;
-                container.appendChild(div);
+            for (const enq of enquiries.slice(0, 5)) {
+                try {
+                    const res = await fetch(`/api/ai/generate-draft/${enq.id}`);
+                    const d = await res.json();
+                    const div = document.createElement('div');
+                    div.className = 'enquiry-item';
+                    div.innerHTML = `
+                        <div style="width:100%;">
+                            <h4>Response for ${enq.patient_name}</h4>
+                            <div style="background:#F1F5F9; padding:15px; border-radius:12px; margin:10px 0; font-size:0.85rem; border:1px solid #e2e8f0;">${d.draft}</div>
+                            <button class="tag" style="background:var(--success); color:white; border:none; cursor:pointer;">Approve & Dispatch</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                } catch(e) {}
             }
         }
 
         async function submitManualEnquiry() {
             const msg = document.getElementById('manualEnquiryMsg').value;
-            if (!msg) return alert('Please paste a comment first');
-            const data = {
-                projectId: currentProjectId,
-                patient_name: 'Social Media User',
-                message: msg,
-                platform: document.getElementById('manualPlatform').value,
-                patient_type: 'chronic'
-            };
-            try {
-                const res = await fetch('/api/enquiry', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                if (res.ok) {
-                    document.getElementById('manualEnquiryMsg').value = '';
-                    loadDashboard();
-                }
-            } catch (err) { console.error('Manual sync failed', err); }
+            if (!msg) return;
+            const data = { projectId: currentProjectId, patient_name: 'Social User', message: msg, platform: 'Manual', patient_type: 'general' };
+            await fetch('/api/enquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            document.getElementById('manualEnquiryMsg').value = '';
+            loadDashboard();
         }
 
         async function deleteEnquiry(id) {
-            if (!confirm('Delete?')) return;
+            if (!confirm('Archive?')) return;
             await fetch(`/api/enquiry/${id}`, { method: 'DELETE' });
             loadDashboard();
         }
@@ -253,7 +317,6 @@
                 const res = await fetch(`/api/dashboard/live-stats?projectId=${currentProjectId}`);
                 const d = await res.json();
                 document.getElementById('lsTodayCount').textContent = d.today;
-                document.getElementById('lsAutoRate').textContent = d.autoRate + '%';
             } catch(e) {}
         }
 
