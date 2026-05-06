@@ -242,9 +242,11 @@
         }
 
         async function refreshAll() {
-            await loadSettings();
-            await loadCategories();
-            await loadBrainKnowledge();
+            loadSettings().catch(console.error);
+            loadCategories().catch(console.error);
+            loadBrainKnowledge().catch(console.error);
+            loadGallery('medical').catch(console.error);
+            loadGallery('hospital').catch(console.error);
         }
 
         async function loadSettings() {
@@ -292,9 +294,6 @@
                     document.getElementById('photoPreview').style.display = 'none';
                     document.getElementById('photoPlaceholder').style.display = 'block';
                 }
-
-                loadGallery('medical');
-                loadGallery('hospital');
             } catch (e) { console.error(e); }
         }
 
@@ -333,12 +332,19 @@
         }
 
         async function loadGallery(category) {
+            const container = document.getElementById(`${category}Gallery`);
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 20px; opacity: 0.5;">Loading images...</p>';
             try {
                 const res = await fetch(`/api/gallery/${category}?projectId=${currentProjectId}`);
                 const data = await res.json();
-                const container = document.getElementById(`${category}Gallery`);
                 container.innerHTML = '';
-                (data.images || []).forEach(img => {
+                
+                if (!data.images || data.images.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 20px; opacity: 0.5;">No photos uploaded yet.</p>';
+                    return;
+                }
+
+                data.images.forEach(img => {
                     const isFixed = category === 'hospital' && fixedImageId === img.id;
                     const div = document.createElement('div');
                     div.className = `photo-item ${isFixed ? 'fixed-selection' : ''}`;
@@ -375,7 +381,11 @@
                 const res = await fetch('/api/upload', { method: 'POST', body: fd });
                 if (res.ok) {
                     alert('Upload Success!');
-                    loadSettings();
+                    if (type.startsWith('gallery_')) {
+                        loadGallery(type.split('_')[1]);
+                    } else {
+                        loadSettings();
+                    }
                 } else {
                     const err = await res.json();
                     alert('Upload Error: ' + err.error);
