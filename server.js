@@ -555,8 +555,8 @@ app.post('/api/voice/generate', async (req, res) => {
         console.log(`[Voice] Generating for ${pid}. Key present: ${!!apiKey}`);
 
         if (!apiKey) {
-            console.log('[Voice] No API key found, returning demo music.');
-            return res.json({ success: true, audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' });
+            console.log('[Voice] No API key found.');
+            return res.status(400).json({ success: false, error: 'Please add your ElevenLabs API Key in the Admin Portal (Connectors & Social section) to enable voice generation.' });
         }
 
         const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL`, {
