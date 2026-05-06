@@ -222,6 +222,24 @@ app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 
+// GET all active categories per project
+app.get('/api/enquiry-categories', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
+    try {
+        const result = await pool.query('SELECT * FROM enquiry_categories WHERE is_active = TRUE AND project_id = $1 ORDER BY sort_order', [projectId]);
+        res.json({ categories: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// GET Medical Directory per project
+app.get('/api/medical-directory', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
+    try {
+        const result = await pool.query('SELECT * FROM medical_directory WHERE project_id = $1 ORDER BY condition_name', [projectId]);
+        res.json({ directory: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // API: Get all projects
 app.get('/api/projects', async (req, res) => {
     try {
@@ -272,6 +290,103 @@ app.delete('/api/enquiry-categories/:id', async (req, res) => {
     try {
         await pool.query('UPDATE enquiry_categories SET is_active = FALSE WHERE id = $1', [req.params.id]);
         res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── Gallery & Settings API ──────────────────────────────────────────────────
+
+// GET: Gallery by Category & Project
+app.get('/api/gallery/:category', async (req, res) => {
+    const { category } = req.params;
+    const projectId = req.query.projectId || 'hospital';
+    try {
+        const result = await pool.query(
+            'SELECT * FROM gallery WHERE category = $1 AND project_id = $2 ORDER BY created_at DESC',
+            [category, projectId]
+        );
+        res.json({ images: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// GET: Settings by Project
+app.get('/api/settings', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
+    try {
+        const result = await pool.query('SELECT * FROM settings WHERE project_id = $1', [projectId]);
+        res.json({ settings: result.rows[0] || null });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ────────────────────────────────────────────────────────────────────────────
+
+// ── Dashboard APIs ──────────────────────────────────────────────────────────
+
+// GET: Dashboard Stats
+app.get('/api/dashboard/stats', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
+    try {
+        const total      = await pool.query('SELECT COUNT(*) FROM enquiries WHERE project_id = $1', [projectId]);
+        const anxious    = await pool.query('SELECT COUNT(*) FROM enquiries WHERE anxiety_score >= 2 AND project_id = $1', [projectId]);
+        const chronic    = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'chronic' AND project_id = $1", [projectId]);
+        const master     = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'masterclass' AND project_id = $1", [projectId]);
+        const acute      = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'acute' AND project_id = $1", [projectId]);
+        const general    = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'general' AND project_id = $1", [projectId]);
+
+        res.json({
+            total:       parseInt(total.rows[0].count),
+            anxious:     parseInt(anxious.rows[0].count),
+            chronic:     parseInt(chronic.rows[0].count),
+            masterclass: parseInt(master.rows[0].count),
+            acute:       parseInt(acute.rows[0].count),
+            general:     parseInt(general.rows[0].count)
+        });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// GET: Dashboard Enquiries List
+app.get('/api/dashboard/enquiries', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
+    try {
+        const result = await pool.query('SELECT * FROM enquiries WHERE project_id = $1 ORDER BY created_at DESC', [projectId]);
+        res.json({ enquiries: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// GET: Live Stats (Today's performance)
+app.get('/api/dashboard/live-stats', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
+    try {
+        const today = await pool.query("SELECT COUNT(*) FROM enquiries WHERE created_at >= CURRENT_DATE AND project_id = $1", [projectId]);
+        const yesterday = await pool.query("SELECT COUNT(*) FROM enquiries WHERE created_at >= CURRENT_DATE - 1 AND created_at < CURRENT_DATE AND project_id = $1", [projectId]);
+        
+        const totalToday = parseInt(today.rows[0].count);
+        const autoReplied = await pool.query("SELECT COUNT(*) FROM enquiries WHERE status = 'auto-replied' AND created_at >= CURRENT_DATE AND project_id = $1", [projectId]);
+        const autoRate = totalToday > 0 ? Math.round((parseInt(autoReplied.rows[0].count) / totalToday) * 100) : 0;
+        
+        const topType = await pool.query("SELECT patient_type, COUNT(*) as cnt FROM enquiries WHERE created_at >= CURRENT_DATE AND project_id = $1 GROUP BY patient_type ORDER BY cnt DESC LIMIT 1", [projectId]);
+        const lastEnq = await pool.query("SELECT * FROM enquiries WHERE project_id = $1 ORDER BY created_at DESC LIMIT 1", [projectId]);
+        
+        // Simple keyword analysis
+        const keywordsRes = await pool.query("SELECT message FROM enquiries WHERE created_at >= CURRENT_DATE AND project_id = $1", [projectId]);
+        const wordCount = {};
+        keywordsRes.rows.forEach(r => {
+            r.message.toLowerCase().split(/\s+/).forEach(w => {
+                if (w.length > 4) wordCount[w] = (wordCount[w] || 0) + 1;
+            });
+        });
+        const topKeywords = Object.entries(wordCount).sort((a,b) => b[1]-a[1]).slice(0,6).map(([w]) => w);
+
+        const settings = await pool.query('SELECT auto_pilot FROM settings WHERE project_id = $1', [projectId]);
+
+        res.json({
+            today:        totalToday,
+            yesterday:    parseInt(yesterday.rows[0].count),
+            autoRate,
+            topType:      topType.rows[0] || { patient_type: 'general', cnt: 0 },
+            lastEnquiry:  lastEnq.rows[0] || null,
+            topKeywords,
+            autoPilot:    settings.rows[0]?.auto_pilot || false
+        });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

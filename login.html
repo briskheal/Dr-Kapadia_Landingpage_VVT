@@ -52,6 +52,7 @@
             const data = await res.json();
             if (data.success) {
                 localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('currentProjectId', 'hospital');
                 window.location.href = data.redirect;
             } else {
                 error.style.display = 'block';
