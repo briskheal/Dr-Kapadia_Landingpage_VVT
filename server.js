@@ -42,7 +42,7 @@ async function initDB() {
         await pool.query(`
             CREATE TABLE IF NOT EXISTS settings (
                 id SERIAL PRIMARY KEY,
-                clinic_name TEXT,
+                landing_page TEXT,
                 affiliation TEXT,
                 phone TEXT,
                 logo_url TEXT,
@@ -55,7 +55,8 @@ async function initDB() {
                 video_1 TEXT,
                 video_2 TEXT,
                 gallery_mode TEXT DEFAULT 'scrolling',
-                fixed_image_id INTEGER
+                fixed_image_id INTEGER,
+                auto_pilot BOOLEAN DEFAULT FALSE
             );
             CREATE TABLE IF NOT EXISTS gallery (
                 id SERIAL PRIMARY KEY,
@@ -66,6 +67,7 @@ async function initDB() {
             CREATE TABLE IF NOT EXISTS enquiries (
                 id SERIAL PRIMARY KEY,
                 patient_name TEXT,
+                phone TEXT,
                 message TEXT,
                 platform TEXT,
                 status TEXT,
@@ -95,6 +97,17 @@ async function initDB() {
             ON CONFLICT (condition_name) DO NOTHING;
             INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
         `);
+        await pool.query(`
+            -- ... (existing tables)
+        `);
+
+        // Migration: Add columns to existing tables
+        try { await pool.query('ALTER TABLE settings ADD COLUMN IF NOT EXISTS auto_pilot BOOLEAN DEFAULT FALSE'); } catch (e) {}
+        try { await pool.query('ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS phone TEXT'); } catch (e) {}
+        try { await pool.query('ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS anxiety_score INTEGER DEFAULT 0'); } catch (e) {}
+        // Migration: Rename clinic_name -> landing_page
+        try { await pool.query('ALTER TABLE settings RENAME COLUMN clinic_name TO landing_page'); } catch (e) {}
+        
         console.log('PostgreSQL Tables Initialized');
     } catch (err) {
         console.error('Database Init Error:', err);
@@ -137,7 +150,7 @@ if (process.env.CLOUDINARY_CLOUD_NAME) {
 const upload = multer({ storage: storage });
 
 app.use(express.static(path.join(__dirname)));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 
 // API: Get Settings
@@ -201,28 +214,73 @@ app.get('/api/directory/search', async (req, res) => {
 // API: Generate AI Voice Message
 app.post('/api/voice/generate', async (req, res) => {
     const { text, patient_name } = req.body;
+    const apiKey = process.env.ELEVENLABS_API_KEY;
+
     console.log(`Generating AI Voice for ${patient_name}: "${text}"`);
-    
-    // In production, this calls ElevenLabs API
-    // For now, we simulate success and return a sample audio path
-    setTimeout(() => {
+
+    if (!apiKey) {
+        console.log('No ElevenLabs API Key found. Using simulation mode.');
+        return setTimeout(() => {
+            res.json({ 
+                success: true, 
+                audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+                message: `[SIMULATION] Voice message for ${patient_name} generated successfully.`
+            });
+        }, 2000);
+    }
+
+    try {
+        const voiceId = 'EXAVITQu4vr4xnSDxMaL'; // "Bella" - Pre-made, guaranteed for Free Tier API
+        const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+            method: 'POST',
+            headers: {
+                'xi-api-key': apiKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: text,
+                model_id: 'eleven_multilingual_v2', // Upgraded model (works on Free Tier)
+                voice_settings: { stability: 0.5, similarity_boost: 0.5 }
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail?.message || 'ElevenLabs API Error');
+        }
+
+        const audioBuffer = await response.arrayBuffer();
+        const filename = `voice-${Date.now()}.mp3`;
+        const filePath = path.join(__dirname, 'uploads', filename);
+
+        // Ensure uploads directory exists
+        if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
+            fs.mkdirSync(path.join(__dirname, 'uploads'));
+        }
+
+        fs.writeFileSync(filePath, Buffer.from(audioBuffer));
+
         res.json({ 
             success: true, 
-            audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Placeholder
-            message: `Voice message for ${patient_name} generated successfully in Dr. Kapadia's tone.`
+            audio_url: `/uploads/${filename}`, 
+            message: `Voice message for ${patient_name} generated successfully.`
         });
-    }, 2000);
+
+    } catch (err) {
+        console.error('Voice generation failed:', err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
 // API: Save Settings (UPSERT Logic)
 app.post('/api/settings', async (req, res) => {
-    const { clinicName, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId } = req.body;
+    const { landingPage, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId, autoPilot } = req.body;
     try {
         await pool.query(
-            `INSERT INTO settings (id, clinic_name, affiliation, phone, fb_url, insta_url, linkedin_url, youtube_url, twitter_url, video_1, video_2, gallery_mode, fixed_image_id) 
-             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            `INSERT INTO settings (id, landing_page, affiliation, phone, fb_url, insta_url, linkedin_url, youtube_url, twitter_url, video_1, video_2, gallery_mode, fixed_image_id, auto_pilot) 
+             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
              ON CONFLICT (id) DO UPDATE SET 
-                clinic_name = EXCLUDED.clinic_name, 
+                landing_page = EXCLUDED.landing_page, 
                 affiliation = EXCLUDED.affiliation, 
                 phone = EXCLUDED.phone,
                 fb_url = EXCLUDED.fb_url,
@@ -233,8 +291,9 @@ app.post('/api/settings', async (req, res) => {
                 video_1 = EXCLUDED.video_1,
                 video_2 = EXCLUDED.video_2,
                 gallery_mode = EXCLUDED.gallery_mode,
-                fixed_image_id = EXCLUDED.fixed_image_id`,
-            [clinicName, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId]
+                fixed_image_id = EXCLUDED.fixed_image_id,
+                auto_pilot = EXCLUDED.auto_pilot`,
+            [landingPage, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId, autoPilot]
         );
         res.json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -315,7 +374,7 @@ app.post('/api/webhooks/aisensy', express.json(), (req, res) => {
 
 // API: Submit Enquiry (with Attachment Support)
 app.post('/api/enquiry', upload.single('attachment'), async (req, res) => {
-    const { patient_name, message, platform, urgency, patient_type } = req.body;
+    const { patient_name, phone, message, platform, urgency, patient_type } = req.body;
     const attachment_url = req.file ? (req.file.path || `/uploads/${req.file.filename}`) : null;
     
     // NLP: Detect Patient Type (Emergency, Chronic, Masterclass)
@@ -343,10 +402,28 @@ app.post('/api/enquiry', upload.single('attachment'), async (req, res) => {
     });
 
     try {
+        // Fetch Auto-Pilot Setting
+        const settingsRes = await pool.query('SELECT auto_pilot FROM settings WHERE id = 1');
+        const autoPilotEnabled = settingsRes.rows[0]?.auto_pilot || false;
+        
+        let status = 'new';
+        if (autoPilotEnabled && detectedType === 'chronic' && anxietyScore < 2) {
+            status = 'auto-replied';
+            console.log(`[AUTO-PILOT] Responding to ${patient_name} automatically...`);
+        }
+
         await pool.query(
-            'INSERT INTO enquiries (patient_name, message, platform, status, urgency, patient_type, anxiety_score, attachment_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-            [patient_name, message, platform || 'Website', 'new', (detectedType === 'emergency' ? 'urgent' : 'routine'), detectedType, anxietyScore, attachment_url]
+            'INSERT INTO enquiries (patient_name, phone, message, platform, status, urgency, patient_type, anxiety_score, attachment_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+            [patient_name, phone || 'N/A', message, platform || 'Website', status, (detectedType === 'emergency' ? 'urgent' : 'routine'), detectedType, anxietyScore, attachment_url]
         );
+        res.json({ success: true, auto_replied: status === 'auto-replied' });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// API: Delete Enquiry
+app.delete('/api/enquiry/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM enquiries WHERE id = $1', [req.params.id]);
         res.json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });

@@ -581,7 +581,7 @@
                 const data = await res.json();
                 if (data.settings) {
                     // Update Texts
-                    if (data.settings.clinic_name) document.querySelectorAll('h1')[0].innerText = data.settings.clinic_name;
+                    if (data.settings.landing_page) document.querySelectorAll('h1')[0].innerText = data.settings.landing_page;
                     if (data.settings.phone) document.querySelectorAll('.footer-grid p')[2].innerHTML = `<i class="fas fa-phone" style="color: var(--primary);"></i> ${data.settings.phone}`;
                     
                     // Update Logo
@@ -607,14 +607,17 @@
                     if (data.settings.linkedin_url) socialIcons[2].href = data.settings.linkedin_url;
                     if (data.settings.youtube_url) socialIcons[3].href = data.settings.youtube_url;
 
-                    // Update Featured Videos
+                    // Update Featured Videos — DB takes priority; clears rotation fallback only when a valid link exists
                     const v1 = getYouTubeID(data.settings.video_1);
                     const v2 = getYouTubeID(data.settings.video_2);
                     if (v1 || v2) {
                         rotationConfig.youtubeVideos = [];
                         if (v1) rotationConfig.youtubeVideos.push(v1);
                         if (v2) rotationConfig.youtubeVideos.push(v2);
-                        applyRotation(); // Re-apply with new videos
+                        rotationConfig.dbVideosLoaded = true; // flag: DB has real videos
+                        applyRotation(); // Apply DB videos immediately
+                    } else {
+                        rotationConfig.dbVideosLoaded = false; // no DB video — use fallback rotation
                     }
                 }
 
@@ -665,7 +668,8 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadLiveSettings();
-            applyRotation();
+            // Only use hardcoded rotation fallback if no DB videos were saved
+            if (!rotationConfig.dbVideosLoaded) applyRotation();
 
             // Appointment Form Submission
             const form = document.getElementById('appointmentForm');
