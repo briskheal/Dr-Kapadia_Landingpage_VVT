@@ -269,7 +269,7 @@
                             </div>
                             <p style="margin:10px 0; color:#475569; font-size:0.9rem;">${enq.message}</p>
                             <div style="display:flex; gap:10px;">
-                                <button class="tag" style="background:var(--secondary); color:white; border:none; cursor:pointer;" onclick="switchTab('voice')">Voice Reply</button>
+                                <button class="tag btn-voice-reply" style="background:var(--secondary); color:white; border:none; cursor:pointer;" onclick="generateVoiceForEnquiry(${enq.id})">Voice Reply</button>
                                 <button class="tag" style="background:#eee; border:none; cursor:pointer;" onclick="deleteEnquiry(${enq.id})">Archive</button>
                             </div>
                         </div>
@@ -321,6 +321,15 @@
                 const res = await fetch(`/api/dashboard/live-stats?projectId=${currentProjectId}`);
                 const d = await res.json();
                 document.getElementById('lsTodayCount').textContent = d.today;
+
+                // Handle Voice Enabled Toggle
+                const voiceNav = document.querySelector('.nav-item[onclick*="\'voice\'"]');
+                if (voiceNav) voiceNav.style.display = d.voiceEnabled ? 'flex' : 'none';
+                
+                document.querySelectorAll('.btn-voice-reply').forEach(btn => {
+                    btn.disabled = !d.voiceEnabled;
+                    btn.style.opacity = d.voiceEnabled ? '1' : '0.5';
+                });
             } catch(e) {}
         }
 

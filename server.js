@@ -252,8 +252,8 @@ app.post('/api/settings', async (req, res) => {
     const pid = projectId || 'hospital';
     try {
         await pool.query(
-            `INSERT INTO settings (project_id, landing_page, affiliation, phone, fb_url, insta_url, linkedin_url, youtube_url, twitter_url, video_1, video_2, gallery_mode, fixed_image_id, auto_pilot, clarity_id, ga_id, pixel_id, meta_ads_id, elevenlabs_api_key) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+            `INSERT INTO settings (project_id, landing_page, affiliation, phone, fb_url, insta_url, linkedin_url, youtube_url, twitter_url, video_1, video_2, gallery_mode, fixed_image_id, auto_pilot, clarity_id, ga_id, pixel_id, meta_ads_id, elevenlabs_api_key, voice_enabled) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
              ON CONFLICT (project_id) DO UPDATE SET 
                 landing_page = EXCLUDED.landing_page, 
                 affiliation = EXCLUDED.affiliation, 
@@ -272,8 +272,9 @@ app.post('/api/settings', async (req, res) => {
                 ga_id = EXCLUDED.ga_id,
                 pixel_id = EXCLUDED.pixel_id,
                 meta_ads_id = EXCLUDED.meta_ads_id,
-                elevenlabs_api_key = EXCLUDED.elevenlabs_api_key`,
-            [pid, landingPage, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId, autoPilot, clarityId, gaId, pixelId, metaAdsId, elevenlabsApiKey]
+                elevenlabs_api_key = EXCLUDED.elevenlabs_api_key,
+                voice_enabled = EXCLUDED.voice_enabled`,
+            [pid, landingPage, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId, autoPilot, clarityId, gaId, pixelId, metaAdsId, elevenlabsApiKey, req.body.voiceEnabled]
         );
         res.json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -462,7 +463,7 @@ app.get('/api/dashboard/live-stats', async (req, res) => {
         });
         const topKeywords = Object.entries(wordCount).sort((a,b) => b[1]-a[1]).slice(0,6).map(([w]) => w);
 
-        const settings = await pool.query('SELECT auto_pilot FROM settings WHERE project_id = $1', [projectId]);
+        const settings = await pool.query('SELECT auto_pilot, voice_enabled FROM settings WHERE project_id = $1', [projectId]);
 
         res.json({
             today: parseInt(today.rows[0].count),
@@ -471,7 +472,8 @@ app.get('/api/dashboard/live-stats', async (req, res) => {
             topType: topType.rows[0] || { patient_type: 'general', cnt: 0 },
             lastEnquiry: lastEnq.rows[0] || null,
             topKeywords,
-            autoPilot: settings.rows[0]?.auto_pilot || false
+            autoPilot: settings.rows[0]?.auto_pilot || false,
+            voiceEnabled: settings.rows[0]?.voice_enabled !== false
         });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
