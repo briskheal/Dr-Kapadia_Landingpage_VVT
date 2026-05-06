@@ -79,6 +79,21 @@
     </header>
 
     <div class="container">
+    <div class="admin-card" style="background: linear-gradient(135deg, var(--secondary) 0%, #1e293b 100%); color: white; border: none; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+            <h2 style="color: white; margin-bottom: 5px;"><i class="fas fa-sliders-h"></i> PROJECT CONFIGURATION</h2>
+            <p style="font-size: 0.8rem; opacity: 0.8;">Switch between Hospital, Personal Brand, and Courses to manage independent settings.</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-layer-group" style="color: #38bdf8;"></i>
+            <select id="projectSwitcher" onchange="handleProjectChange()" style="border: none; outline: none; font-weight: 700; color: white; background: transparent; cursor: pointer; font-size: 1rem;">
+                <option value="hospital" style="color: black;">🏥 Dr. Kapadia Hospital</option>
+                <option value="personal_brand" style="color: black;">👤 Personal Brand Hub</option>
+                <option value="patient_courses" style="color: black;">🎓 Healing Patient Courses</option>
+                <option value="doctor_courses" style="color: black;">🩺 Vascular Masterclass</option>
+            </select>
+        </div>
+    </div>
         <!-- Section: Org Details -->
         <div class="admin-card">
             <h2><i class="fas fa-building"></i> Organization Details</h2>
@@ -123,7 +138,48 @@
             </div>
         </div>
 
-        <!-- Section: Medical Case Studies Gallery -->
+        
+    <!-- Section: AI & Data Connectors -->
+    <div class="admin-card">
+        <h2><i class="fas fa-plug"></i> AI & Data Connectors</h2>
+        <p style="font-size: 0.8rem; color: var(--text); opacity: 0.6; margin-bottom: 20px;">Integrate external platforms to sync your Digital Brain with live analytics and brand data.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label><i class="fas fa-chart-line"></i> Microsoft Clarity ID</label>
+                <input type="text" id="clarityId" placeholder="e.g. m3h7j9k2">
+            </div>
+            <div class="form-group">
+                <label><i class="fab fa-google"></i> Google Analytics (GA4) ID</label>
+                <input type="text" id="gaId" placeholder="e.g. G-XXXXXXXXXX">
+            </div>
+            <div class="form-group">
+                <label><i class="fab fa-facebook"></i> Meta Pixel ID</label>
+                <input type="text" id="pixelId" placeholder="e.g. 1234567890">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-ad"></i> Meta Ads Manager ID</label>
+                <input type="text" id="metaAdsId" placeholder="e.g. act_XXXXXXXXXX">
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+                <label><i class="fas fa-microphone"></i> ElevenLabs API Key (Voice Cloning)</label>
+                <input type="password" id="elevenlabsApiKey" placeholder="Enter your ElevenLabs API Key">
+            </div>
+        </div>
+
+        <div style="margin-top: 25px; padding: 15px; background: #F8FAFC; border-radius: 12px; border: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="https://static.canva.com/web/images/843999e1957268d067645d1d6a8b75f8.png" style="width: 30px; height: 30px;">
+                <div>
+                    <p style="font-weight: 700; font-size: 0.9rem; color: var(--secondary);">Canva Visual Design Connector</p>
+                    <p style="font-size: 0.75rem; opacity: 0.6;">Produce visual design outputs according to brand guidelines.</p>
+                </div>
+            </div>
+            <button class="btn" style="padding: 8px 15px; background: #7d2ae8; color: white; border: none; border-radius: 8px; font-weight: 600;">Connect Canva</button>
+        </div>
+    </div>
+
+    <!-- Section: Medical Case Studies Gallery -->
         <div class="admin-card">
             <h2><i class="fas fa-microscope"></i> Medical Case Studies Gallery</h2>
             <p style="font-size: 0.8rem; color: var(--text); opacity: 0.6; margin-bottom: 15px;">Photos of medical procedures or case results.</p>
@@ -285,9 +341,19 @@
 
     <script>
         // Load settings on startup
+        let currentProjectId = localStorage.getItem('currentProjectId') || 'hospital';
+
+        async function handleProjectChange() {
+            currentProjectId = document.getElementById('projectSwitcher').value;
+            localStorage.setItem('currentProjectId', currentProjectId);
+            loadSettings();
+            loadEnquiryCategories();
+        }
+
         async function loadSettings() {
             try {
-                const res = await fetch('/api/settings');
+                document.getElementById('projectSwitcher').value = currentProjectId;
+                const res = await fetch(`/api/settings?projectId=${currentProjectId}`);
                 const data = await res.json();
                 if (data.settings) {
                     document.getElementById('landingPage').value = data.settings.landing_page || '';
@@ -376,6 +442,11 @@
                 twitterLink: document.getElementById('twitterLink').value,
                 video1: document.getElementById('video1').value,
                 video2: document.getElementById('video2').value,
+                clarityId: document.getElementById('clarityId').value,
+                gaId: document.getElementById('gaId').value,
+                pixelId: document.getElementById('pixelId').value,
+                metaAdsId: document.getElementById('metaAdsId').value,
+                elevenlabsApiKey: document.getElementById('elevenlabsApiKey').value,
                 galleryMode: document.querySelector('input[name="galleryMode"]:checked').value,
                 fixedImageId: window.fixedImageId || null,
                 autoPilot: document.getElementById('autoPilot').checked
@@ -474,7 +545,7 @@
                 const res = await fetch('/api/enquiry-categories', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ label, patient_type })
+                    body: JSON.stringify({ label, patient_type, projectId: currentProjectId })
                 });
                 if (res.ok) {
                     document.getElementById('newCatLabel').value = '';

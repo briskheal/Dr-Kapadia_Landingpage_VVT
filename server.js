@@ -40,8 +40,22 @@ app.get('/api/test-db', async (req, res) => {
 async function initDB() {
     try {
         await pool.query(`
+            CREATE TABLE IF NOT EXISTS projects (
+                id TEXT PRIMARY KEY, -- 'hospital', 'personal_brand', etc.
+                name TEXT NOT NULL,
+                description TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            INSERT INTO projects (id, name, description) VALUES 
+            ('hospital', 'Dr. Kapadia Hospital', 'Clinical and patient management for Aadicura Hospital'),
+            ('personal_brand', 'Dr. Sumit Kapadia Brand', 'Personal branding and social media activities'),
+            ('patient_courses', 'Healing Patient Courses', 'Educational content for patients and public'),
+            ('doctor_courses', 'Vascular Masterclass (Pro)', 'Professional training for doctors and surgeons')
+            ON CONFLICT (id) DO NOTHING;
+
             CREATE TABLE IF NOT EXISTS settings (
                 id SERIAL PRIMARY KEY,
+                project_id TEXT REFERENCES projects(id) DEFAULT 'hospital',
                 landing_page TEXT,
                 affiliation TEXT,
                 phone TEXT,
@@ -56,7 +70,13 @@ async function initDB() {
                 video_2 TEXT,
                 gallery_mode TEXT DEFAULT 'scrolling',
                 fixed_image_id INTEGER,
-                auto_pilot BOOLEAN DEFAULT FALSE
+                auto_pilot BOOLEAN DEFAULT FALSE,
+                clarity_id TEXT,
+                ga_id TEXT,
+                pixel_id TEXT,
+                meta_ads_id TEXT,
+                elevenlabs_api_key TEXT,
+                UNIQUE(project_id)
             );
             CREATE TABLE IF NOT EXISTS gallery (
                 id SERIAL PRIMARY KEY,
@@ -122,10 +142,28 @@ async function initDB() {
 
         // Migration: Add columns to existing tables
         try { await pool.query('ALTER TABLE settings ADD COLUMN IF NOT EXISTS auto_pilot BOOLEAN DEFAULT FALSE'); } catch (e) {}
+        try { await pool.query('ALTER TABLE settings ADD COLUMN IF NOT EXISTS project_id TEXT REFERENCES projects(id) DEFAULT \'hospital\''); } catch (e) {}
+        try { await pool.query('ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS project_id TEXT REFERENCES projects(id) DEFAULT \'hospital\''); } catch (e) {}
+        try { await pool.query('ALTER TABLE gallery ADD COLUMN IF NOT EXISTS project_id TEXT REFERENCES projects(id) DEFAULT \'hospital\''); } catch (e) {}
+        try { await pool.query('ALTER TABLE enquiry_categories ADD COLUMN IF NOT EXISTS project_id TEXT REFERENCES projects(id) DEFAULT \'hospital\''); } catch (e) {}
+        try { await pool.query('ALTER TABLE medical_directory ADD COLUMN IF NOT EXISTS project_id TEXT REFERENCES projects(id) DEFAULT \'hospital\''); } catch (e) {}
+        
+        try { await pool.query('ALTER TABLE settings ADD COLUMN IF NOT EXISTS clarity_id TEXT'); } catch (e) {}
+        try { await pool.query('ALTER TABLE settings ADD COLUMN IF NOT EXISTS ga_id TEXT'); } catch (e) {}
+        try { await pool.query('ALTER TABLE settings ADD COLUMN IF NOT EXISTS pixel_id TEXT'); } catch (e) {}
+        try { await pool.query('ALTER TABLE settings ADD COLUMN IF NOT EXISTS meta_ads_id TEXT'); } catch (e) {}
+        try { await pool.query('ALTER TABLE settings ADD COLUMN IF NOT EXISTS elevenlabs_api_key TEXT'); } catch (e) {}
+        
         try { await pool.query('ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS phone TEXT'); } catch (e) {}
         try { await pool.query('ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS anxiety_score INTEGER DEFAULT 0'); } catch (e) {}
         // Migration: Rename clinic_name -> landing_page
         try { await pool.query('ALTER TABLE settings RENAME COLUMN clinic_name TO landing_page'); } catch (e) {}
+
+        // Seed settings for all projects if missing
+        const projects = ['hospital', 'personal_brand', 'patient_courses', 'doctor_courses'];
+        for (const p of projects) {
+            await pool.query('INSERT INTO settings (project_id) VALUES ($1) ON CONFLICT (project_id) DO NOTHING', [p]);
+        }
         
         console.log('PostgreSQL Tables Initialized');
     } catch (err) {
@@ -172,24 +210,34 @@ app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 
+// API: Get all projects
+app.get('/api/projects', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM projects ORDER BY id');
+        res.json({ projects: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // ── Enquiry Categories API ─────────────────────────────────────────────────
 
 // GET all active categories
 app.get('/api/enquiry-categories', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
     try {
-        const result = await pool.query('SELECT * FROM enquiry_categories WHERE is_active = TRUE ORDER BY sort_order, id');
+        const result = await pool.query('SELECT * FROM enquiry_categories WHERE is_active = TRUE AND project_id = $1 ORDER BY sort_order, id', [projectId]);
         res.json({ categories: result.rows });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 // POST add new category
 app.post('/api/enquiry-categories', async (req, res) => {
-    const { label, patient_type } = req.body;
+    const { label, patient_type, projectId } = req.body;
+    const pid = projectId || 'hospital';
     if (!label || !patient_type) return res.status(400).json({ error: 'label and patient_type are required' });
     try {
         const result = await pool.query(
-            'INSERT INTO enquiry_categories (label, patient_type) VALUES ($1, $2) RETURNING *',
-            [label.trim(), patient_type]
+            'INSERT INTO enquiry_categories (label, patient_type, project_id) VALUES ($1, $2, $3) RETURNING *',
+            [label.trim(), patient_type, pid]
         );
         res.json({ success: true, category: result.rows[0] });
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -219,9 +267,10 @@ app.delete('/api/enquiry-categories/:id', async (req, res) => {
 
 // API: Get Settings
 app.get('/api/settings', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
     try {
-        const result = await pool.query('SELECT * FROM settings WHERE id = 1');
-        console.log('Sending Settings to Client:', result.rows[0]);
+        const result = await pool.query('SELECT * FROM settings WHERE project_id = $1', [projectId]);
+        console.log(`Sending Settings [${projectId}] to Client:`, result.rows[0]);
         res.json({ settings: result.rows[0] || {} });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -237,14 +286,15 @@ app.get('/api/gallery/:category', async (req, res) => {
 
 // API: Dashboard Stats
 app.get('/api/dashboard/stats', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
     try {
-        const total      = await pool.query('SELECT COUNT(*) FROM enquiries');
-        const emergency  = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'emergency'");
-        const acute      = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'acute'");
-        const chronic    = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'chronic'");
-        const general    = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'general'");
-        const masterclass= await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'masterclass'");
-        const highAnxiety= await pool.query('SELECT COUNT(*) FROM enquiries WHERE anxiety_score > 5');
+        const total      = await pool.query('SELECT COUNT(*) FROM enquiries WHERE project_id = $1', [projectId]);
+        const emergency  = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'emergency' AND project_id = $1", [projectId]);
+        const acute      = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'acute' AND project_id = $1", [projectId]);
+        const chronic    = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'chronic' AND project_id = $1", [projectId]);
+        const general    = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'general' AND project_id = $1", [projectId]);
+        const masterclass= await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'masterclass' AND project_id = $1", [projectId]);
+        const highAnxiety= await pool.query('SELECT COUNT(*) FROM enquiries WHERE anxiety_score > 5 AND project_id = $1', [projectId]);
         
         res.json({
             total:       total.rows[0].count,
@@ -261,22 +311,24 @@ app.get('/api/dashboard/stats', async (req, res) => {
 
 // API: Dashboard Enquiries
 app.get('/api/dashboard/enquiries', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
     try {
-        const result = await pool.query('SELECT * FROM enquiries ORDER BY created_at DESC LIMIT 10');
+        const result = await pool.query('SELECT * FROM enquiries WHERE project_id = $1 ORDER BY created_at DESC LIMIT 10', [projectId]);
         res.json({ enquiries: result.rows });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 // API: Live Stats Sidebar
 app.get('/api/dashboard/live-stats', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
     try {
         // Today vs Yesterday
-        const today     = await pool.query("SELECT COUNT(*) FROM enquiries WHERE DATE(created_at AT TIME ZONE 'Asia/Kolkata') = CURRENT_DATE");
-        const yesterday = await pool.query("SELECT COUNT(*) FROM enquiries WHERE DATE(created_at AT TIME ZONE 'Asia/Kolkata') = CURRENT_DATE - 1");
+        const today     = await pool.query("SELECT COUNT(*) FROM enquiries WHERE DATE(created_at AT TIME ZONE 'Asia/Kolkata') = CURRENT_DATE AND project_id = $1", [projectId]);
+        const yesterday = await pool.query("SELECT COUNT(*) FROM enquiries WHERE DATE(created_at AT TIME ZONE 'Asia/Kolkata') = CURRENT_DATE - 1 AND project_id = $1", [projectId]);
 
         // Auto-reply rate
-        const autoReplied = await pool.query("SELECT COUNT(*) FROM enquiries WHERE status = 'auto-replied'");
-        const totalAll    = await pool.query('SELECT COUNT(*) FROM enquiries');
+        const autoReplied = await pool.query("SELECT COUNT(*) FROM enquiries WHERE status = 'auto-replied' AND project_id = $1", [projectId]);
+        const totalAll    = await pool.query('SELECT COUNT(*) FROM enquiries WHERE project_id = $1', [projectId]);
         const total = parseInt(totalAll.rows[0].count) || 1;
         const autoRate = Math.round((parseInt(autoReplied.rows[0].count) / total) * 100);
 
@@ -284,16 +336,16 @@ app.get('/api/dashboard/live-stats', async (req, res) => {
         const topType = await pool.query(`
             SELECT patient_type, COUNT(*) as cnt
             FROM enquiries
-            WHERE DATE(created_at AT TIME ZONE 'Asia/Kolkata') = CURRENT_DATE
+            WHERE DATE(created_at AT TIME ZONE 'Asia/Kolkata') = CURRENT_DATE AND project_id = $1
             GROUP BY patient_type ORDER BY cnt DESC LIMIT 1
-        `);
+        `, [projectId]);
 
         // Last patient contact
-        const lastEnq = await pool.query('SELECT patient_name, patient_type, created_at FROM enquiries ORDER BY created_at DESC LIMIT 1');
+        const lastEnq = await pool.query('SELECT patient_name, patient_type, created_at FROM enquiries WHERE project_id = $1 ORDER BY created_at DESC LIMIT 1', [projectId]);
 
         // Top keywords from last 20 messages
-        const recentMsgs = await pool.query('SELECT message FROM enquiries ORDER BY created_at DESC LIMIT 20');
-        const stopWords = new Set(['i','a','the','and','is','in','my','to','of','it','for','on','this','are','have','has','with','that','was','be','from','at','an','been','can','me','what','your','how','do','we','he','she','they','you','will','as','by','or','but','not','so','if','its','about','more','very','just','also','up','out','like','get','all','one','his','her','our','him','them','his','any','no','please','would','could','should','want','need','know','see','tell','give','take','make','go','say','help']);
+        const recentMsgs = await pool.query('SELECT message FROM enquiries WHERE project_id = $1 ORDER BY created_at DESC LIMIT 20', [projectId]);
+        const stopWords = new Set(['i','a','the','and','is','in','my','to','of','it','for','on','this','仗','are','have','has','with','that','was','be','from','at','an','been','can','me','what','your','how','do','we','he','she','they','you','will','as','by','or','but','not','so','if','its','about','more','very','just','also','up','out','like','get','all','one','his','her','our','him','them','his','any','no','please','would','could','should','want','need','know','see','tell','give','take','make','go','say','help']);
         const wordCount = {};
         recentMsgs.rows.forEach(row => {
             (row.message || '').toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/).forEach(w => {
@@ -303,7 +355,7 @@ app.get('/api/dashboard/live-stats', async (req, res) => {
         const topKeywords = Object.entries(wordCount).sort((a,b) => b[1]-a[1]).slice(0,6).map(([w]) => w);
 
         // Auto-pilot status
-        const settings = await pool.query('SELECT auto_pilot FROM settings WHERE id = 1');
+        const settings = await pool.query('SELECT auto_pilot FROM settings WHERE project_id = $1', [projectId]);
 
         res.json({
             today:        parseInt(today.rows[0].count),
@@ -390,14 +442,15 @@ app.post('/api/voice/generate', async (req, res) => {
     }
 });
 
-// API: Save Settings (UPSERT Logic)
+// API: Save Settings (UPSERT Logic per Project)
 app.post('/api/settings', async (req, res) => {
-    const { landingPage, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId, autoPilot } = req.body;
+    const { projectId, landingPage, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId, autoPilot, clarityId, gaId, pixelId, metaAdsId, elevenlabsApiKey } = req.body;
+    const pid = projectId || 'hospital';
     try {
         await pool.query(
-            `INSERT INTO settings (id, landing_page, affiliation, phone, fb_url, insta_url, linkedin_url, youtube_url, twitter_url, video_1, video_2, gallery_mode, fixed_image_id, auto_pilot) 
-             VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-             ON CONFLICT (id) DO UPDATE SET 
+            `INSERT INTO settings (project_id, landing_page, affiliation, phone, fb_url, insta_url, linkedin_url, youtube_url, twitter_url, video_1, video_2, gallery_mode, fixed_image_id, auto_pilot, clarity_id, ga_id, pixel_id, meta_ads_id, elevenlabs_api_key) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+             ON CONFLICT (project_id) DO UPDATE SET 
                 landing_page = EXCLUDED.landing_page, 
                 affiliation = EXCLUDED.affiliation, 
                 phone = EXCLUDED.phone,
@@ -410,8 +463,13 @@ app.post('/api/settings', async (req, res) => {
                 video_2 = EXCLUDED.video_2,
                 gallery_mode = EXCLUDED.gallery_mode,
                 fixed_image_id = EXCLUDED.fixed_image_id,
-                auto_pilot = EXCLUDED.auto_pilot`,
-            [landingPage, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId, autoPilot]
+                auto_pilot = EXCLUDED.auto_pilot,
+                clarity_id = EXCLUDED.clarity_id,
+                ga_id = EXCLUDED.ga_id,
+                pixel_id = EXCLUDED.pixel_id,
+                meta_ads_id = EXCLUDED.meta_ads_id,
+                elevenlabs_api_key = EXCLUDED.elevenlabs_api_key`,
+            [pid, landingPage, affiliation, phone, fbLink, instaLink, linkedinLink, youtubeLink, twitterLink, video1, video2, galleryMode, fixedImageId, autoPilot, clarityId, gaId, pixelId, metaAdsId, elevenlabsApiKey]
         );
         res.json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -419,23 +477,21 @@ app.post('/api/settings', async (req, res) => {
 
 // API: Upload Media
 app.post('/api/upload', upload.single('file'), async (req, res) => {
-    const { type } = req.body;
-    // In Cloudinary, the path is in req.file.path (the full URL)
-    // In Local, the path is /uploads/filename
+    const { type, projectId } = req.body;
+    const pid = projectId || 'hospital';
     const filePath = req.file.path || `/uploads/${req.file.filename}`;
-    console.log(`Uploading file type: ${type} to path: ${filePath}`);
     
     try {
-        // Ensure at least one record exists to update
-        await pool.query('INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING');
+        // Ensure the project settings record exists
+        await pool.query('INSERT INTO settings (project_id) VALUES ($1) ON CONFLICT (project_id) DO NOTHING', [pid]);
 
         if (type === 'logo') {
-            await pool.query('UPDATE settings SET logo_url = $1 WHERE id = 1', [filePath]);
+            await pool.query('UPDATE settings SET logo_url = $1 WHERE project_id = $2', [filePath, pid]);
         } else if (type === 'photo') {
-            await pool.query('UPDATE settings SET photo_url = $1 WHERE id = 1', [filePath]);
+            await pool.query('UPDATE settings SET photo_url = $1 WHERE project_id = $2', [filePath, pid]);
         } else if (type.startsWith('gallery_')) {
             const category = type.split('_')[1];
-            await pool.query('INSERT INTO gallery (image_url, category) VALUES ($1, $2)', [filePath, category]);
+            await pool.query('INSERT INTO gallery (image_url, category, project_id) VALUES ($1, $2, $3)', [filePath, category, pid]);
         }
         res.json({ success: true, filePath: filePath });
     } catch (err) {

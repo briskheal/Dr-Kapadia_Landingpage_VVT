@@ -127,9 +127,21 @@
         <!-- Tab: Overview -->
         <div id="tab-overview" class="tab-content">
             <div class="header">
-            <div>
-                <h1>Global Operations Hub</h1>
-                <p style="color: var(--text-light);">Centralized monitoring of all patient touchpoints.</p>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div>
+                    <h1>Global Operations Hub</h1>
+                    <p style="color: var(--text-light);">Centralized monitoring of all patient touchpoints.</p>
+                </div>
+                <!-- Project Context Switcher -->
+                <div style="margin-left: 20px; background: white; padding: 10px 20px; border-radius: 12px; border: 1px solid #E2E8F0; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <i class="fas fa-layer-group" style="color: var(--primary);"></i>
+                    <select id="projectSwitcher" onchange="handleProjectChange()" style="border: none; outline: none; font-weight: 700; color: var(--secondary); background: transparent; cursor: pointer; font-size: 0.95rem;">
+                        <option value="hospital">🏥 Dr. Kapadia Hospital</option>
+                        <option value="personal_brand">👤 Personal Brand Hub</option>
+                        <option value="patient_courses">🎓 Healing Patient Courses</option>
+                        <option value="doctor_courses">🩺 Vascular Masterclass</option>
+                    </select>
+                </div>
             </div>
             <div style="display: flex; gap: 15px;">
                 <button class="btn" style="padding: 10px 20px; background: white; border: 1px solid #E2E8F0; border-radius: 10px; font-weight: 600;"><i class="fas fa-sync"></i> Refresh Sync</button>
@@ -144,6 +156,8 @@
                 <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fab fa-youtube" style="color: #FF0000;"></i> YouTube (Waiting for Key)</span>
                 <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fab fa-instagram" style="color: #E1306C;"></i> Instagram (Waiting for Key)</span>
                 <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fab fa-linkedin" style="color: #0077B5;"></i> LinkedIn (Waiting for Key)</span>
+                <span id="connClarity" style="font-size: 0.85rem; color: var(--text-light);"><i class="fas fa-search-plus" style="color: #0078D4;"></i> MS Clarity (Disconnected)</span>
+                <span id="connAds" style="font-size: 0.85rem; color: var(--text-light);"><i class="fas fa-ad" style="color: #1877F2;"></i> Meta Ads (Inactive)</span>
                 <span style="font-size: 0.85rem; color: var(--success); font-weight: 700;"><i class="fas fa-check-circle"></i> Website (Connected)</span>
             </div>
         </div>
@@ -316,12 +330,53 @@
         </div>
 
         <!-- Tab: Social Sync -->
-        <div id="tab-social" class="tab-content" style="display: none;">
+                <div id="tab-social" class="tab-content" style="display: none;">
             <div class="header">
-                <h1>Global Social Sync</h1>
-                <p>Connect your YouTube, Instagram, and LinkedIn accounts.</p>
+                <h1>Digital Brain Connectors</h1>
+                <p>Sync live data from social platforms and advertising tools.</p>
             </div>
-            <!-- Move existing Social Sync UI here -->
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
+                <div class="card" style="padding: 20px; border-top: 4px solid #FF0000;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <i class="fab fa-youtube" style="font-size: 2rem; color: #FF0000;"></i>
+                        <span class="tag" style="background: #FEE2E2; color: #DC2626;">OFFLINE</span>
+                    </div>
+                    <h4>YouTube Analytics</h4>
+                    <p style="font-size: 0.8rem; opacity: 0.6; margin: 10px 0;">Ingest video comments and patient education trends.</p>
+                    <button class="btn" style="width: 100%; margin-top: 10px; border: 1px solid #E2E8F0;">Configure API</button>
+                </div>
+                <div class="card" style="padding: 20px; border-top: 4px solid #E1306C;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <i class="fab fa-instagram" style="font-size: 2rem; color: #E1306C;"></i>
+                        <span class="tag" style="background: #FEE2E2; color: #DC2626;">OFFLINE</span>
+                    </div>
+                    <h4>Instagram Insights</h4>
+                    <p style="font-size: 0.8rem; opacity: 0.6; margin: 10px 0;">Sync DM enquiries and brand engagement.</p>
+                    <button class="btn" style="width: 100%; margin-top: 10px; border: 1px solid #E2E8F0;">Configure API</button>
+                </div>
+                <div class="card" style="padding: 20px; border-top: 4px solid #0078D4;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <i class="fas fa-search-plus" style="font-size: 2rem; color: #0078D4;"></i>
+                        <span class="tag" style="background: #FEE2E2; color: #DC2626;">OFFLINE</span>
+                    </div>
+                    <h4>Microsoft Clarity</h4>
+                    <p style="font-size: 0.8rem; opacity: 0.6; margin: 10px 0;">Heatmaps and session recordings for hospital site.</p>
+                    <button class="btn" style="width: 100%; margin-top: 10px; border: 1px solid #E2E8F0;">View Live Feed</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h2><i class="fas fa-brain"></i> Digital Brain Knowledge Base</h2>
+                    <button class="btn btn-primary"><i class="fas fa-sync"></i> Sync All Platforms</button>
+                </div>
+                <div style="padding: 40px; text-align: center; background: #F8FAFC; border-radius: 15px; border: 2px dashed #E2E8F0;">
+                    <i class="fas fa-cloud-download-alt" style="font-size: 3rem; color: var(--text-light); margin-bottom: 20px;"></i>
+                    <h3>Knowledge Feed Empty</h3>
+                    <p style="color: var(--text-light); max-width: 400px; margin: 10px auto;">Connect your platforms above to start ingesting Dr. Kapadia's public advice into the AI Brain.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -336,10 +391,20 @@
             document.getElementById(`tab-${tabId}`).style.display = 'block';
         }
 
+        let currentProjectId = localStorage.getItem('currentProjectId') || 'hospital';
+
+        async function handleProjectChange() {
+            currentProjectId = document.getElementById('projectSwitcher').value;
+            localStorage.setItem('currentProjectId', currentProjectId);
+            loadDashboard();
+            loadLiveStats();
+        }
+
         async function loadDashboard() {
             try {
+                document.getElementById('projectSwitcher').value = currentProjectId;
                 // Load Stats
-                const statsRes = await fetch('/api/dashboard/stats');
+                const statsRes = await fetch(`/api/dashboard/stats?projectId=${currentProjectId}`);
                 const stats = await statsRes.json();
                 document.getElementById('statTotal').innerText      = stats.total;
                 document.getElementById('statAnxious').innerText    = stats.anxious;
@@ -349,7 +414,7 @@
                 document.getElementById('statMasterclass').innerText = stats.masterclass;
 
                 // Load Enquiries
-                const enqRes = await fetch('/api/dashboard/enquiries');
+                const enqRes = await fetch(`/api/dashboard/enquiries?projectId=${currentProjectId}`);
                 const data = await enqRes.json();
                 const container = document.getElementById('enquiryList');
                 container.innerHTML = '';
@@ -590,7 +655,7 @@
 
         async function loadLiveStats() {
             try {
-                const res  = await fetch('/api/dashboard/live-stats');
+                const res  = await fetch(`/api/dashboard/live-stats?projectId=${currentProjectId}`);
                 const d    = await res.json();
 
                 // Timestamp
@@ -642,6 +707,22 @@
                          <span style="opacity:0.5; font-size:0.75rem;">${minsAgo} min${minsAgo !== 1 ? 's' : ''} ago</span>`;
                 } else {
                     document.getElementById('lsLastEnq').textContent = 'No enquiries yet';
+                }
+
+                // Update Connector Status in Header
+                const settingsRes = await fetch(`/api/settings?projectId=${currentProjectId}`);
+                const sData = await settingsRes.json();
+                const s = sData.settings || {};
+                
+                if (s.clarity_id) {
+                    document.getElementById('connClarity').innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> MS Clarity (ACTIVE)';
+                    document.getElementById('connClarity').style.color = 'var(--success)';
+                    document.getElementById('connClarity').style.fontWeight = '700';
+                }
+                if (s.meta_ads_id) {
+                    document.getElementById('connAds').innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Meta Ads (ACTIVE)';
+                    document.getElementById('connAds').style.color = 'var(--success)';
+                    document.getElementById('connAds').style.fontWeight = '700';
                 }
 
                 // Auto-pilot
