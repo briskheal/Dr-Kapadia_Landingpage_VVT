@@ -331,9 +331,17 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     
     try {
         if (type === 'logo') {
-            await pool.query('UPDATE settings SET logo_url = $1 WHERE project_id = $2', [filePath, pid]);
+            await pool.query(
+                `INSERT INTO settings (project_id, logo_url) VALUES ($1, $2)
+                 ON CONFLICT (project_id) DO UPDATE SET logo_url = EXCLUDED.logo_url`,
+                [pid, filePath]
+            );
         } else if (type === 'photo') {
-            await pool.query('UPDATE settings SET photo_url = $1 WHERE project_id = $2', [filePath, pid]);
+            await pool.query(
+                `INSERT INTO settings (project_id, photo_url) VALUES ($1, $2)
+                 ON CONFLICT (project_id) DO UPDATE SET photo_url = EXCLUDED.photo_url`,
+                [pid, filePath]
+            );
         } else if (type.startsWith('gallery_')) {
             const category = type.split('_')[1];
             await pool.query('INSERT INTO gallery (image_url, category, project_id) VALUES ($1, $2, $3)', [filePath, category, pid]);
