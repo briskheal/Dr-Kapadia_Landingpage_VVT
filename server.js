@@ -101,10 +101,22 @@ async function initDB() {
             -- Table: Medical Directory (Dr. Kapadia's expert protocols)
             CREATE TABLE IF NOT EXISTS medical_directory (
                 id SERIAL PRIMARY KEY,
+                project_id TEXT REFERENCES projects(id) DEFAULT 'hospital',
                 condition_name TEXT UNIQUE,
                 diagnosis_logic TEXT,
                 recommended_treatment TEXT,
                 patient_advice TEXT
+            );
+
+            -- Table: Brain Knowledge (The RAG Knowledge Base)
+            CREATE TABLE IF NOT EXISTS brain_knowledge (
+                id SERIAL PRIMARY KEY,
+                project_id TEXT REFERENCES projects(id) DEFAULT 'hospital',
+                source_type TEXT, -- 'youtube', 'instagram', 'manual'
+                title TEXT,
+                content TEXT,
+                keywords TEXT[],
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
             -- Seed Medical Directory
@@ -260,6 +272,89 @@ app.delete('/api/enquiry-categories/:id', async (req, res) => {
     try {
         await pool.query('UPDATE enquiry_categories SET is_active = FALSE WHERE id = $1', [req.params.id]);
         res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ────────────────────────────────────────────────────────────────────────────
+
+// ── AI Brain Ingestion API ───────────────────────────────────────────────────
+
+// GET: Knowledge Base
+app.get('/api/brain/knowledge', async (req, res) => {
+    const projectId = req.query.projectId || 'hospital';
+    try {
+        const result = await pool.query('SELECT * FROM brain_knowledge WHERE project_id = $1 ORDER BY created_at DESC', [projectId]);
+        res.json({ knowledge: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// POST: Ingest Knowledge
+app.post('/api/brain/ingest', async (req, res) => {
+    const { projectId, sourceType, title, content, keywords } = req.body;
+    const pid = projectId || 'hospital';
+    if (!content) return res.status(400).json({ error: 'Content is required' });
+    try {
+        const result = await pool.query(
+            'INSERT INTO brain_knowledge (project_id, source_type, title, content, keywords) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [pid, sourceType || 'manual', title || 'Untitled Note', content, keywords || []]
+        );
+        res.json({ success: true, item: result.rows[0] });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// DELETE: Knowledge Item
+app.delete('/api/brain/knowledge/:id', async (req, res) => {
+    try {
+        await pool.query('DELETE FROM brain_knowledge WHERE id = $1', [req.params.id]);
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── AI Draft Engine (Digital Twin RAG) ──────────────────────────────────────
+
+app.get('/api/ai/generate-draft/:enquiryId', async (req, res) => {
+    try {
+        const enqRes = await pool.query('SELECT * FROM enquiries WHERE id = $1', [req.params.enquiryId]);
+        const enq = enqRes.rows[0];
+        if (!enq) return res.status(404).json({ error: 'Enquiry not found' });
+
+        const projectId = enq.project_id || 'hospital';
+        
+        // Basic RAG: Search knowledge base for keywords in the message
+        // We split message into words and search for matches in content
+        const words = enq.message.toLowerCase().split(/\s+/).filter(w => w.length > 4);
+        let relatedKnowledge = [];
+        
+        if (words.length > 0) {
+            const searchQuery = words.map((w, i) => `$${i + 2}`).join(' | ');
+            const knowledgeRes = await pool.query(
+                `SELECT content, title FROM brain_knowledge 
+                 WHERE project_id = $1 
+                 AND (content ILIKE ANY(ARRAY[${words.map((_, i) => `'% ' || $${i + 2} || ' %'`).join(', ')}]))
+                 LIMIT 2`,
+                [projectId, ...words]
+            );
+            relatedKnowledge = knowledgeRes.rows;
+        }
+
+        // Logic: Build draft
+        let draft = `Hi ${enq.patient_name}, I've reviewed your query about "${enq.message.substring(0, 50)}...". `;
+        
+        if (relatedKnowledge.length > 0) {
+            draft += `I previously discussed a similar topic regarding "${relatedKnowledge[0].title}". My advice remains consistent: ${relatedKnowledge[0].content.substring(0, 200)}... `;
+        } else {
+            draft += `Based on our clinical protocols for ${enq.patient_type} care, `;
+        }
+
+        if (enq.patient_type === 'emergency') {
+            draft += "this requires immediate attention. Please visit the emergency department or call us now.";
+        } else if (enq.patient_type === 'masterclass') {
+            draft += "I would be happy to discuss this further in our upcoming masterclass session. Would you like the registration details?";
+        } else {
+            draft += "I recommend scheduling a consultation so we can examine this in detail. Would you like to check my availability for this week?";
+        }
+
+        res.json({ success: true, draft });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

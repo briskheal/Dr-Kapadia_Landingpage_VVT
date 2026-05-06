@@ -497,11 +497,19 @@
             } catch (e) { console.error('Dashboard load failed', e); }
         }
 
-        function loadAIDrafts(enquiries) {
+        async function loadAIDrafts(enquiries) {
             const container = document.getElementById('aiDraftsContainer');
             container.innerHTML = '';
             
-            enquiries.forEach(enq => {
+            for (const enq of enquiries) {
+                // Fetch dynamic draft from AI Brain
+                let draftText = "...Generating AI Draft...";
+                try {
+                    const draftRes = await fetch(`/api/ai/generate-draft/${enq.id}`);
+                    const draftData = await draftRes.json();
+                    draftText = draftData.draft;
+                } catch(e) { draftText = "Error generating draft."; }
+
                 const draft = document.createElement('div');
                 draft.className = 'enquiry-item';
                 draft.style.background = 'white';
@@ -515,7 +523,7 @@
                             <i class="fab fa-whatsapp"></i> Target: ${enq.phone || 'No phone provided'}
                         </div>
                         <div style="background: #F8FAFC; padding: 15px; border-radius: 10px; border: 1px solid #E2E8F0; margin-bottom: 15px;">
-                            <p id="draft-text-${enq.id}" style="font-size: 0.9rem; line-height: 1.5; color: #475569;">"Hi ${enq.patient_name}, I've reviewed your query about ${enq.message.substring(0, 50)}... I understand this can be concerning. Based on our clinical protocols, I recommend ${enq.patient_type === 'emergency' ? 'immediate consultation' : 'following our chronic care guidelines'}. Would you like me to schedule a call?"</p>
+                            <p id="draft-text-${enq.id}" style="font-size: 0.9rem; line-height: 1.5; color: #475569;">"${draftText}"</p>
                         </div>
                         <div id="audio-container-${enq.id}" style="margin-bottom: 15px;"></div>
                         <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
