@@ -3,25 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Sumit Kapadia | Varicose Vein Specialist in Gujarat</title>
+    <title id="siteTitle">Dr. Sumit Kapadia | Varicose Vein Specialist in Gujarat</title>
     <meta name="description" content="Advanced, patient-centered care for varicose veins in Gujarat. Led by Dr. Sumit Kapadia, experienced vascular & endovascular specialist.">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
     <style>
         :root {
             --primary: #CE176B; 
             --secondary: #014A81;
             --accent: #00ADEF;
             --bg-main: #F8FAFC;
-            --bg-soft: #F1F5F9;
             --bg-mesh: radial-gradient(at 0% 0%, rgba(206, 23, 107, 0.03) 0, transparent 50%), 
                        radial-gradient(at 50% 0%, rgba(1, 74, 129, 0.05) 0, transparent 50%), 
                        radial-gradient(at 100% 0%, rgba(0, 173, 239, 0.03) 0, transparent 50%);
@@ -34,728 +26,159 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Outfit', sans-serif;
-            color: var(--text-dark);
-            line-height: 1.7;
-            overflow-x: hidden;
-            background-color: var(--bg-main);
-            background-image: var(--bg-mesh);
-        }
-
+        body { font-family: 'Outfit', sans-serif; color: var(--text-dark); line-height: 1.7; overflow-x: hidden; background-color: var(--bg-main); background-image: var(--bg-mesh); }
         h1, h2, h3, h4 { font-family: 'Fraunces', serif; font-weight: 600; color: var(--secondary); line-height: 1.1; }
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
         section { padding: clamp(40px, 6vw, 60px) 0; position: relative; }
-
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 12px;
-            padding: 18px 36px; border-radius: 100px; font-weight: 700;
-            text-decoration: none; transition: var(--transition); font-size: 1.05rem; border: none; cursor: pointer;
-        }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 18px 36px; border-radius: 100px; font-weight: 700; text-decoration: none; transition: var(--transition); font-size: 1.05rem; border: none; cursor: pointer; }
         .btn-primary { background-color: var(--primary); color: var(--white); box-shadow: 0 10px 25px rgba(206, 23, 107, 0.2); }
-        .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 30px rgba(206, 23, 107, 0.3); }
-        
         .btn-secondary { background: rgba(1, 74, 129, 0.05); color: var(--secondary); border: 1px solid rgba(1, 74, 129, 0.1); backdrop-filter: blur(10px); }
-        .btn-secondary:hover { background: var(--secondary); color: var(--white); transform: translateY(-3px); }
-
-        /* Floating Contact (Small & Discreet) */
-        .floating-contact { position: fixed; right: 20px; bottom: 80px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
-        .float-btn { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: var(--transition); text-decoration: none; }
-        .float-btn:hover { transform: scale(1.1); }
-        .float-wa { background: #25D366; }
-        .float-call { background: var(--secondary); }
-
-        /* Footer CTA Buttons */
-        .footer-cta { display: flex; gap: 15px; margin-top: 25px; }
-        .footer-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; text-decoration: none; transition: var(--transition); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .footer-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .footer-wa { background: #25D366; }
-        .footer-call { background: var(--secondary); }
-
-        /* Header */
         header { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px) saturate(180%); padding: 10px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
         .logo img { height: clamp(45px, 7vw, 65px); display: block; }
-        
-        /* Stats Bar */
-        .stats-bar { background: var(--secondary); color: white; padding: 40px 0; text-align: center; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
-        .stat-item h2 { color: var(--accent); font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 5px; }
-        .stat-item p { font-size: 0.95rem; font-weight: 500; opacity: 0.9; }
-
-        /* Trust Signals */
-        .trust-badge { display: inline-flex; align-items: center; gap: 10px; background: #fff; padding: 12px 24px; border-radius: 50px; box-shadow: var(--shadow-premium); margin-bottom: 30px; border: 1px solid var(--bg-soft); }
-        .stars { color: #F59E0B; }
-
-        /* Hero */
-        .hero { padding: 10px 0 60px 0; background: transparent; }
         .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
-        .hero-content h1 { font-size: clamp(2.8rem, 7vw, 4.2rem); margin-bottom: 25px; }
-        .hero-content p { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 45px; max-width: 650px; }
         .hero-image img { width: 100%; max-width: 380px; border-radius: 50px; box-shadow: 0 40px 80px rgba(1, 74, 129, 0.2); display: block; margin-left: auto; }
-
-        /* Treatment Cards */
         .treatment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
         .treatment-card { background: white; padding: 40px; border-radius: 40px; border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow-premium); transition: 0.4s; }
         .treatment-card:hover { transform: translateY(-12px); border-color: var(--accent); }
-        .treatment-icon { width: 70px; height: 70px; background: var(--bg-soft); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--accent); margin-bottom: 25px; }
-        .treatment-card h3 { font-size: 1.4rem; margin-bottom: 15px; }
-
-        /* Testimonials */
-        .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; }
-        .testimonial-card { background: white; padding: 40px; border-radius: 35px; box-shadow: var(--shadow-premium); position: relative; }
-        .testimonial-card::before { content: '\f10d'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: 30px; right: 30px; font-size: 2rem; color: var(--bg-soft); }
-        .testimonial-text { font-style: italic; color: var(--text-muted); margin-bottom: 25px; }
-        .testimonial-author { display: flex; align-items: center; gap: 15px; }
-        .author-info h4 { font-size: 1.1rem; }
-        .author-info p { font-size: 0.85rem; color: var(--text-light); }
-
-        /* FAQ */
-        .faq-container { max-width: 900px; margin: 0 auto; }
-        .faq-item { margin-bottom: 15px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); background: white; }
-        .faq-question { width: 100%; padding: 25px; display: flex; justify-content: space-between; align-items: center; border: none; background: none; font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--secondary); cursor: pointer; text-align: left; font-size: 1.1rem; }
-        .faq-answer { padding: 0 25px; max-height: 0; opacity: 0; overflow: hidden; transition: 0.4s; color: var(--text-muted); }
-        .faq-item.active .faq-answer { padding-bottom: 25px; max-height: 400px; opacity: 1; }
-        .faq-item.active i { transform: rotate(180deg); color: var(--primary); }
-
-        /* Affiliation Bar */
-        .affil-bar { background: white; padding: 30px 0; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; text-align: center; }
-        .affil-flex { display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap; opacity: 0.6; filter: grayscale(100%); }
-
-        /* Auto Gallery */
         .gallery-section { padding: 80px 0; background: white; overflow: hidden; }
-        .gallery-wrapper { display: flex; gap: 20px; animation: scroll 40s linear infinite; width: calc(300px * 10); }
+        .gallery-wrapper { display: flex; gap: 20px; animation: scroll 40s linear infinite; width: fit-content; }
         .gallery-item { width: 300px; height: 200px; flex-shrink: 0; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-premium); }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .gallery-item:hover img { transform: scale(1.1); }
-        
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-300px * 5 - 100px)); }
-        }
-
-        .gallery-footer-space { height: 70px; }
-
-        @media (max-width: 992px) {
-            .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; }
-            .hero-image { max-width: 320px; margin: 0 auto; }
-            .hero-btns { justify-content: center; }
-            .hero-content { order: -1; }
-            .hero-content h1 { font-size: 2.5rem; }
-            
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        }
-
-        @media (max-width: 768px) {
-            .footer-grid { grid-template-columns: 1fr !important; gap: 30px !important; }
-            .treatment-grid { grid-template-columns: 1fr; }
-            
-            /* Symptoms Grid Mobile */
-            .symptoms-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
-            
-            /* YouTube Stats Mobile */
-            .youtube-grid { grid-template-columns: 1fr !important; gap: 30px !important; }
-            .youtube-grid > div:first-child { order: -1; } /* Message on top of video */
-            .youtube-grid div[style*="grid-template-columns: repeat(3, 1fr)"] { grid-template-columns: 1fr !important; gap: 10px !important; }
-        }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @media (max-width: 992px) { .hero-grid { grid-template-columns: 1fr; text-align: center; } .hero-image img { margin: 0 auto; } }
     </style>
 </head>
 <body>
 
-    <div class="floating-contact">
-        <a href="https://wa.me/917201014017" class="float-btn float-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
-        <a href="tel:+917201014017" class="float-btn float-call"><i class="fas fa-phone-alt"></i></a>
-    </div>
-
     <header>
         <div class="container">
             <div class="nav-content">
-                <div class="logo">
-                    <img src="logo.png" alt="Dr. Sumit Kapadia Logo">
-                </div>
+                <div class="logo"><img src="logo.png" alt="Logo" id="dynamicLogo"></div>
                 <div style="display: flex; gap: 15px; align-items: center;">
-                    <span style="font-weight: 700; color: var(--secondary); font-size: 0.9rem;" class="hide-mobile"><i class="fas fa-hospital"></i> Aadicura Hospital, Vadodara</span>
-                    <a href="tel:+917201014017" class="btn btn-secondary" style="padding: 10px 20px;"><i class="fas fa-phone-alt"></i> Talk to a Specialist</a>
+                    <span id="dynamicAffiliation" style="font-weight: 700; color: var(--secondary); font-size: 0.9rem;">Aadicura Hospital, Vadodara</span>
+                    <a href="#book" class="btn btn-secondary" style="padding: 10px 20px;"><i class="fas fa-calendar-check"></i> Book Now</a>
                 </div>
             </div>
         </div>
     </header>
 
     <main>
-        <!-- Hero Section -->
         <section class="hero">
             <div class="container">
                 <div class="hero-grid">
                     <div class="hero-content">
-                        <div class="trust-badge" data-aos="fade-down">
-                            <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                            <span style="font-weight: 800;">4.9 Google Rating</span>
-                            <span style="opacity: 0.5;">|</span>
-                            <span>Gold Medalist Surgeon</span>
-                        </div>
-                        <h1>Leg Pain & <i>Varicose Veins</i> Relief in Gujarat</h1>
-                        <p>Experience advanced, non-surgical vein treatments by <b>Dr. Sumit Kapadia</b>—one of India's most trusted vascular specialists with over two decades of clinical excellence.</p>
-                        
+                        <h1 id="dynamicHeroTitle">Leg Pain & Varicose Veins Relief in Gujarat</h1>
+                        <p id="dynamicHeroDesc">Experience advanced, non-surgical vein treatments by <b>Dr. Sumit Kapadia</b>—one of India's most trusted vascular specialists.</p>
                         <div class="hero-btns">
                             <a href="#book" class="btn btn-primary">Book a Private Consultation</a>
-                            <a href="tel:+917201014017" class="btn btn-secondary">Talk to a Specialist</a>
                         </div>
                     </div>
                     <div class="hero-image" data-aos="fade-left">
-                        <img src="" id="heroDynamicImg" alt="Dr. Sumit Kapadia - Vascular Surgeon" onerror="console.error('Failed to load hero image:', this.src)">
+                        <img src="" id="heroDynamicImg" alt="Dr. Sumit Kapadia">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Stats Bar -->
-        <div class="stats-bar" style="padding: 30px 0;">
-            <div class="container">
-                <div class="stats-grid">
-                    <div class="stat-item" data-aos="zoom-in">
-                        <h2>20+</h2>
-                        <p>Years of Experience</p>
-                    </div>
-                    <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
-                        <h2>25,000+</h2>
-                        <p>Patients Treated</p>
-                    </div>
-                    <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
-                        <h2>10,000+</h2>
-                        <p>Surgeries Performed</p>
-                    </div>
-                    <div class="stat-item" data-aos="zoom-in" data-aos-delay="300">
-                        <h2>50M+</h2>
-                        <p>YouTube Views</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Symptoms Alert Section -->
-        <section style="padding: 40px 0; background: var(--white);">
-            <div class="container">
-                <div style="background: var(--bg-soft); border-radius: 40px; padding: 50px; border: 2px solid var(--accent); box-shadow: var(--shadow-premium);">
-                    <div style="text-align: center; margin-bottom: 40px;">
-                        <h2 style="font-size: 2.2rem; color: var(--primary);">Are You Ignoring These Leg Symptoms?</h2>
-                        <p style="color: var(--text-muted); margin-top: 10px;">Check if you are experiencing any of these common vein-related issues.</p>
-                    </div>
-                    <div class="symptoms-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center;">
-                        <div class="symptom-item">
-                            <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i>
-                            <h4 style="font-family: 'Outfit'; font-weight: 700;">Swelling & Heaviness</h4>
-                        </div>
-                        <div class="symptom-item">
-                            <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i>
-                            <h4 style="font-family: 'Outfit'; font-weight: 700;">Night Leg Cramps</h4>
-                        </div>
-                        <div class="symptom-item">
-                            <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i>
-                            <h4 style="font-family: 'Outfit'; font-weight: 700;">Itching or Burning</h4>
-                        </div>
-                        <div class="symptom-item">
-                            <i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i>
-                            <h4 style="font-family: 'Outfit'; font-weight: 700;">Visible Blue Veins</h4>
-                        </div>
-                    </div>
-                    <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(0,0,0,0.05);">
-                        <p style="font-weight: 600; color: var(--secondary); font-size: 1.1rem; line-height: 1.4;">“If you are experiencing even 1–2 of these symptoms, a consultation can help identify the cause early.”</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Treatment Section -->
         <section id="treatments" data-aos="fade-up">
             <div class="container">
-                <div style="text-align: center; margin-bottom: 45px;">
-                    <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem);">Advanced Treatment Options</h2>
-                    <p style="color: var(--text-muted); margin-top: 15px; max-width: 700px; margin-left: auto; margin-right: auto;">We specialize in minimally invasive, painless procedures that require no hospital stay and offer immediate recovery.</p>
-                </div>
-                <div class="treatment-grid">
-                    <div class="treatment-card">
-                        <div class="treatment-icon"><i class="fas fa-tint"></i></div>
-                        <h3>VenaSeal (Medical Glue)</h3>
-                        <p>The latest non-thermal, non-surgical treatment using a specialized medical adhesive to seal diseased veins. 100% painless with no anesthesia required.</p>
-                    </div>
-                    <div class="treatment-card">
-                        <div class="treatment-icon"><i class="fas fa-bolt"></i></div>
-                        <h3>Laser Therapy (EVLA)</h3>
-                        <p>Highly effective laser treatment that closes varicose veins with precision. Quick 45-minute procedure with same-day discharge.</p>
-                    </div>
-                    <div class="treatment-card">
-                        <div class="treatment-icon"><i class="fas fa-syringe"></i></div>
-                        <h3>Sclerotherapy</h3>
-                        <p>Ideal for spider veins and medium-sized varicose veins. A simple injection process that collapses diseased veins for a clear skin appearance.</p>
-                    </div>
+                <div class="treatment-grid" id="treatmentContainer">
+                    <div class="treatment-card"><h3>VenaSeal</h3><p>Latest non-thermal, non-surgical treatment using medical glue.</p></div>
+                    <div class="treatment-card"><h3>Laser Therapy</h3><p>Highly effective laser treatment that closes varicose veins.</p></div>
+                    <div class="treatment-card"><h3>Sclerotherapy</h3><p>Ideal for spider veins and medium-sized varicose veins.</p></div>
                 </div>
             </div>
         </section>
 
-        <!-- Why Choose Section -->
-        <section style="background: var(--white); border-radius: 60px 60px 0 0;" data-aos="fade-up">
-            <div class="container">
-                <div class="hero-grid" style="grid-template-columns: 0.8fr 1.2fr;">
-                    <div class="hero-image">
-                        <img src="clinic.png" alt="Dr. Sumit Kapadia's Clinic">
-                    </div>
-                    <div class="hero-content" style="text-align: left;">
-                        <h2>Why Choose Dr. Sumit Kapadia?</h2>
-                        <p style="margin-top: 20px;">As a Gold Medalist in medical training and a Fellow of the Royal College of Surgeons (FRCS), Dr. Kapadia brings world-class surgical expertise to Vadodara.</p>
-                        <ul style="list-style: none; margin-top: 30px;">
-                            <li style="margin-bottom: 15px; font-weight: 600;"><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Accurate diagnosis with advanced duplex ultrasound</li>
-                            <li style="margin-bottom: 15px; font-weight: 600;"><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> No surgery, no stitches, no scars</li>
-                            <li style="margin-bottom: 15px; font-weight: 600;"><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Comprehensive diabetic foot & DVT care</li>
-                            <li style="margin-bottom: 15px; font-weight: 600;"><i class="fas fa-check-circle" style="color: var(--accent); margin-right: 10px;"></i> Personalized post-procedure guidance</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <section class="gallery-section" id="medicalGallerySection">
+            <div class="container"><h2>Clinical Case Results</h2></div>
+            <div class="gallery-wrapper" id="medicalGallery"></div>
         </section>
 
-        <!-- YouTube Education Section -->
-        <section style="background: white;" data-aos="fade-up">
+        <section id="book" style="padding: 80px 0;">
             <div class="container">
-                <div class="youtube-grid" style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center;">
-                    <div>
-                        <h2 style="margin-bottom: 25px;">Vascular Education on YouTube</h2>
-                        <p style="font-size: 1.15rem; line-height: 1.6; color: var(--text-muted);">Learn about vascular health in a simple, reassuring way with Dr. Sumit Kapadia. From understanding your symptoms to seeing real procedures, everything is explained with clarity and care.</p>
-                        
-                        <!-- Stats Grid -->
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 35px;">
-                            <div style="background: var(--bg-soft); padding: 25px 15px; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.03);">
-                                <h4 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 5px;">322K+</h4>
-                                <p style="font-size: 0.75rem; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px;">Subscribers</p>
-                            </div>
-                            <div style="background: var(--bg-soft); padding: 25px 15px; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.03);">
-                                <h4 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 5px;">59.4M+</h4>
-                                <p style="font-size: 0.75rem; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px;">Views</p>
-                            </div>
-                            <div style="background: var(--bg-soft); padding: 25px 15px; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.03);">
-                                <h4 style="color: var(--primary); font-size: 1.5rem; margin-bottom: 5px;">574</h4>
-                                <p style="font-size: 0.75rem; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px;">Videos</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="position: relative;">
-                        <div style="position: relative; padding-bottom: 56.25%; height: 0; border-radius: 35px; overflow: hidden; box-shadow: 0 20px 50px rgba(1, 74, 129, 0.15); border: 8px solid white;">
-                            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed?listType=user_uploads&list=DrSumitKapadia" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials -->
-        <section style="background: var(--bg-soft);">
-            <div class="container">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <h2>Patient Success Stories</h2>
-                    <p style="color: var(--text-muted); margin-top: 10px;">Thousands of lives transformed through advanced vascular care.</p>
-                </div>
-                <div class="testimonial-grid">
-                    <div class="testimonial-card" data-aos="fade-right">
-                        <p class="testimonial-text">"I was suffering from severe leg pain for 5 years. Dr. Sumit recommended the VenaSeal procedure. It was completely painless and I was back to work the next day!"</p>
-                        <div class="testimonial-author">
-                            <div class="author-info">
-                                <h4>Bharat Patel</h4>
-                                <p>Treated for Varicose Veins</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="testimonial-card" data-aos="fade-left">
-                        <p class="testimonial-text">"The best vascular surgeon in Gujarat. Dr. Kapadia's explanation was very clear and the laser surgery at Aadicura Hospital was seamless. Highly recommend."</p>
-                        <div class="testimonial-author">
-                            <div class="author-info">
-                                <h4>Rakesh Mehta</h4>
-                                <p>Painless Laser Recovery</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq" data-aos="fade-up">
-            <div class="container">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <h2>Frequently Asked Questions</h2>
-                </div>
-                <div class="faq-container">
-                    <div class="faq-item">
-                        <button class="faq-question">What is Varicose Laser Treatment? <i class="fas fa-chevron-down"></i></button>
-                        <div class="faq-answer">
-                            <p>Laser treatment (EVLA) is a minimally invasive procedure where a small laser fiber is inserted into the diseased vein. The laser energy seals the vein shut, and the body naturally redirects blood flow to healthy veins.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">Is the procedure covered by insurance? <i class="fas fa-chevron-down"></i></button>
-                        <div class="faq-answer">
-                            <p>Most major insurance providers cover varicose vein procedures as they are considered medically necessary for symptom relief. Our team at Aadicura Hospital assists with all TPA and insurance paperwork.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">How long is the recovery time? <i class="fas fa-chevron-down"></i></button>
-                        <div class="faq-answer">
-                            <p>Because there are no large incisions, recovery is nearly immediate. Most patients walk out of the hospital on the same day and can resume light daily activities within 24 hours.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">Why should I consult a vascular specialist early? <i class="fas fa-chevron-down"></i></button>
-                        <div class="faq-answer">
-                            <p>Early consultation prevents complications like skin ulcers, blood clots (DVT), and permanent skin discoloration. Timely intervention ensures the best aesthetic and medical outcomes.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Medical Case Studies Section -->
-        <section class="gallery-section" style="padding: 50px 0;" data-aos="fade-up">
-            <div class="container">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <h2 style="font-size: 2.2rem; color: var(--secondary);">Vascular Case Studies & <i>Medical Care</i></h2>
-                    <p style="color: var(--text-muted); margin-top: 10px;">Real results and clinical excellence in patient recovery.</p>
-                </div>
-            </div>
-            <div class="gallery-wrapper" id="medicalGallery">
-                <!-- Dynamic Medical Gallery Items -->
-            </div>
-        </section>
-
-        <!-- Hospital Infrastructure Section -->
-        <section class="gallery-section" style="padding: 50px 0; background: var(--bg-soft);" data-aos="fade-up">
-            <div class="container">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <h2 style="font-size: 2.2rem; color: var(--secondary);">World-Class <i>Infrastructure</i></h2>
-                    <p style="color: var(--text-muted); margin-top: 10px;">Take a tour of our advanced surgical and patient care facilities.</p>
-                </div>
-            </div>
-            <div class="gallery-wrapper" id="hospitalGallery">
-                <!-- Dynamic Hospital Gallery Items -->
-            </div>
-            <div class="gallery-footer-space"></div>
-        </section>
-
-        <!-- Book Appointment Section -->
-        <section id="book" style="padding: 100px 0; background: white;" data-aos="fade-up">
-            <div class="container">
-                <div style="max-width: 900px; margin: 0 auto; background: var(--bg-soft); padding: 60px; border-radius: 40px; box-shadow: var(--shadow-premium);">
-                    <div style="text-align: center; margin-bottom: 50px;">
-                        <h2 style="font-size: 2.5rem; color: var(--secondary);">Request a <i>Private</i> Consultation</h2>
-                        <p style="color: var(--text-muted); margin-top: 15px;">Fill out the form below and our medical team will reach out to schedule your visit.</p>
-                    </div>
-                    <form id="appointmentForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                        <div class="form-group">
-                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">YOUR FULL NAME</label>
-                            <input type="text" id="patientName" required placeholder="Enter your name" style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0;">
-                        </div>
-                        <div class="form-group">
-                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">PHONE NUMBER</label>
-                            <input type="tel" id="patientPhone" required placeholder="Enter your mobile number" style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0;">
-                        </div>
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">REASON FOR ENQUIRY / CATEGORY</label>
-                            <select id="patientType" required style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; background: white;">
-                                <option value="" disabled selected>Loading categories...</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">DESCRIBE YOUR SYMPTOMS OR QUERY</label>
-                            <textarea id="patientMessage" required placeholder="Describe your symptoms or professional query here..." style="width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; min-height: 120px;"></textarea>
-                        </div>
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label style="font-weight: 700; color: var(--secondary); display: block; margin-bottom: 10px;">UPLOAD PHOTO OR PREVIOUS Rx (Optional)</label>
-                            <input type="file" id="patientAttachment" accept="image/*" style="width: 100%; padding: 12px; background: white; border: 1px solid #E2E8F0; border-radius: 12px;">
-                            <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 5px;">*AI will analyze your photo/Rx for Dr. Kapadia's review.</p>
-                        </div>
-                        <div style="grid-column: span 2;">
-                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 20px; font-size: 1.1rem; border-radius: 15px;">Confirm Consultation Request</button>
-                        </div>
+                <div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 30px; box-shadow: var(--shadow-premium);">
+                    <h2 style="text-align:center; margin-bottom:30px;">Request a Consultation</h2>
+                    <form id="appointmentForm" style="display: grid; gap: 20px;">
+                        <input type="text" id="patientName" placeholder="Your Name" required style="padding:15px; border-radius:10px; border:1px solid #ddd;">
+                        <input type="tel" id="patientPhone" placeholder="Phone Number" required style="padding:15px; border-radius:10px; border:1px solid #ddd;">
+                        <select id="patientType" required style="padding:15px; border-radius:10px; border:1px solid #ddd;"></select>
+                        <textarea id="patientMessage" placeholder="Describe your query..." required style="padding:15px; border-radius:10px; border:1px solid #ddd; min-height:100px;"></textarea>
+                        <input type="file" id="patientAttachment" style="padding:10px;">
+                        <button type="submit" class="btn btn-primary">Send Request</button>
                     </form>
-                </div>
-            </div>
-        </section>
-
-        <!-- Final CTA -->
-        <section class="final-cta">
-            <div class="container">
-                <div style="background: var(--secondary); padding: 100px 40px; border-radius: 60px; text-align: center; color: white; position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(0, 173, 239, 0.1); border-radius: 50%;"></div>
-                    <h2 style="color: white; margin-bottom: 25px; font-size: clamp(2rem, 5vw, 3.5rem);">Restore Your Leg Health Today</h2>
-                    <p style="opacity: 0.9; margin-bottom: 45px; max-width: 650px; margin-left: auto; margin-right: auto; font-size: 1.2rem;">Join 25,000+ satisfied patients who chose Dr. Sumit Kapadia for world-class vascular care.</p>
-                    <div class="hero-btns" style="justify-content: center;">
-                        <a href="#book" class="btn btn-primary" style="padding: 20px 45px; font-size: 1.2rem;">Book a Private Consultation</a>
-                    </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer style="background: white; padding: 50px 0; border-top: 1px solid #f1f5f9;">
+    <footer style="background: var(--secondary); color: white; padding: 40px 0; text-align: center;">
         <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; text-align: left;" class="footer-grid">
-                <div>
-                    <h3 style="margin-bottom: 20px;">Dr. Sumit Kapadia</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Vascular & Endovascular Surgeon with 20+ years of expertise in minimally invasive vein treatments.</p>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 20px;">Clinic Locations</h4>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Aadicura Hospital, Near Akota Garden, Vadodara, Gujarat</p>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 20px;">Contact Us</h4>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-phone" style="color: var(--primary);"></i> +91 72010 14017</p>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-envelope" style="color: var(--primary);"></i> info@drsumitkapadia.com</p>
-                </div>
-            </div>
-            <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #f1f5f9; text-align: center;">
-                <div style="display: flex; justify-content: center; gap: 25px; margin-bottom: 25px;">
-                    <a href="#" style="color: var(--text-light); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#CE176B'" onmouseout="this.style.color='var(--text-light)'"><i class="fab fa-instagram"></i></a>
-                    <a href="#" style="color: var(--text-light); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#CE176B'" onmouseout="this.style.color='var(--text-light)'"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" style="color: var(--text-light); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#CE176B'" onmouseout="this.style.color='var(--text-light)'"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" style="color: var(--text-light); font-size: 1.3rem; transition: 0.3s;" onmouseover="this.style.color='#CE176B'" onmouseout="this.style.color='var(--text-light)'"><i class="fab fa-youtube"></i></a>
-                </div>
-                <p style="font-size: 0.85rem; color: var(--text-light);">&copy; 2026 Dr. Sumit Kapadia. Medical consultation is required before any procedure.</p>
-            </div>
+            <p>&copy; 2026 Dr. Sumit Kapadia. Powered by Digital Twin v1.0</p>
         </div>
     </footer>
 
-    <!-- AOS Script -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ duration: 1000, once: true, easing: 'ease-out-cubic' });
+        AOS.init();
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('p') || 'hospital';
 
-        // FAQ Toggle Logic
-        document.querySelectorAll('.faq-question').forEach(button => {
-            button.addEventListener('click', () => {
-                const item = button.parentElement;
-                item.classList.toggle('active');
-                document.querySelectorAll('.faq-item').forEach(other => {
-                    if (other !== item) other.classList.remove('active');
-                });
-            });
-        });
-    </script>
+        async function loadContent() {
+            try {
+                // Settings
+                const sRes = await fetch(`/api/settings?projectId=${projectId}`);
+                const sData = await sRes.json();
+                const s = sData.settings || {};
 
-    <!-- Content Rotation Script (5-Day Interval) -->
-    <script>
-        const rotationConfig = {
-            heroImages: [],
-            youtubeVideos: [
-                'zH0rB1N4Uto',
-                'l6XW332-9vM',
-                '90M346_4R94'
-            ],
-            intervalDays: 5
+                if (s.landing_page) {
+                    document.getElementById('siteTitle').innerText = s.landing_page;
+                    document.getElementById('dynamicHeroTitle').innerText = s.landing_page;
+                }
+                if (s.affiliation) document.getElementById('dynamicAffiliation').innerText = s.affiliation;
+                if (s.logo_url) document.getElementById('dynamicLogo').src = s.logo_url;
+                if (s.photo_url) document.getElementById('heroDynamicImg').src = s.photo_url;
+
+                // Gallery
+                const gRes = await fetch(`/api/gallery/medical?projectId=${projectId}`);
+                const gData = await gRes.json();
+                const gCont = document.getElementById('medicalGallery');
+                if (gData.images && gData.images.length > 0) {
+                    const imgs = [...gData.images, ...gData.images]; // Duplicate for loop
+                    gCont.innerHTML = imgs.map(i => `<div class="gallery-item"><img src="${i.image_url}"></div>`).join('');
+                }
+
+                // Categories
+                const cRes = await fetch(`/api/enquiry-categories?projectId=${projectId}`);
+                const cData = await cRes.json();
+                const cSelect = document.getElementById('patientType');
+                if (cData.categories && cData.categories.length > 0) {
+                    cSelect.innerHTML = cData.categories.map(c => `<option value="${c.patient_type}">${c.label}</option>`).join('');
+                } else {
+                    cSelect.innerHTML = '<option value="general">General Query</option>';
+                }
+            } catch (e) { console.error('Load failed', e); }
+        }
+
+        document.getElementById('appointmentForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const fd = new FormData();
+            fd.append('projectId', projectId);
+            fd.append('patient_name', document.getElementById('patientName').value);
+            fd.append('phone', document.getElementById('patientPhone').value);
+            fd.append('message', document.getElementById('patientMessage').value);
+            fd.append('patient_type', document.getElementById('patientType').value);
+            const file = document.getElementById('patientAttachment').files[0];
+            if (file) fd.append('attachment', file);
+
+            try {
+                const res = await fetch('/api/enquiry', { method: 'POST', body: fd });
+                if (res.ok) alert('Request Sent!');
+            } catch (e) { alert('Failed to send'); }
         };
 
-        function applyRotation() {
-            const cycle = Math.floor(Date.now() / (1000 * 60 * 60 * 24 * rotationConfig.intervalDays));
-            
-            const heroImg = document.querySelector('.hero-image img');
-            if (heroImg && rotationConfig.heroImages.length > 0) {
-                heroImg.src = rotationConfig.heroImages[cycle % rotationConfig.heroImages.length];
-            }
-            
-            const youtubeIframe = document.querySelector('.youtube-grid iframe');
-            if (youtubeIframe && rotationConfig.youtubeVideos.length > 0) {
-                const videoId = rotationConfig.youtubeVideos[cycle % rotationConfig.youtubeVideos.length];
-                youtubeIframe.src = `https://www.youtube.com/embed/${videoId}`;
-            }
-        }
-
-        function getYouTubeID(url) {
-            if (!url) return null;
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
-
-        async function loadLiveSettings() {
-            try {
-                // Use 'hospital' context for the main landing page
-                const res = await fetch('/api/settings?projectId=hospital');
-                const data = await res.json();
-                const s = data.settings;
-                
-                if (s) {
-                    // Inject Microsoft Clarity if ID exists
-                    if (s.clarity_id) {
-                        (function(c,l,a,r,i,t,y){
-                            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                        })(window, document, "clarity", "script", s.clarity_id);
-                    }
-                    
-                    // Inject Google Analytics if ID exists
-                    if (s.ga_id) {
-                        const script = document.createElement('script');
-                        script.async = true;
-                        script.src = "https://www.googletagmanager.com/gtag/js?id=" + s.ga_id;
-                        document.head.appendChild(script);
-                        window.dataLayer = window.dataLayer || [];
-                        function gtag(){dataLayer.push(arguments);}
-                        gtag('js', new Date());
-                        gtag('config', s.ga_id);
-                    }
-                    
-                    // Update Texts
-                    if (s.landing_page) document.querySelectorAll('h1')[0].innerText = s.landing_page;
-                    if (s.phone) document.querySelectorAll('.footer-grid p')[2].innerHTML = `<i class="fas fa-phone" style="color: var(--primary);"></i> ${s.phone}`;
-                    
-                    // Update Logo
-                    if (s.logo_url) {
-                        const logo = document.querySelector('.logo img');
-                        if (logo) logo.src = s.logo_url;
-                    }
-                    
-                    // Update Hero Photo
-                    if (s.photo_url) {
-                        const hero = document.getElementById('heroDynamicImg');
-                        if (hero) hero.src = s.photo_url;
-                        // Also add to rotation if needed
-                        if (!rotationConfig.heroImages.includes(s.photo_url)) {
-                            rotationConfig.heroImages.unshift(s.photo_url);
-                        }
-                    }
-
-                    // Update Social Links
-                    const socialIcons = document.querySelectorAll('.footer-grid + div div a');
-                    if (s.insta_url) socialIcons[0].href = s.insta_url;
-                    if (s.fb_url) socialIcons[1].href = s.fb_url;
-                    if (s.linkedin_url) socialIcons[2].href = s.linkedin_url;
-                    if (s.youtube_url) socialIcons[3].href = s.youtube_url;
-
-                    // Update Featured Videos
-                    const v1 = getYouTubeID(s.video_1);
-                    const v2 = getYouTubeID(s.video_2);
-                    if (v1 || v2) {
-                        rotationConfig.youtubeVideos = [];
-                        if (v1) rotationConfig.youtubeVideos.push(v1);
-                        if (v2) rotationConfig.youtubeVideos.push(v2);
-                        rotationConfig.dbVideosLoaded = true;
-                        applyRotation();
-                    } else {
-                        rotationConfig.dbVideosLoaded = false;
-                    }
-
-
-                // Load Medical Gallery
-                const medRes = await fetch('/api/gallery/medical');
-                const medData = await medRes.json();
-                const medContainer = document.getElementById('medicalGallery');
-                if (medContainer && medData.images.length > 0) {
-                    medContainer.innerHTML = '';
-                    const allImages = [...medData.images, ...medData.images, ...medData.images];
-                    allImages.forEach(img => {
-                        const div = document.createElement('div');
-                        div.className = 'gallery-item';
-                        div.innerHTML = `<img src="${img.image_url}" alt="Medical">`;
-                        medContainer.appendChild(div);
-                    });
-                }
-
-                // Load Hospital Gallery
-                const hospRes = await fetch('/api/gallery/hospital');
-                const hospData = await hospRes.json();
-                const hospContainer = document.getElementById('hospitalGallery');
-                const mode = data.settings.gallery_mode || 'scrolling';
-                const fixedId = data.settings.fixed_image_id;
-
-                if (hospContainer && hospData.images.length > 0) {
-                    hospContainer.innerHTML = '';
-                    
-                    if (mode === 'fixed' && fixedId) {
-                        const fixedImg = hospData.images.find(i => i.id === fixedId) || hospData.images[0];
-                        hospContainer.style.animation = 'none';
-                        hospContainer.style.justifyContent = 'center';
-                        hospContainer.innerHTML = `<div class="gallery-item" style="width: 80%; height: 400px;"><img src="${fixedImg.image_url}" alt="Fixed Infrastructure"></div>`;
-                    } else {
-                        // Continuous Scroll
-                        hospContainer.style.animation = 'scroll 40s linear infinite';
-                        const allImages = [...hospData.images, ...hospData.images, ...hospData.images];
-                        allImages.forEach(img => {
-                            const div = document.createElement('div');
-                            div.className = 'gallery-item';
-                            div.innerHTML = `<img src="${img.image_url}" alt="Hospital">`;
-                            hospContainer.appendChild(div);
-                        });
-                    }
-                }
-            } catch (e) { console.error('Failed to load live settings', e); }
-        }
-
-        // Load enquiry categories from admin-managed DB
-        async function loadEnquiryCategories() {
-            const select = document.getElementById('patientType');
-            try {
-                const res  = await fetch('/api/enquiry-categories?projectId=hospital');
-                const data = await res.json();
-                if (data.categories && data.categories.length > 0) {
-                    select.innerHTML = '';
-                    data.categories.forEach(cat => {
-                        const opt = document.createElement('option');
-                        opt.value = cat.patient_type;
-                        opt.textContent = cat.label;
-                        select.appendChild(opt);
-                    });
-                } else { throw new Error('empty'); }
-            } catch(e) {
-                select.innerHTML = `
-                    <option value="general">General Appointment / Consultation</option>
-                    <option value="chronic">Varicose Veins / Leg Swelling (Chronic)</option>
-                    <option value="acute">Active Symptoms – Pain, Ulcer, Wound</option>
-                    <option value="emergency">Emergency – Sudden Pain, DVT, Bleeding</option>
-                    <option value="masterclass">Professional / Student – Education &amp; Masterclass</option>
-                `;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            await Promise.all([loadLiveSettings(), loadEnquiryCategories()]);
-            // Only use hardcoded rotation fallback if no DB videos were saved
-            if (!rotationConfig.dbVideosLoaded) applyRotation();
-
-            // Appointment Form Submission
-            const form = document.getElementById('appointmentForm');
-            if (form) {
-                form.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const submitBtn = form.querySelector('button');
-                    submitBtn.innerText = 'Sending Request...';
-                    submitBtn.disabled = true;
-
-                    const formData = new FormData();
-                    formData.append('projectId', 'hospital');
-                    formData.append('patient_name', document.getElementById('patientName').value);
-                    formData.append('message', `Phone: ${document.getElementById('patientPhone').value} | Message: ${document.getElementById('patientMessage').value}`);
-                    formData.append('platform', 'Website');
-                    formData.append('patient_type', document.getElementById('patientType').value);
-                    formData.append('urgency', document.getElementById('patientType').value === 'emergency' ? 'urgent' : 'routine');
-                    
-                    const fileInput = document.getElementById('patientAttachment');
-                    if (fileInput.files[0]) {
-                        formData.append('attachment', fileInput.files[0]);
-                    }
-
-                    try {
-                        const res = await fetch('/api/enquiry', {
-                            method: 'POST',
-                            body: formData
-                        });
-                        if (res.ok) {
-                            alert('Consultation Request Sent Successfully! We will call you soon.');
-                            form.reset();
-                        }
-                    } catch (err) { alert('Error sending request. Please try again.'); }
-                    submitBtn.innerText = 'Confirm Consultation Request';
-                    submitBtn.disabled = false;
-                });
-            }
-        });
+        loadContent();
     </script>
 </body>
 </html>
