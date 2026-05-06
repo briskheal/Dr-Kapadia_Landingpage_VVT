@@ -542,20 +542,31 @@ app.get('/api/ai/generate-draft/:enquiryId', async (req, res) => {
 });
 
 app.post('/api/voice/generate', async (req, res) => {
-    const { text, patient_name } = req.body;
-    const apiKey = process.env.ELEVENLABS_API_KEY;
-    if (!apiKey) {
-        return setTimeout(() => {
-            res.json({ success: true, audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' });
-        }, 1000);
-    }
+    const { text, projectId } = req.body;
+    const pid = projectId || 'hospital';
+    
     try {
+        // 1. Try to get key from DB for this project
+        const settings = await pool.query('SELECT elevenlabs_api_key FROM settings WHERE project_id = $1', [pid]);
+        let apiKey = settings.rows[0]?.elevenlabs_api_key || process.env.ELEVENLABS_API_KEY;
+
+        console.log(`[Voice] Generating for ${pid}. Key present: ${!!apiKey}`);
+
+        if (!apiKey) {
+            console.log('[Voice] No API key found, returning demo music.');
+            return res.json({ success: true, audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' });
+        }
+
         const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL`, {
             method: 'POST',
             headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' },
             body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2' })
         });
-        if (!response.ok) throw new Error('ElevenLabs API Error');
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`ElevenLabs API Error: ${response.status} - ${errorText}`);
+        }
         const audioBuffer = await response.arrayBuffer();
         const filename = `voice-${Date.now()}.mp3`;
         fs.writeFileSync(path.join(__dirname, 'uploads', filename), Buffer.from(audioBuffer));

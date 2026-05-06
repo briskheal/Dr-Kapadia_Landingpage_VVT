@@ -338,7 +338,7 @@
                 const res = await fetch('/api/voice/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text, patient_name: 'Patient' })
+                    body: JSON.stringify({ text, projectId: currentProjectId })
                 });
                 const d = await res.json();
                 if (d.success) {
