@@ -26,43 +26,35 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
 
-        /* Header */
         .admin-header { background: var(--secondary); color: white; padding: 20px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
         .admin-header h1 { font-size: 1.2rem; font-weight: 700; }
 
-        /* Container */
         .container { max-width: 800px; margin: 20px auto; padding: 0 20px; }
 
-        /* Card Style */
         .admin-card { background: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid var(--border); }
         .admin-card h2 { font-size: 1.1rem; margin-bottom: 20px; color: var(--secondary); display: flex; align-items: center; gap: 10px; }
 
-        /* Forms */
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: var(--text); opacity: 0.7; }
         .form-control { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Outfit', sans-serif; font-size: 1rem; transition: 0.3s; }
         .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(0, 173, 239, 0.1); }
 
-        /* Upload Placeholder */
         .upload-zone { border: 2px dashed var(--border); border-radius: 15px; padding: 30px; text-align: center; cursor: pointer; transition: 0.3s; background: var(--bg); }
         .upload-zone:hover { border-color: var(--accent); background: #F0F9FF; }
         .upload-zone i { font-size: 2rem; color: var(--text); opacity: 0.3; margin-bottom: 10px; }
         .upload-zone p { font-size: 0.9rem; font-weight: 600; opacity: 0.6; }
 
-        /* Photo Grid */
         .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
         .photo-item { aspect-ratio: 1; border-radius: 10px; background: #eee; position: relative; overflow: hidden; }
         .photo-item img { width: 100%; height: 100%; object-fit: cover; }
-        .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(239, 68, 68, 0.9); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 0.7rem; }
+        .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(239, 68, 68, 0.9); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 0.7rem; z-index: 10; }
         .fixed-selection { border: 4px solid var(--primary); }
 
-        /* Action Bar */
-        .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; border-top: 1px solid var(--border); display: flex; gap: 15px; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); z-index: 1000; }
-        .btn { flex: 1; padding: 16px; border-radius: 15px; font-weight: 700; border: none; cursor: pointer; font-family: 'Outfit', sans-serif; transition: 0.3s; }
+        .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 10px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); z-index: 1000; }
+        .btn { flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; font-family: 'Outfit', sans-serif; transition: 0.3s; font-size: 0.9rem; }
         .btn-save { background: var(--primary); color: white; }
         .btn-preview { background: var(--bg); color: var(--secondary); border: 1px solid var(--border); }
 
-        /* Switches */
         .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -70,7 +62,6 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(26px); }
 
-        /* Category pill type colours */
         .type-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:700; text-transform:uppercase; }
         .type-general    { background:#F0FDF4; color:#16A34A; }
         .type-acute      { background:#FFF7ED; color:#EA580C; }
@@ -90,184 +81,133 @@
     </header>
 
     <div class="container">
-        <!-- Project Context Switcher -->
-        <div class="admin-card" style="background: linear-gradient(135deg, var(--secondary) 0%, #1e293b 100%); color: white; border: none; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between;">
-            <div>
-                <h2 style="color: white; margin-bottom: 5px;"><i class="fas fa-sliders-h"></i> PROJECT CONFIGURATION</h2>
-                <p style="font-size: 0.8rem; opacity: 0.8;">Switch between Hospital, Personal Brand, and Courses.</p>
-            </div>
-            <div style="background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; gap: 12px;">
-                <i class="fas fa-layer-group" style="color: #38bdf8;"></i>
-                <select id="projectSwitcher" onchange="handleProjectChange()" style="border: none; outline: none; font-weight: 700; color: white; background: transparent; cursor: pointer; font-size: 1rem;">
-                    <option value="hospital" style="color: black;">🏥 Dr. Kapadia Hospital</option>
-                    <option value="personal_brand" style="color: black;">👤 Personal Brand Hub</option>
-                    <option value="patient_courses" style="color: black;">🎓 Healing Patient Courses</option>
+        <!-- Project Switcher -->
+        <div class="admin-card" style="background: linear-gradient(135deg, var(--secondary) 0%, #1e293b 100%); color: white; border: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="color: white; margin-bottom: 5px;"><i class="fas fa-sliders-h"></i> PROJECT CONFIGURATION</h2>
+                    <p style="font-size: 0.8rem; opacity: 0.8;">Manage Hospital, Personal Brand, or Courses.</p>
+                </div>
+                <select id="projectSwitcher" onchange="handleProjectChange()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px; border-radius: 10px; font-weight: 700; outline: none; cursor: pointer;">
+                    <option value="hospital" style="color: black;">🏥 Hospital Portal</option>
+                    <option value="personal_brand" style="color: black;">👤 Personal Brand</option>
+                    <option value="patient_courses" style="color: black;">🎓 Patient Courses</option>
                     <option value="doctor_courses" style="color: black;">🩺 Vascular Masterclass</option>
                 </select>
             </div>
         </div>
 
-        <!-- Section: Org Details -->
+        <!-- Org Details -->
         <div class="admin-card">
             <h2><i class="fas fa-building"></i> Organization Details</h2>
             <div class="form-group">
                 <label>LANDING PAGE TITLE</label>
-                <input type="text" id="landingPage" class="form-control" placeholder="e.g. Dr. Sumit Kapadia - Vascular Specialist">
+                <input type="text" id="landingPage" class="form-control">
             </div>
             <div class="form-group">
                 <label>HOSPITAL AFFILIATION</label>
-                <input type="text" id="affiliation" class="form-control" placeholder="e.g. Aadicura Hospital, Vadodara">
+                <input type="text" id="affiliation" class="form-control">
             </div>
             <div class="form-group">
                 <label>CONTACT PHONE</label>
-                <input type="tel" id="phone" class="form-control" placeholder="+91 00000 00000">
+                <input type="tel" id="phone" class="form-control">
             </div>
         </div>
 
-        <!-- Section: Branding -->
+        <!-- Branding -->
         <div class="admin-card">
-            <h2><i class="fas fa-image"></i> Branding Images</h2>
+            <h2><i class="fas fa-image"></i> Branding</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="form-group">
-                    <label>CLINIC LOGO</label>
-                    <div class="upload-zone" onclick="triggerUpload('logoInput')" style="height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                        <img id="logoPreview" style="display:none; max-height: 100%; max-width: 100%;">
-                        <div id="logoPlaceholder">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <p>Logo</p>
-                        </div>
+                    <label>LOGO</label>
+                    <div class="upload-zone" onclick="triggerUpload('logoInput')">
+                        <img id="logoPreview" style="display:none; max-width: 100%; max-height: 80px;">
+                        <div id="logoPlaceholder"><i class="fas fa-upload"></i><p>Upload Logo</p></div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>HERO PHOTO</label>
-                    <div class="upload-zone" onclick="triggerUpload('photoInput')" style="height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                        <img id="photoPreview" style="display:none; max-height: 100%; max-width: 100%;">
-                        <div id="photoPlaceholder">
-                            <i class="fas fa-user-md"></i>
-                            <p>Photo</p>
-                        </div>
+                    <div class="upload-zone" onclick="triggerUpload('photoInput')">
+                        <img id="photoPreview" style="display:none; max-width: 100%; max-height: 80px;">
+                        <div id="photoPlaceholder"><i class="fas fa-user-md"></i><p>Upload Photo</p></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Section: AI Brain -->
+        <!-- Knowledge Base -->
         <div class="admin-card">
-            <h2><i class="fas fa-brain"></i> AI Brain Knowledge Base</h2>
-            <div style="background: #F8FAFC; padding: 20px; border-radius: 15px; border: 1px solid #E2E8F0; margin-bottom: 25px;">
-                <div class="form-group">
-                    <label>Source Title</label>
-                    <input type="text" id="brainTitle" class="form-control" placeholder="e.g. YouTube: Varicose Vein Myths">
-                </div>
-                <div class="form-group">
-                    <label>Source Type</label>
-                    <select id="brainSourceType" class="form-control">
-                        <option value="youtube">YouTube Transcript</option>
-                        <option value="instagram">Instagram Post</option>
-                        <option value="manual">Manual Entry</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Content</label>
-                    <textarea id="brainContent" class="form-control" style="height: 120px;" placeholder="Paste content here..."></textarea>
-                </div>
-                <button class="btn btn-save" onclick="ingestKnowledge()" style="width: 100%;"><i class="fas fa-download"></i> INGEST INTO BRAIN</button>
+            <h2><i class="fas fa-brain"></i> Knowledge Base</h2>
+            <div style="background: #f1f5f9; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                <input type="text" id="brainTitle" class="form-control" placeholder="Source Title" style="margin-bottom: 10px;">
+                <select id="brainSourceType" class="form-control" style="margin-bottom: 10px;">
+                    <option value="youtube">YouTube</option>
+                    <option value="manual">Manual</option>
+                </select>
+                <textarea id="brainContent" class="form-control" placeholder="Paste knowledge here..." style="height: 100px; margin-bottom: 10px;"></textarea>
+                <button class="btn btn-save" onclick="ingestKnowledge()">Ingest Knowledge</button>
             </div>
-            <div id="brainKnowledgeFeed" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            <div id="brainKnowledgeFeed"></div>
         </div>
 
-        <!-- Section: Gallery -->
+        <!-- Galleries -->
         <div class="admin-card">
             <h2><i class="fas fa-images"></i> Medical Gallery</h2>
-            <div class="upload-zone" onclick="triggerUpload('medicalGalleryInput')" style="margin-bottom: 15px;">
-                <i class="fas fa-upload"></i>
-                <p>Upload Medical Photos</p>
+            <div class="upload-zone" onclick="triggerUpload('medicalGalleryInput')" style="margin-bottom: 10px;">
+                <i class="fas fa-upload"></i><p>Add Medical Photos</p>
             </div>
             <div class="photo-grid" id="medicalGallery"></div>
         </div>
 
         <div class="admin-card">
             <h2><i class="fas fa-hospital"></i> Infrastructure Gallery</h2>
-            <div style="margin-bottom: 20px; padding: 15px; background: var(--bg); border-radius: 15px; border: 1px solid #E2E8F0;">
-                <label style="font-weight: 700; display: block; margin-bottom: 10px;">DISPLAY MODE</label>
-                <div style="display: flex; gap: 20px;">
-                    <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="galleryMode" value="scrolling" checked> Scrolling</label>
-                    <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="galleryMode" value="fixed"> Fixed</label>
-                </div>
+            <div style="margin-bottom: 15px; padding: 10px; background: #f1f5f9; border-radius: 10px; display: flex; gap: 20px;">
+                <label><input type="radio" name="galleryMode" value="scrolling" checked> Scrolling</label>
+                <label><input type="radio" name="galleryMode" value="fixed"> Fixed Image</label>
             </div>
-            <div class="upload-zone" onclick="triggerUpload('hospitalGalleryInput')" style="margin-bottom: 15px;">
-                <i class="fas fa-upload"></i>
-                <p>Upload Hospital Photos</p>
+            <div class="upload-zone" onclick="triggerUpload('hospitalGalleryInput')" style="margin-bottom: 10px;">
+                <i class="fas fa-upload"></i><p>Add Hospital Photos</p>
             </div>
             <div class="photo-grid" id="hospitalGallery"></div>
         </div>
 
-        <!-- Section: Enquiry Categories -->
+        <!-- Enquiry Categories -->
         <div class="admin-card">
             <h2><i class="fas fa-tags"></i> Enquiry Categories</h2>
-            <div id="categoryList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;"></div>
-            <div style="background:#F8FAFC; border-radius:15px; padding:15px; border:1px dashed var(--border);">
-                <div style="display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:end;">
-                    <input type="text" id="newCatLabel" class="form-control" placeholder="Category Label">
-                    <select id="newCatType" class="form-control">
-                        <option value="general">General</option>
-                        <option value="acute">Acute</option>
-                        <option value="chronic">Chronic</option>
-                        <option value="emergency">Emergency</option>
-                        <option value="masterclass">Masterclass</option>
-                    </select>
-                    <button onclick="addCategory()" class="btn btn-save" style="padding: 12px 20px;"><i class="fas fa-plus"></i></button>
-                </div>
+            <div id="categoryList" style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="newCatLabel" class="form-control" placeholder="New Label">
+                <select id="newCatType" class="form-control" style="width: 120px;">
+                    <option value="general">General</option>
+                    <option value="acute">Acute</option>
+                    <option value="chronic">Chronic</option>
+                    <option value="emergency">Emergency</option>
+                    <option value="masterclass">Pro</option>
+                </select>
+                <button class="btn btn-save" onclick="addCategory()" style="padding: 10px 20px;">Add</button>
             </div>
         </div>
 
-        <!-- Section: AI Connectors -->
+        <!-- Social & AI -->
         <div class="admin-card">
-            <h2><i class="fas fa-plug"></i> AI & Data Connectors</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="form-group">
-                    <label>Clarity ID</label>
-                    <input type="text" id="clarityId" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>GA4 ID</label>
-                    <input type="text" id="gaId" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Meta Pixel ID</label>
-                    <input type="text" id="pixelId" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Meta Ads ID</label>
-                    <input type="text" id="metaAdsId" class="form-control">
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>ElevenLabs API Key</label>
-                    <input type="password" id="elevenlabsApiKey" class="form-control">
-                </div>
+            <h2><i class="fas fa-plug"></i> Connectors & Social</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <input type="text" id="clarityId" class="form-control" placeholder="Clarity ID">
+                <input type="text" id="gaId" class="form-control" placeholder="GA4 ID">
+                <input type="url" id="fbLink" class="form-control" placeholder="Facebook URL">
+                <input type="url" id="instaLink" class="form-control" placeholder="Instagram URL">
+                <input type="url" id="linkedinLink" class="form-control" placeholder="LinkedIn URL">
+                <input type="url" id="youtubeLink" class="form-control" placeholder="YouTube URL">
+                <input type="text" id="video1" class="form-control" placeholder="Featured Video ID 1">
+                <input type="text" id="video2" class="form-control" placeholder="Featured Video ID 2">
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #F0F9FF; border-radius: 12px; border: 1px solid var(--accent);">
-                <span>AI Auto-Pilot Mode</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #ecfdf5; border-radius: 12px; border: 1px solid #10b981;">
+                <span style="font-weight: 700; color: #065f46;">Auto-Pilot Mode</span>
                 <label class="switch"><input type="checkbox" id="autoPilot"><span class="slider"></span></label>
             </div>
-        </div>
-
-        <!-- Section: Social Links -->
-        <div class="admin-card">
-            <h2><i class="fas fa-share-nodes"></i> Social Links</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <input type="url" id="fbLink" class="form-control" placeholder="Facebook">
-                <input type="url" id="instaLink" class="form-control" placeholder="Instagram">
-                <input type="url" id="linkedinLink" class="form-control" placeholder="LinkedIn">
-                <input type="url" id="youtubeLink" class="form-control" placeholder="YouTube">
-                <input type="url" id="twitterLink" class="form-control" placeholder="Twitter" style="grid-column: span 2;">
-            </div>
             <div class="form-group" style="margin-top: 15px;">
-                <label>Featured Videos (YouTube IDs)</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="video1" class="form-control" placeholder="Video 1 ID">
-                    <input type="text" id="video2" class="form-control" placeholder="Video 2 ID">
-                </div>
+                <label>ElevenLabs API Key</label>
+                <input type="password" id="elevenlabsApiKey" class="form-control">
             </div>
         </div>
     </div>
@@ -289,6 +229,10 @@
         async function handleProjectChange() {
             currentProjectId = document.getElementById('projectSwitcher').value;
             localStorage.setItem('currentProjectId', currentProjectId);
+            await refreshAll();
+        }
+
+        async function refreshAll() {
             await loadSettings();
             await loadCategories();
             await loadBrainKnowledge();
@@ -308,18 +252,16 @@
                 document.getElementById('instaLink').value = s.insta_url || '';
                 document.getElementById('linkedinLink').value = s.linkedin_url || '';
                 document.getElementById('youtubeLink').value = s.youtube_url || '';
-                document.getElementById('twitterLink').value = s.twitter_url || '';
                 document.getElementById('video1').value = s.video_1 || '';
                 document.getElementById('video2').value = s.video_2 || '';
                 document.getElementById('clarityId').value = s.clarity_id || '';
                 document.getElementById('gaId').value = s.ga_id || '';
-                document.getElementById('pixelId').value = s.pixel_id || '';
-                document.getElementById('metaAdsId').value = s.meta_ads_id || '';
                 document.getElementById('elevenlabsApiKey').value = s.elevenlabs_api_key || '';
                 document.getElementById('autoPilot').checked = s.auto_pilot || false;
                 
                 const mode = s.gallery_mode || 'scrolling';
-                document.querySelector(`input[name="galleryMode"][value="\${mode}"]`).checked = true;
+                const radio = document.querySelector(`input[name="galleryMode"][value="${mode}"]`);
+                if (radio) radio.checked = true;
                 fixedImageId = s.fixed_image_id;
 
                 if (s.logo_url) {
@@ -342,7 +284,7 @@
 
                 loadGallery('medical');
                 loadGallery('hospital');
-            } catch (e) { console.error('Load settings failed', e); }
+            } catch (e) { console.error(e); }
         }
 
         async function saveSettings() {
@@ -357,13 +299,10 @@
                 instaLink: document.getElementById('instaLink').value,
                 linkedinLink: document.getElementById('linkedinLink').value,
                 youtubeLink: document.getElementById('youtubeLink').value,
-                twitterLink: document.getElementById('twitterLink').value,
                 video1: document.getElementById('video1').value,
                 video2: document.getElementById('video2').value,
                 clarityId: document.getElementById('clarityId').value,
                 gaId: document.getElementById('gaId').value,
-                pixelId: document.getElementById('pixelId').value,
-                metaAdsId: document.getElementById('metaAdsId').value,
                 elevenlabsApiKey: document.getElementById('elevenlabsApiKey').value,
                 galleryMode: document.querySelector('input[name="galleryMode"]:checked').value,
                 fixedImageId: fixedImageId,
@@ -383,21 +322,21 @@
 
         async function loadGallery(category) {
             try {
-                const res = await fetch(\`/api/gallery/\${category}?projectId=\${currentProjectId}\`);
+                const res = await fetch(`/api/gallery/${category}?projectId=${currentProjectId}`);
                 const data = await res.json();
-                const container = document.getElementById(\`\${category}Gallery\`);
+                const container = document.getElementById(`${category}Gallery`);
                 container.innerHTML = '';
                 (data.images || []).forEach(img => {
                     const isFixed = category === 'hospital' && fixedImageId === img.id;
                     const div = document.createElement('div');
-                    div.className = \`photo-item \${isFixed ? 'fixed-selection' : ''}\`;
-                    div.innerHTML = \`
-                        <img src="\${img.image_url}" onclick="\${category === 'hospital' ? \`setFixedImage(\${img.id})\` : ''}">
-                        <button class="remove-btn" onclick="deletePhoto(\${img.id}, '\${category}')"><i class="fas fa-times"></i></button>
-                    \`;
+                    div.className = `photo-item ${isFixed ? 'fixed-selection' : ''}`;
+                    div.innerHTML = `
+                        <img src="${img.image_url}" onclick="${category === 'hospital' ? `setFixedImage(${img.id})` : ''}">
+                        <button class="remove-btn" onclick="deletePhoto(${img.id}, '${category}')"><i class="fas fa-times"></i></button>
+                    `;
                     container.appendChild(div);
                 });
-            } catch (e) { console.error('Gallery load failed', e); }
+            } catch (e) { console.error(e); }
         }
 
         function setFixedImage(id) {
@@ -406,9 +345,9 @@
         }
 
         async function deletePhoto(id, category) {
-            if (!confirm('Delete photo?')) return;
+            if (!confirm('Delete?')) return;
             try {
-                await fetch(\`/api/gallery/\${id}\`, { method: 'DELETE' });
+                await fetch(`/api/gallery/${id}`, { method: 'DELETE' });
                 loadGallery(category);
             } catch (e) { alert('Delete failed'); }
         }
@@ -425,30 +364,33 @@
                 if (res.ok) {
                     alert('Upload Success!');
                     loadSettings();
+                } else {
+                    const err = await res.json();
+                    alert('Upload Error: ' + err.error);
                 }
-            } catch (e) { alert('Upload failed'); }
+            } catch (e) { alert('Network error'); }
         }
 
         function triggerUpload(id) { document.getElementById(id).click(); }
 
-        const TYPE_LABELS = { general:'General', acute:'Acute', chronic:'Chronic', emergency:'Emergency', masterclass:'Masterclass' };
         async function loadCategories() {
             try {
-                const res = await fetch(\`/api/enquiry-categories?projectId=\${currentProjectId}\`);
+                const res = await fetch(`/api/enquiry-categories?projectId=${currentProjectId}`);
                 const data = await res.json();
                 const list = document.getElementById('categoryList');
                 list.innerHTML = '';
+                const labels = { general:'General', acute:'Acute', chronic:'Chronic', emergency:'Emergency', masterclass:'Pro' };
                 (data.categories || []).forEach(cat => {
                     const div = document.createElement('div');
-                    div.style.cssText = 'display:flex; align-items:center; gap:10px; background:white; padding:10px 15px; border-radius:12px; border:1px solid var(--border);';
-                    div.innerHTML = \`
-                        <span style="flex:1; font-weight:600;">\${cat.label}</span>
-                        <span class="type-badge type-\${cat.patient_type}">\${TYPE_LABELS[cat.patient_type] || cat.patient_type}</span>
-                        <button onclick="deleteCategory(\${cat.id})" style="background:none; border:none; color:#EF4444; cursor:pointer;"><i class="fas fa-times"></i></button>
-                    \`;
+                    div.style.cssText = 'display:flex; align-items:center; gap:10px; background:white; padding:8px 12px; border-radius:10px; border:1px solid #e2e8f0;';
+                    div.innerHTML = `
+                        <span style="flex:1; font-size:0.9rem; font-weight:600;">${cat.label}</span>
+                        <span class="type-badge type-${cat.patient_type}">${labels[cat.patient_type] || cat.patient_type}</span>
+                        <button onclick="deleteCategory(${cat.id})" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fas fa-times"></i></button>
+                    `;
                     list.appendChild(div);
                 });
-            } catch (e) { console.error('Categories load failed', e); }
+            } catch (e) { console.error(e); }
         }
 
         async function addCategory() {
@@ -468,27 +410,27 @@
 
         async function deleteCategory(id) {
             try {
-                await fetch(\`/api/enquiry-categories/\${id}\`, { method: 'DELETE' });
+                await fetch(`/api/enquiry-categories/${id}`, { method: 'DELETE' });
                 loadCategories();
             } catch (e) { alert('Delete failed'); }
         }
 
         async function loadBrainKnowledge() {
             try {
-                const res = await fetch(\`/api/brain/knowledge?projectId=\${currentProjectId}\`);
+                const res = await fetch(`/api/brain/knowledge?projectId=${currentProjectId}`);
                 const data = await res.json();
-                const container = document.getElementById('brainKnowledgeFeed');
-                container.innerHTML = '';
+                const feed = document.getElementById('brainKnowledgeFeed');
+                feed.innerHTML = '';
                 (data.knowledge || []).forEach(item => {
                     const div = document.createElement('div');
-                    div.style.cssText = 'padding:12px; background:white; border-radius:10px; border:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center;';
-                    div.innerHTML = \`
-                        <div><p style="font-size:0.85rem; font-weight:700;">\${item.title}</p><p style="font-size:0.7rem; opacity:0.6;">\${item.source_type.toUpperCase()}</p></div>
-                        <button onclick="deleteKnowledge(\${item.id})" style="background:none; border:none; color:#EF4444; cursor:pointer;"><i class="fas fa-trash-alt"></i></button>
-                    \`;
-                    container.appendChild(div);
+                    div.style.cssText = 'padding:10px; background:white; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;';
+                    div.innerHTML = `
+                        <div style="font-size:0.8rem;"><strong>${item.title}</strong> (${item.source_type})</div>
+                        <button onclick="deleteKnowledge(${item.id})" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fas fa-trash"></i></button>
+                    `;
+                    feed.appendChild(div);
                 });
-            } catch (e) { console.error('Brain load failed', e); }
+            } catch (e) { console.error(e); }
         }
 
         async function ingestKnowledge() {
@@ -510,14 +452,14 @@
 
         async function deleteKnowledge(id) {
             try {
-                await fetch(\`/api/brain/knowledge/\${id}\`, { method: 'DELETE' });
+                await fetch(`/api/brain/knowledge/${id}`, { method: 'DELETE' });
                 loadBrainKnowledge();
             } catch (e) { alert('Delete failed'); }
         }
 
         function handleLogout() { localStorage.removeItem('adminToken'); window.location.href = '/login'; }
 
-        window.onload = () => { loadSettings(); loadCategories(); loadBrainKnowledge(); };
+        window.onload = refreshAll;
     </script>
 </body>
 </html>

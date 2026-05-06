@@ -19,6 +19,7 @@
                        radial-gradient(at 100% 0%, rgba(0, 173, 239, 0.03) 0, transparent 50%);
             --text-dark: #0F172A;
             --text-muted: #475569;
+            --text-light: #94A3B8;
             --white: #FFFFFF;
             --shadow-premium: 0 20px 40px rgba(15, 23, 42, 0.05);
             --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -30,51 +31,75 @@
         h1, h2, h3, h4 { font-family: 'Fraunces', serif; font-weight: 600; color: var(--secondary); line-height: 1.1; }
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
         section { padding: clamp(40px, 6vw, 60px) 0; position: relative; }
+        
         .btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 18px 36px; border-radius: 100px; font-weight: 700; text-decoration: none; transition: var(--transition); font-size: 1.05rem; border: none; cursor: pointer; }
         .btn-primary { background-color: var(--primary); color: var(--white); box-shadow: 0 10px 25px rgba(206, 23, 107, 0.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(206, 23, 107, 0.3); }
         .btn-secondary { background: rgba(1, 74, 129, 0.05); color: var(--secondary); border: 1px solid rgba(1, 74, 129, 0.1); backdrop-filter: blur(10px); }
+
+        /* Floating Contact */
+        .floating-contact { position: fixed; right: 20px; bottom: 80px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
+        .float-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.15); transition: var(--transition); text-decoration: none; }
+        .float-btn:hover { transform: scale(1.15) rotate(5deg); }
+        .float-wa { background: #25D366; }
+        .float-call { background: var(--secondary); }
+
         header { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px) saturate(180%); padding: 10px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
         .logo img { height: clamp(45px, 7vw, 65px); display: block; }
+        
         .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
         .hero-image img { width: 100%; max-width: 380px; border-radius: 50px; box-shadow: 0 40px 80px rgba(1, 74, 129, 0.2); display: block; margin-left: auto; }
         
-        /* Stats Bar */
         .stats-bar { background: var(--secondary); color: white; padding: 30px 0; text-align: center; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
         .stat-item h2 { color: var(--accent); font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 5px; }
 
-        /* Gallery */
+        .treatment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .treatment-card { background: white; padding: 40px; border-radius: 40px; border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow-premium); transition: 0.4s; }
+        .treatment-card:hover { transform: translateY(-12px); border-color: var(--accent); }
+
         .gallery-section { padding: 60px 0; background: white; overflow: hidden; }
         .gallery-wrapper { display: flex; gap: 20px; animation: scroll 40s linear infinite; width: fit-content; }
-        .gallery-item { width: 300px; height: 200px; flex-shrink: 0; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-premium); }
+        .gallery-item { width: 320px; height: 220px; flex-shrink: 0; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-premium); background: #eee; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* FAQ */
         .faq-item { margin-bottom: 15px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); background: white; }
         .faq-question { width: 100%; padding: 25px; display: flex; justify-content: space-between; align-items: center; border: none; background: none; font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--secondary); cursor: pointer; text-align: left; }
         .faq-answer { padding: 0 25px; max-height: 0; opacity: 0; overflow: hidden; transition: 0.4s; }
         .faq-item.active .faq-answer { padding-bottom: 25px; max-height: 400px; opacity: 1; }
 
-        @media (max-width: 992px) { .hero-grid { grid-template-columns: 1fr; text-align: center; } .hero-image img { margin: 0 auto; } }
+        footer { background: white; padding: 80px 0 30px; border-top: 1px solid #f1f5f9; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
+        .footer-social { display: flex; gap: 15px; }
+        .footer-social a { width: 40px; height: 40px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: var(--secondary); transition: 0.3s; text-decoration: none; font-size: 1.1rem; }
+        .footer-social a:hover { background: var(--primary); color: white; transform: translateY(-3px); }
+
+        @media (max-width: 992px) { .hero-grid { grid-template-columns: 1fr; text-align: center; } .hero-image img { margin: 0 auto; } .hide-mobile { display: none; } }
     </style>
 </head>
 <body>
+
+    <div class="floating-contact">
+        <a href="https://wa.me/917201014017" id="floatWa" class="float-btn float-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="tel:+917201014017" id="floatCall" class="float-btn float-call"><i class="fas fa-phone-alt"></i></a>
+    </div>
 
     <header>
         <div class="container">
             <div class="nav-content">
                 <div class="logo"><img src="logo.png" alt="Logo" id="dynamicLogo"></div>
                 <div style="display: flex; gap: 15px; align-items: center;">
-                    <span id="dynamicAffiliation" style="font-weight: 700; color: var(--secondary); font-size: 0.9rem;">Aadicura Hospital, Vadodara</span>
-                    <a href="#book" class="btn btn-secondary" style="padding: 10px 20px;"><i class="fas fa-calendar-check"></i> Book Now</a>
+                    <span id="dynamicAffiliation" style="font-weight: 700; color: var(--secondary); font-size: 0.9rem;" class="hide-mobile">Aadicura Hospital, Vadodara</span>
+                    <a href="tel:+917201014017" id="headerCall" class="btn btn-secondary" style="padding: 10px 20px;"><i class="fas fa-phone-alt"></i> Call Specialist</a>
                 </div>
             </div>
         </div>
     </header>
 
     <main>
-        <!-- Hero Section -->
+        <!-- Hero -->
         <section class="hero">
             <div class="container">
                 <div class="hero-grid">
@@ -85,18 +110,19 @@
                         </div>
                         <h1 id="dynamicHeroTitle">Leg Pain & Varicose Veins Relief in Gujarat</h1>
                         <p id="dynamicHeroDesc">Experience advanced, non-surgical vein treatments by <b>Dr. Sumit Kapadia</b>—one of India's most trusted vascular specialists.</p>
-                        <div class="hero-btns">
-                            <a href="#book" class="btn btn-primary">Book a Private Consultation</a>
+                        <div class="hero-btns" style="display: flex; gap: 15px; margin-top: 30px;">
+                            <a href="#book" class="btn btn-primary">Book Consultation</a>
+                            <a href="tel:+917201014017" id="heroCall" class="btn btn-secondary">Direct Call</a>
                         </div>
                     </div>
                     <div class="hero-image" data-aos="fade-left">
-                        <img src="" id="heroDynamicImg" alt="Dr. Sumit Kapadia">
+                        <img src="" id="heroDynamicImg" alt="Dr. Sumit Kapadia" style="object-fit: cover;">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Stats Bar -->
+        <!-- Stats -->
         <div class="stats-bar">
             <div class="container">
                 <div class="stats-grid">
@@ -108,38 +134,32 @@
             </div>
         </div>
 
-        <!-- Symptoms Alert -->
+        <!-- Symptoms -->
         <section style="background: white;">
             <div class="container">
                 <div style="background: var(--bg-soft); border-radius: 40px; padding: 50px; border: 2px solid var(--accent);">
                     <h2 style="text-align: center; margin-bottom: 40px; color: var(--primary);">Are You Ignoring These Symptoms?</h2>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center;">
-                        <div><i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem;"></i><h4>Swelling & Heaviness</h4></div>
-                        <div><i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem;"></i><h4>Night Leg Cramps</h4></div>
-                        <div><i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem;"></i><h4>Visible Blue Veins</h4></div>
-                        <div><i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem;"></i><h4>Non-healing Ulcers</h4></div>
+                        <div><i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i><h4>Swelling & Heaviness</h4></div>
+                        <div><i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i><h4>Night Leg Cramps</h4></div>
+                        <div><i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i><h4>Visible Blue Veins</h4></div>
+                        <div><i class="fas fa-exclamation-triangle" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;"></i><h4>Non-healing Ulcers</h4></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- YouTube Section -->
+        <!-- YouTube -->
         <section style="background: white;" id="youtubeSection">
             <div class="container">
                 <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center;">
                     <div>
                         <h2>Vascular Education on YouTube</h2>
-                        <p style="font-size: 1.15rem; margin-top: 20px;">Learn about vascular health in a simple, reassuring way. From symptoms to real procedures, Dr. Kapadia explains it all.</p>
+                        <p style="font-size: 1.15rem; margin-top: 20px;">Learn about vascular health in a simple, reassuring way. Dr. Kapadia explains complex procedures with clinical clarity.</p>
                         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 35px;">
-                            <div style="background: #f8fafc; padding: 20px; border-radius: 20px; text-align: center;">
-                                <h4 style="color: var(--primary); font-size: 1.5rem;">322K+</h4><p style="font-size: 0.7rem; font-weight: 800;">Subscribers</p>
-                            </div>
-                            <div style="background: #f8fafc; padding: 20px; border-radius: 20px; text-align: center;">
-                                <h4 style="color: var(--primary); font-size: 1.5rem;">59.4M+</h4><p style="font-size: 0.7rem; font-weight: 800;">Views</p>
-                            </div>
-                            <div style="background: #f8fafc; padding: 20px; border-radius: 20px; text-align: center;">
-                                <h4 style="color: var(--primary); font-size: 1.5rem;">574</h4><p style="font-size: 0.7rem; font-weight: 800;">Videos</p>
-                            </div>
+                            <div style="background: #f8fafc; padding: 20px; border-radius: 20px; text-align: center;"><h4 style="color: var(--primary); font-size: 1.5rem;">322K+</h4><p style="font-size: 0.7rem; font-weight: 800;">Subscribers</p></div>
+                            <div style="background: #f8fafc; padding: 20px; border-radius: 20px; text-align: center;"><h4 style="color: var(--primary); font-size: 1.5rem;">59.4M+</h4><p style="font-size: 0.7rem; font-weight: 800;">Views</p></div>
+                            <div style="background: #f8fafc; padding: 20px; border-radius: 20px; text-align: center;"><h4 style="color: var(--primary); font-size: 1.5rem;">574</h4><p style="font-size: 0.7rem; font-weight: 800;">Videos</p></div>
                         </div>
                     </div>
                     <div style="border-radius: 35px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border: 8px solid white;">
@@ -149,14 +169,14 @@
             </div>
         </section>
 
-        <!-- Gallery Sections -->
+        <!-- Galleries -->
         <section class="gallery-section">
             <div class="container"><h2>Clinical Case Results</h2></div>
             <div class="gallery-wrapper" id="medicalGallery"></div>
         </section>
 
         <section class="gallery-section" style="background: var(--bg-soft);">
-            <div class="container"><h2>Hospital Infrastructure</h2></div>
+            <div class="container"><h2>Hospital Infrastructure & Care</h2></div>
             <div class="gallery-wrapper" id="hospitalGallery"></div>
         </section>
 
@@ -166,38 +186,66 @@
                 <h2 style="text-align: center; margin-bottom: 40px;">Frequently Asked Questions</h2>
                 <div style="max-width: 900px; margin: 0 auto;">
                     <div class="faq-item">
-                        <button class="faq-question">What is Laser Treatment? <i class="fas fa-chevron-down"></i></button>
-                        <div class="faq-answer"><p>Laser treatment (EVLA) is a minimally invasive procedure where a laser fiber seals diseased veins shut. It offers quick recovery and no stitches.</p></div>
+                        <button class="faq-question">What is Laser Treatment (EVLA)? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer"><p>EVLA is a minimally invasive procedure where a laser fiber is used to seal diseased veins. It offers quick recovery, minimal pain, and no stitches.</p></div>
                     </div>
                     <div class="faq-item">
-                        <button class="faq-question">Is it covered by insurance? <i class="fas fa-chevron-down"></i></button>
-                        <div class="faq-answer"><p>Most major insurance providers cover varicose vein procedures as they are medically necessary. We assist with all TPA paperwork.</p></div>
+                        <button class="faq-question">Is the treatment covered by Insurance? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer"><p>Yes, most medical insurance policies cover varicose vein treatments as they are medically necessary. Our team assists with all TPA and cashless approvals.</p></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Appointment Form -->
+        <!-- Form -->
         <section id="book" style="padding: 80px 0;">
             <div class="container">
-                <div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 30px; box-shadow: var(--shadow-premium);">
-                    <h2 style="text-align:center; margin-bottom:30px;">Request a Consultation</h2>
+                <div style="max-width: 800px; margin: 0 auto; background: white; padding: 50px; border-radius: 35px; box-shadow: var(--shadow-premium);">
+                    <h2 style="text-align:center; margin-bottom:35px;">Request a Consultation</h2>
                     <form id="appointmentForm" style="display: grid; gap: 20px;">
-                        <input type="text" id="patientName" placeholder="Your Name" required style="padding:15px; border-radius:10px; border:1px solid #ddd;">
-                        <input type="tel" id="patientPhone" placeholder="Phone Number" required style="padding:15px; border-radius:10px; border:1px solid #ddd;">
-                        <select id="patientType" required style="padding:15px; border-radius:10px; border:1px solid #ddd;"></select>
-                        <textarea id="patientMessage" placeholder="Describe your query..." required style="padding:15px; border-radius:10px; border:1px solid #ddd; min-height:100px;"></textarea>
-                        <input type="file" id="patientAttachment" style="padding:10px;">
-                        <button type="submit" class="btn btn-primary">Send Request</button>
+                        <input type="text" id="patientName" placeholder="Patient Name" required style="padding:16px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit;">
+                        <input type="tel" id="patientPhone" placeholder="Mobile Number" required style="padding:16px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit;">
+                        <select id="patientType" required style="padding:16px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit;"></select>
+                        <textarea id="patientMessage" placeholder="Describe your symptoms..." required style="padding:16px; border-radius:12px; border:1px solid #e2e8f0; font-family:inherit; min-height:120px;"></textarea>
+                        <div style="font-size:0.85rem; color:var(--text-muted);">Optional: Attach report or photo</div>
+                        <input type="file" id="patientAttachment" style="font-size:0.85rem;">
+                        <button type="submit" class="btn btn-primary">Send Request to Dr. Kapadia</button>
                     </form>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer style="background: var(--secondary); color: white; padding: 40px 0; text-align: center;">
+    <footer>
         <div class="container">
-            <p>&copy; 2026 Dr. Sumit Kapadia. Powered by Digital Twin v1.0</p>
+            <div class="footer-grid">
+                <div>
+                    <h3 style="margin-bottom: 25px; font-family: 'Fraunces', serif;">Dr. Sumit Kapadia</h3>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px;">Expert Vascular & Endovascular Surgeon providing world-class vein care with over two decades of experience.</p>
+                    <div class="footer-social" id="footerSocial">
+                        <a href="#" id="linkInsta" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" id="linkFb" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" id="linkLinkedin" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" id="linkYoutube" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 25px;">Our Location</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; display: flex; gap: 12px;"><i class="fas fa-map-marker-alt" style="color: var(--primary); margin-top: 5px;"></i> <span id="footerLocation">Aadicura Hospital, Near Akota Garden, Vadodara, Gujarat</span></p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 25px;">Contact Support</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; display: flex; gap: 12px; margin-bottom: 12px;"><i class="fas fa-phone-alt" style="color: var(--primary);"></i> <span id="footerPhone">+91 72010 14017</span></p>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; display: flex; gap: 12px;"><i class="fas fa-envelope" style="color: var(--primary);"></i> info@drsumitkapadia.com</p>
+                </div>
+            </div>
+            <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <p style="font-size: 0.85rem; color: var(--text-light);">&copy; 2026 Dr. Sumit Kapadia. Developed by Rishita Workflow.</p>
+                <div style="display: flex; gap: 20px; font-size: 0.85rem;">
+                    <a href="#" style="color: var(--text-light); text-decoration: none;">Privacy Policy</a>
+                    <a href="#" style="color: var(--text-light); text-decoration: none;">Terms of Service</a>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -207,7 +255,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const projectId = urlParams.get('p') || 'hospital';
 
-        // FAQ Toggle
         document.querySelectorAll('.faq-question').forEach(btn => {
             btn.onclick = () => btn.parentElement.classList.toggle('active');
         });
@@ -228,21 +275,41 @@
                     document.getElementById('siteTitle').innerText = s.landing_page;
                     document.getElementById('dynamicHeroTitle').innerText = s.landing_page;
                 }
-                if (s.affiliation) document.getElementById('dynamicAffiliation').innerText = s.affiliation;
+                if (s.affiliation) {
+                    document.getElementById('dynamicAffiliation').innerText = s.affiliation;
+                    document.getElementById('footerLocation').innerText = s.affiliation;
+                }
+                if (s.phone) {
+                    const cleanPhone = s.phone.replace(/\s+/g, '');
+                    document.getElementById('footerPhone').innerText = s.phone;
+                    document.getElementById('headerCall').href = `tel:${cleanPhone}`;
+                    document.getElementById('heroCall').href = `tel:${cleanPhone}`;
+                    document.getElementById('floatCall').href = `tel:${cleanPhone}`;
+                    document.getElementById('floatWa').href = `https://wa.me/${cleanPhone.replace('+', '').replace('-', '')}`;
+                }
                 if (s.logo_url) document.getElementById('dynamicLogo').src = s.logo_url;
                 if (s.photo_url) document.getElementById('heroDynamicImg').src = s.photo_url;
-                
-                // YouTube Link Restoration
                 if (s.video_1) {
                     const vidId = getYouTubeID(s.video_1);
                     if (vidId) document.getElementById('youtubeIframe').src = `https://www.youtube.com/embed/${vidId}`;
                 }
 
-                // Galleries
+                if (s.insta_url) document.getElementById('linkInsta').href = s.insta_url;
+                if (s.fb_url) document.getElementById('linkFb').href = s.fb_url;
+                if (s.linkedin_url) document.getElementById('linkLinkedin').href = s.linkedin_url;
+                if (s.youtube_url) document.getElementById('linkYoutube').href = s.youtube_url;
+
+                if (s.clarity_id) {
+                    (function(c,l,a,r,i,t,y){
+                        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                    })(window, document, "clarity", "script", s.clarity_id);
+                }
+
                 loadGallery('medical');
                 loadGallery('hospital');
 
-                // Categories
                 const cRes = await fetch(`/api/enquiry-categories?projectId=${projectId}`);
                 const cData = await cRes.json();
                 const cSelect = document.getElementById('patientType');
@@ -257,13 +324,19 @@
             const data = await res.json();
             const cont = document.getElementById(`${cat}Gallery`);
             if (data.images && data.images.length > 0) {
-                const imgs = [...data.images, ...data.images]; // Loop
-                cont.innerHTML = imgs.map(i => `<div class="gallery-item"><img src="${i.image_url}"></div>`).join('');
+                // Ensure enough images for smooth scroll
+                let imgs = data.images;
+                while (imgs.length < 8) { imgs = [...imgs, ...data.images]; }
+                cont.innerHTML = imgs.map(i => `<div class="gallery-item"><img src="${i.image_url}" alt="Gallery"></div>`).join('');
             }
         }
 
         document.getElementById('appointmentForm').onsubmit = async (e) => {
             e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = 'Sending...';
+            btn.disabled = true;
+
             const fd = new FormData();
             fd.append('projectId', projectId);
             fd.append('patient_name', document.getElementById('patientName').value);
@@ -275,8 +348,10 @@
 
             try {
                 const res = await fetch('/api/enquiry', { method: 'POST', body: fd });
-                if (res.ok) alert('Request Sent!');
-            } catch (e) { alert('Failed to send'); }
+                if (res.ok) alert('Consultation Request Sent Successfully!');
+            } catch (e) { alert('Failed to send request.'); }
+            btn.innerText = 'Send Request to Dr. Kapadia';
+            btn.disabled = false;
         };
 
         loadContent();
