@@ -239,6 +239,7 @@ app.get('/api/settings', async (req, res) => {
     const projectId = req.query.projectId || 'hospital';
     try {
         const result = await pool.query('SELECT * FROM settings WHERE project_id = $1', [projectId]);
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
         res.json({ settings: result.rows[0] || {} });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });

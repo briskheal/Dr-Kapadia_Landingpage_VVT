@@ -123,16 +123,18 @@
                 <div class="form-group">
                     <label>LOGO</label>
                     <div class="upload-zone" onclick="triggerUpload('logoInput')">
-                        <img id="logoPreview" style="display:none; max-width: 100%; max-height: 80px;">
+                        <img id="logoPreview" style="display:none; max-width: 100%; max-height: 80px; border-radius: 5px;">
                         <div id="logoPlaceholder"><i class="fas fa-upload"></i><p>Upload Logo</p></div>
                     </div>
+                    <p id="logoUrlLabel" style="font-size: 10px; opacity: 0.5; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></p>
                 </div>
                 <div class="form-group">
                     <label>HERO PHOTO</label>
                     <div class="upload-zone" onclick="triggerUpload('photoInput')">
-                        <img id="photoPreview" style="display:none; max-width: 100%; max-height: 80px;">
+                        <img id="photoPreview" style="display:none; max-width: 100%; max-height: 80px; border-radius: 5px;">
                         <div id="photoPlaceholder"><i class="fas fa-user-md"></i><p>Upload Photo</p></div>
                     </div>
+                    <p id="photoUrlLabel" style="font-size: 10px; opacity: 0.5; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></p>
                 </div>
             </div>
         </div>
@@ -252,7 +254,7 @@
         async function loadSettings() {
             try {
                 document.getElementById('projectSwitcher').value = currentProjectId;
-                const res = await fetch(`/api/settings?projectId=${currentProjectId}`);
+                const res = await fetch(`/api/settings?projectId=${currentProjectId}&t=${Date.now()}`);
                 const data = await res.json();
                 const s = data.settings || {};
                 
@@ -278,21 +280,25 @@
                 fixedImageId = s.fixed_image_id;
 
                 if (s.logo_url) {
-                    document.getElementById('logoPreview').src = s.logo_url;
+                    document.getElementById('logoPreview').src = s.logo_url + '?t=' + Date.now();
                     document.getElementById('logoPreview').style.display = 'block';
                     document.getElementById('logoPlaceholder').style.display = 'none';
+                    document.getElementById('logoUrlLabel').innerText = s.logo_url.split('/').pop();
                 } else {
                     document.getElementById('logoPreview').style.display = 'none';
                     document.getElementById('logoPlaceholder').style.display = 'block';
+                    document.getElementById('logoUrlLabel').innerText = 'No file';
                 }
 
                 if (s.photo_url) {
-                    document.getElementById('photoPreview').src = s.photo_url;
+                    document.getElementById('photoPreview').src = s.photo_url + '?t=' + Date.now();
                     document.getElementById('photoPreview').style.display = 'block';
                     document.getElementById('photoPlaceholder').style.display = 'none';
+                    document.getElementById('photoUrlLabel').innerText = s.photo_url.split('/').pop();
                 } else {
                     document.getElementById('photoPreview').style.display = 'none';
                     document.getElementById('photoPlaceholder').style.display = 'block';
+                    document.getElementById('photoUrlLabel').innerText = 'No file';
                 }
             } catch (e) { console.error(e); }
         }
@@ -381,11 +387,13 @@
                 const res = await fetch('/api/upload', { method: 'POST', body: fd });
                 if (res.ok) {
                     alert('Upload Success!');
-                    if (type.startsWith('gallery_')) {
-                        loadGallery(type.split('_')[1]);
-                    } else {
-                        loadSettings();
-                    }
+                    setTimeout(() => {
+                        if (type.startsWith('gallery_')) {
+                            loadGallery(type.split('_')[1]);
+                        } else {
+                            loadSettings();
+                        }
+                    }, 800);
                 } else {
                     const err = await res.json();
                     alert('Upload Error: ' + err.error);
