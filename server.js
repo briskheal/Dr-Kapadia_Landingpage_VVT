@@ -97,8 +97,27 @@ async function initDB() {
             ON CONFLICT (condition_name) DO NOTHING;
             INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
         `);
+
+        // Table: Enquiry Categories (admin-managed dropdown)
         await pool.query(`
-            -- ... (existing tables)
+            CREATE TABLE IF NOT EXISTS enquiry_categories (
+                id SERIAL PRIMARY KEY,
+                label TEXT NOT NULL,
+                patient_type TEXT DEFAULT 'general',
+                is_active BOOLEAN DEFAULT TRUE,
+                sort_order INTEGER DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        // Seed default categories (skip if already seeded)
+        await pool.query(`
+            INSERT INTO enquiry_categories (label, patient_type, sort_order) VALUES
+            ('General Appointment / Consultation', 'general', 1),
+            ('Varicose Veins / Leg Swelling (Chronic)', 'chronic', 2),
+            ('Active Symptoms – Pain, Ulcer, Wound', 'acute', 3),
+            ('Emergency – Sudden Pain, DVT, Bleeding', 'emergency', 4),
+            ('Professional / Student – Education & Masterclass', 'masterclass', 5)
+            ON CONFLICT DO NOTHING;
         `);
 
         // Migration: Add columns to existing tables
@@ -153,6 +172,51 @@ app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 
+// ── Enquiry Categories API ─────────────────────────────────────────────────
+
+// GET all active categories
+app.get('/api/enquiry-categories', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM enquiry_categories WHERE is_active = TRUE ORDER BY sort_order, id');
+        res.json({ categories: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// POST add new category
+app.post('/api/enquiry-categories', async (req, res) => {
+    const { label, patient_type } = req.body;
+    if (!label || !patient_type) return res.status(400).json({ error: 'label and patient_type are required' });
+    try {
+        const result = await pool.query(
+            'INSERT INTO enquiry_categories (label, patient_type) VALUES ($1, $2) RETURNING *',
+            [label.trim(), patient_type]
+        );
+        res.json({ success: true, category: result.rows[0] });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// PUT update category (label / patient_type / sort_order)
+app.put('/api/enquiry-categories/:id', async (req, res) => {
+    const { label, patient_type, sort_order } = req.body;
+    try {
+        await pool.query(
+            'UPDATE enquiry_categories SET label=$1, patient_type=$2, sort_order=$3 WHERE id=$4',
+            [label, patient_type, sort_order || 0, req.params.id]
+        );
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// DELETE (soft-delete: set is_active = false)
+app.delete('/api/enquiry-categories/:id', async (req, res) => {
+    try {
+        await pool.query('UPDATE enquiry_categories SET is_active = FALSE WHERE id = $1', [req.params.id]);
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ────────────────────────────────────────────────────────────────────────────
+
 // API: Get Settings
 app.get('/api/settings', async (req, res) => {
     try {
@@ -174,18 +238,22 @@ app.get('/api/gallery/:category', async (req, res) => {
 // API: Dashboard Stats
 app.get('/api/dashboard/stats', async (req, res) => {
     try {
-        const total = await pool.query('SELECT COUNT(*) FROM enquiries');
-        const emergency = await pool.query('SELECT COUNT(*) FROM enquiries WHERE patient_type = $1', ['emergency']);
-        const chronic = await pool.query('SELECT COUNT(*) FROM enquiries WHERE patient_type = $1', ['chronic']);
-        const masterclass = await pool.query('SELECT COUNT(*) FROM enquiries WHERE patient_type = $1', ['masterclass']);
-        const highAnxiety = await pool.query('SELECT COUNT(*) FROM enquiries WHERE anxiety_score > 5');
+        const total      = await pool.query('SELECT COUNT(*) FROM enquiries');
+        const emergency  = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'emergency'");
+        const acute      = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'acute'");
+        const chronic    = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'chronic'");
+        const general    = await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'general'");
+        const masterclass= await pool.query("SELECT COUNT(*) FROM enquiries WHERE patient_type = 'masterclass'");
+        const highAnxiety= await pool.query('SELECT COUNT(*) FROM enquiries WHERE anxiety_score > 5');
         
         res.json({
-            total: total.rows[0].count,
-            emergency: emergency.rows[0].count,
-            chronic: chronic.rows[0].count,
+            total:       total.rows[0].count,
+            emergency:   emergency.rows[0].count,
+            acute:       acute.rows[0].count,
+            chronic:     chronic.rows[0].count,
+            general:     general.rows[0].count,
             masterclass: masterclass.rows[0].count,
-            anxious: highAnxiety.rows[0].count,
+            anxious:     highAnxiety.rows[0].count,
             aiEfficiency: '98%'
         });
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -196,6 +264,56 @@ app.get('/api/dashboard/enquiries', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM enquiries ORDER BY created_at DESC LIMIT 10');
         res.json({ enquiries: result.rows });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// API: Live Stats Sidebar
+app.get('/api/dashboard/live-stats', async (req, res) => {
+    try {
+        // Today vs Yesterday
+        const today     = await pool.query("SELECT COUNT(*) FROM enquiries WHERE DATE(created_at AT TIME ZONE 'Asia/Kolkata') = CURRENT_DATE");
+        const yesterday = await pool.query("SELECT COUNT(*) FROM enquiries WHERE DATE(created_at AT TIME ZONE 'Asia/Kolkata') = CURRENT_DATE - 1");
+
+        // Auto-reply rate
+        const autoReplied = await pool.query("SELECT COUNT(*) FROM enquiries WHERE status = 'auto-replied'");
+        const totalAll    = await pool.query('SELECT COUNT(*) FROM enquiries');
+        const total = parseInt(totalAll.rows[0].count) || 1;
+        const autoRate = Math.round((parseInt(autoReplied.rows[0].count) / total) * 100);
+
+        // Top care category today
+        const topType = await pool.query(`
+            SELECT patient_type, COUNT(*) as cnt
+            FROM enquiries
+            WHERE DATE(created_at AT TIME ZONE 'Asia/Kolkata') = CURRENT_DATE
+            GROUP BY patient_type ORDER BY cnt DESC LIMIT 1
+        `);
+
+        // Last patient contact
+        const lastEnq = await pool.query('SELECT patient_name, patient_type, created_at FROM enquiries ORDER BY created_at DESC LIMIT 1');
+
+        // Top keywords from last 20 messages
+        const recentMsgs = await pool.query('SELECT message FROM enquiries ORDER BY created_at DESC LIMIT 20');
+        const stopWords = new Set(['i','a','the','and','is','in','my','to','of','it','for','on','this','are','have','has','with','that','was','be','from','at','an','been','can','me','what','your','how','do','we','he','she','they','you','will','as','by','or','but','not','so','if','its','about','more','very','just','also','up','out','like','get','all','one','his','her','our','him','them','his','any','no','please','would','could','should','want','need','know','see','tell','give','take','make','go','say','help']);
+        const wordCount = {};
+        recentMsgs.rows.forEach(row => {
+            (row.message || '').toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/).forEach(w => {
+                if (w.length > 3 && !stopWords.has(w)) wordCount[w] = (wordCount[w] || 0) + 1;
+            });
+        });
+        const topKeywords = Object.entries(wordCount).sort((a,b) => b[1]-a[1]).slice(0,6).map(([w]) => w);
+
+        // Auto-pilot status
+        const settings = await pool.query('SELECT auto_pilot FROM settings WHERE id = 1');
+
+        res.json({
+            today:        parseInt(today.rows[0].count),
+            yesterday:    parseInt(yesterday.rows[0].count),
+            autoRate,
+            topType:      topType.rows[0] || { patient_type: 'general', cnt: 0 },
+            lastEnquiry:  lastEnq.rows[0] || null,
+            topKeywords,
+            autoPilot:    settings.rows[0]?.auto_pilot || false
+        });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
@@ -377,22 +495,28 @@ app.post('/api/enquiry', upload.single('attachment'), async (req, res) => {
     const { patient_name, phone, message, platform, urgency, patient_type } = req.body;
     const attachment_url = req.file ? (req.file.path || `/uploads/${req.file.filename}`) : null;
     
-    // NLP: Detect Patient Type (Emergency, Chronic, Masterclass)
-    const proKeywords = ['student', 'doctor', 'surgeon', 'dr', 'fellow', 'resident', 'medical school', 'learn', 'teach', 'training', 'masterclass', 'cme', 'colleague'];
-    const emergencyKeywords = ['pain', 'emergency', 'bleeding', 'sudden', 'swelling', 'clot', 'urgent', 'dvt'];
+    // NLP: Detect Patient Type — 5 tiers: general, acute, chronic, emergency, masterclass
+    const proKeywords       = ['student', 'doctor', 'surgeon', 'dr', 'fellow', 'resident', 'medical school', 'learn', 'teach', 'training', 'masterclass', 'cme', 'colleague'];
+    const emergencyKeywords = ['emergency', 'bleeding', 'sudden', 'clot', 'urgent', 'dvt', 'gangrene', 'stroke', 'unconscious', 'collapse'];
+    const acuteKeywords     = ['pain', 'ache', 'hurt', 'swelling', 'wound', 'ulcer', 'infection', 'fever', 'pus', 'redness', 'warmth', 'cramp', 'numb', 'tingling', 'burn', 'itching', 'blister'];
+    const chronicKeywords   = ['varicose', 'vein', 'chronic', 'long-term', 'months', 'years', 'recurring', 'diabetes', 'diabetic', 'pad', 'arterial', 'peripheral', 'follow up', 'follow-up', 'review'];
+    const generalKeywords   = ['appointment', 'consult', 'timing', 'schedule', 'cost', 'price', 'fees', 'available', 'how much', 'when', 'location', 'address', 'contact', 'inquiry', 'information', 'details', 'check', 'query'];
     
-    let detectedType = patient_type || 'chronic';
+    let detectedType = 'general'; // default — routine info query
     const msgLower = message.toLowerCase();
     
-    // Check for Masterclass (Professional/Student)
-    proKeywords.forEach(word => {
-        if (msgLower.includes(word)) detectedType = 'masterclass';
-    });
-    
-    // Check for Emergency (Override)
-    emergencyKeywords.forEach(word => {
-        if (msgLower.includes(word)) detectedType = 'emergency';
-    });
+    // Tier 1: General (info/appointment queries — weakest, set first)
+    generalKeywords.forEach(word => { if (msgLower.includes(word)) detectedType = 'general'; });
+    // Tier 2: Chronic (known long-term conditions)
+    chronicKeywords.forEach(word => { if (msgLower.includes(word)) detectedType = 'chronic'; });
+    // Tier 3: Acute (active symptoms, not immediate danger)
+    acuteKeywords.forEach(word => { if (msgLower.includes(word)) detectedType = 'acute'; });
+    // Tier 4: Masterclass (professional/student — overrides clinical)
+    proKeywords.forEach(word => { if (msgLower.includes(word)) detectedType = 'masterclass'; });
+    // Tier 5: Emergency (strongest override)
+    emergencyKeywords.forEach(word => { if (msgLower.includes(word)) detectedType = 'emergency'; });
+    // Honour explicit patient_type from form if set and not overridden
+    if (patient_type && patient_type !== 'chronic' && detectedType === 'general') detectedType = patient_type;
 
     // NLP: Detect Medical Anxiety
     const anxietyKeywords = ['scared', 'worried', 'panic', 'fear', 'anxious', 'help', 'serious', 'frightened', 'nervous'];

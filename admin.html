@@ -223,11 +223,54 @@
         </div>
     </div>
 
+    <!-- Section: Enquiry Categories -->
+    <div class="admin-card" style="margin: 0 20px 25px; max-width: 800px; margin: 0 auto 25px;">
+        <h2><i class="fas fa-tags"></i> Enquiry Categories
+            <span style="font-size:0.75rem; font-weight:400; color:var(--accent); margin-left:10px;">→ controls landing page dropdown</span>
+        </h2>
+        <p style="font-size:0.82rem; color:var(--text); opacity:0.6; margin-bottom:20px;">These options appear in the "Reason for Enquiry" dropdown on the patient booking form. Each category maps to a care tier used by the AI triage engine.</p>
+
+        <!-- Existing Categories List -->
+        <div id="categoryList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:25px;">
+            <p style="font-size:0.85rem; opacity:0.5;">Loading categories...</p>
+        </div>
+
+        <!-- Add New Category Form -->
+        <div style="background:#F8FAFC; border-radius:15px; padding:20px; border:1px dashed var(--border);">
+            <label style="font-size:0.8rem; font-weight:700; opacity:0.7; display:block; margin-bottom:12px;">ADD NEW CATEGORY</label>
+            <div style="display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:end;">
+                <div>
+                    <label style="font-size:0.75rem; font-weight:600; opacity:0.6; display:block; margin-bottom:6px;">CATEGORY LABEL</label>
+                    <input type="text" id="newCatLabel" class="form-control" placeholder="e.g. Post-Surgery Follow-up" style="padding:12px;">
+                </div>
+                <div>
+                    <label style="font-size:0.75rem; font-weight:600; opacity:0.6; display:block; margin-bottom:6px;">MAPS TO</label>
+                    <select id="newCatType" class="form-control" style="padding:12px; min-width:180px;">
+                        <option value="general">General Care</option>
+                        <option value="acute">Acute Care</option>
+                        <option value="chronic">Chronic Care</option>
+                        <option value="emergency">Emergency</option>
+                        <option value="masterclass">Masterclass</option>
+                    </select>
+                </div>
+                <button onclick="addCategory()" style="padding:12px 22px; background:var(--primary); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer; white-space:nowrap;"><i class="fas fa-plus"></i> Add</button>
+            </div>
+        </div>
+    </div>
+
     <style>
         .switch input:checked + .slider { background-color: var(--primary); }
         .switch input:focus + .slider { box-shadow: 0 0 1px var(--primary); }
         .switch input:checked + .slider:before { transform: translateX(26px); }
         .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+
+        /* Category pill type colours */
+        .type-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:700; text-transform:uppercase; }
+        .type-general    { background:#F0FDF4; color:#16A34A; }
+        .type-acute      { background:#FFF7ED; color:#EA580C; }
+        .type-chronic    { background:#E0F2FE; color:#0284C7; }
+        .type-emergency  { background:#FEE2E2; color:#DC2626; }
+        .type-masterclass{ background:#F3E8FF; color:#7C3AED; }
     </style>
 
     <div class="save-bar" style="justify-content: center; padding: 10px;">
@@ -391,7 +434,65 @@
             window.location.href = '/login';
         }
 
-        window.onload = loadSettings;
+        window.onload = () => { loadSettings(); loadCategories(); };
+
+        // ── Enquiry Categories ──────────────────────────────────────────────
+        const TYPE_LABELS = { general:'General Care', acute:'Acute Care', chronic:'Chronic Care', emergency:'Emergency', masterclass:'Masterclass' };
+
+        async function loadCategories() {
+            try {
+                const res  = await fetch('/api/enquiry-categories');
+                const data = await res.json();
+                const list = document.getElementById('categoryList');
+                list.innerHTML = '';
+
+                if (!data.categories || data.categories.length === 0) {
+                    list.innerHTML = '<p style="font-size:0.85rem; opacity:0.5;">No categories yet. Add one below.</p>';
+                    return;
+                }
+
+                data.categories.forEach(cat => {
+                    const typeClass = `type-${cat.patient_type}`;
+                    const row = document.createElement('div');
+                    row.style.cssText = 'display:flex; align-items:center; gap:12px; background:white; padding:14px 18px; border-radius:12px; border:1px solid var(--border);';
+                    row.innerHTML = `
+                        <i class="fas fa-grip-vertical" style="color:#CBD5E1; cursor:grab;"></i>
+                        <span style="flex:1; font-weight:600; font-size:0.95rem;">${cat.label}</span>
+                        <span class="type-badge ${typeClass}">${TYPE_LABELS[cat.patient_type] || cat.patient_type}</span>
+                        <button onclick="deleteCategory(${cat.id})" title="Remove" style="background:none; border:none; color:#EF4444; cursor:pointer; font-size:1rem; padding:4px 8px;"><i class="fas fa-times"></i></button>
+                    `;
+                    list.appendChild(row);
+                });
+            } catch(e) { console.error('Failed to load categories', e); }
+        }
+
+        async function addCategory() {
+            const label = document.getElementById('newCatLabel').value.trim();
+            const patient_type = document.getElementById('newCatType').value;
+            if (!label) { alert('Please enter a category label.'); return; }
+            try {
+                const res = await fetch('/api/enquiry-categories', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ label, patient_type })
+                });
+                if (res.ok) {
+                    document.getElementById('newCatLabel').value = '';
+                    loadCategories();
+                } else {
+                    const err = await res.json();
+                    alert('Error: ' + err.error);
+                }
+            } catch(e) { alert('Failed to add category'); }
+        }
+
+        async function deleteCategory(id) {
+            if (!confirm('Remove this category from the landing page?')) return;
+            try {
+                await fetch(`/api/enquiry-categories/${id}`, { method: 'DELETE' });
+                loadCategories();
+            } catch(e) { alert('Delete failed'); }
+        }
     </script>
 </body>
 </html>
